@@ -26,10 +26,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.llmhub.llmhub.LlmHubApplication
-import com.llmhub.llmhub.ads.BannerAd
 import com.llmhub.llmhub.R
 import com.llmhub.llmhub.components.ModelSelectorCard
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.components.ThinkingAwareResultContent
 import com.llmhub.llmhub.components.getDisplayContentWithoutThinking
 import com.llmhub.llmhub.viewmodels.WritingAidViewModel
@@ -44,7 +43,6 @@ fun WritingAidScreen(
     viewModel: WritingAidViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val isPremium by (context.applicationContext as LlmHubApplication).billingManager.isPremium.collectAsState(initial = false)
     val keyboard = LocalSoftwareKeyboardController.current
     val clipboardManager = LocalClipboardManager.current
     
@@ -125,6 +123,7 @@ fun WritingAidScreen(
     if (showSettingsSheet) {
         ModalBottomSheet(
             onDismissRequest = { showSettingsSheet = false },
+            containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ) {
             Column(
@@ -318,6 +317,7 @@ fun WritingAidScreen(
     }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = {
@@ -339,7 +339,8 @@ fun WritingAidScreen(
                     IconButton(onClick = { showSettingsSheet = true }) {
                         Icon(Icons.Default.Tune, contentDescription = "Settings")
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -520,9 +521,6 @@ fun WritingAidScreen(
                 color = MaterialTheme.colorScheme.surface
             ) {
                 Column {
-                if (!isPremium) {
-                    BannerAd(modifier = Modifier.fillMaxWidth())
-                }
                 if (isProcessing) {
                     // Show Cancel button while processing
                     OutlinedButton(

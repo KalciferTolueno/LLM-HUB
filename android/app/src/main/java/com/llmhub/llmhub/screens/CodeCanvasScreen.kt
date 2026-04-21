@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.llmhub.llmhub.R
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import androidx.compose.ui.viewinterop.AndroidView
 import android.webkit.WebViewClient
 import android.util.Log
@@ -33,6 +34,7 @@ fun CodeCanvasScreen(
     var errorMessage by remember { mutableStateOf("") }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.vibe_coder_preview)) },
@@ -40,7 +42,8 @@ fun CodeCanvasScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         }
     ) { innerPadding ->

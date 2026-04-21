@@ -247,6 +247,7 @@ fun ChatSettingsSheet(
     
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ) {
         Column(
@@ -267,9 +268,9 @@ fun ChatSettingsSheet(
             // Model Selector Card
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                ),
+                colors = NeuralHubUiDefaults.glassCardColors(),
+                border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                elevation = NeuralHubUiDefaults.glassCardElevation(),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -586,9 +587,9 @@ fun ChatSettingsSheet(
             if (selectedModel != null) {
                 Card(
                     shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    ),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(

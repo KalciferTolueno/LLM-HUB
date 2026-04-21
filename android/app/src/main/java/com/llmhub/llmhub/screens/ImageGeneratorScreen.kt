@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.llmhub.llmhub.R
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.imagegen.ImageGeneratorHelper
 import com.llmhub.llmhub.imagegen.ModelInfo
 import com.llmhub.llmhub.imagegen.ModelType
@@ -170,6 +171,7 @@ fun ImageGeneratorScreen(
     if (showModelSheet) {
         ModalBottomSheet(
             onDismissRequest = { showModelSheet = false },
+            containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ) {
             Column(
@@ -455,6 +457,7 @@ fun ImageGeneratorScreen(
     }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { 
@@ -475,7 +478,8 @@ fun ImageGeneratorScreen(
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }

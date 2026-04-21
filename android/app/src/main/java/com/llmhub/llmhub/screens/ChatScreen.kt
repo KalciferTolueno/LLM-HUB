@@ -35,6 +35,7 @@ import com.llmhub.llmhub.R
 import com.llmhub.llmhub.data.LLMModel
 import com.llmhub.llmhub.components.ChatDrawer
 import com.llmhub.llmhub.components.MessageBubble
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.components.MessageInput
 import com.llmhub.llmhub.components.ChatSettingsSheet
 import com.llmhub.llmhub.ui.components.ModernCard
@@ -43,7 +44,6 @@ import com.llmhub.llmhub.ui.components.SectionHeader
 import com.llmhub.llmhub.viewmodels.ChatViewModel
 import com.llmhub.llmhub.viewmodels.ChatViewModelFactory
 import com.llmhub.llmhub.LlmHubApplication
-import com.llmhub.llmhub.ads.BannerAd
 import kotlinx.coroutines.launch
 import android.util.Log
 
@@ -211,6 +211,7 @@ fun ChatScreen(
         }
     ) {
         Scaffold(
+            containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
             topBar = {
                 TopAppBar(
                     title = {
@@ -295,7 +296,8 @@ fun ChatScreen(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
-                    }
+                    },
+                    colors = NeuralHubUiDefaults.topAppBarColors()
                 )
             }
         ) { paddingValues ->
@@ -400,13 +402,6 @@ fun ChatScreen(
                             isTtsSpeaking = isTtsSpeaking && currentTtsMessageId == message.id
                         )
                     }
-                }
-
-                // Banner ad for free users — sits above the message input
-                val appIsPremium = (context.applicationContext as? LlmHubApplication)
-                    ?.billingManager?.isPremium?.collectAsState(initial = false)?.value ?: false
-                if (!appIsPremium) {
-                    BannerAd(modifier = Modifier.fillMaxWidth())
                 }
 
                 // Message input

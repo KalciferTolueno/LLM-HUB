@@ -1,6 +1,7 @@
 package com.llmhub.llmhub.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -130,7 +131,10 @@ fun ChatDrawer(
         )
     }
 
-    ModalDrawerSheet {
+    ModalDrawerSheet(
+        drawerContainerColor = NeuralHubUiDefaults.drawerContainerColor,
+        drawerShape = RoundedCornerShape(topEnd = 20.dp, bottomEnd = 20.dp)
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
             // Header with Back Arrow
@@ -145,7 +149,7 @@ fun ChatDrawer(
                     Icon(
                         Icons.Default.ArrowBack,
                         contentDescription = stringResource(R.string.back),
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = NeuralHubColors.AccentCyan
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
@@ -153,13 +157,13 @@ fun ChatDrawer(
                     Icons.Default.PhoneAndroid,
                     contentDescription = null,
                     modifier = Modifier.size(28.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = NeuralHubColors.AccentCyan
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.drawer_title),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color.White
                 )
             }
 
@@ -179,7 +183,7 @@ fun ChatDrawer(
                 Text(
                     text = stringResource(R.string.drawer_my_creators),
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = NeuralHubColors.TextDim,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
                 
@@ -206,7 +210,7 @@ fun ChatDrawer(
             Text(
                 text = stringResource(R.string.drawer_recent_chats),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = NeuralHubColors.TextDim,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
@@ -232,14 +236,14 @@ fun ChatDrawer(
                         Text(
                             text = stringResource(R.string.drawer_no_chats),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = NeuralHubColors.TextDim,
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                 }
             }
 
-            Divider()
+            HorizontalDivider(color = NeuralHubColors.GlassBorder)
 
             // Navigation Options pinned at bottom. Make this block scrollable when
             // vertical space is constrained (especially in landscape) so items don't get
@@ -359,8 +363,8 @@ private fun ChatHistoryItem(
 
     Surface(
         onClick = onClick,
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
+        shape = NeuralHubUiDefaults.glassListItemShape,
+        color = NeuralHubColors.Glass,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -374,6 +378,7 @@ private fun ChatHistoryItem(
                 Text(
                     text = chat.title,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -381,7 +386,7 @@ private fun ChatHistoryItem(
                 Text(
                     text = formatTimestamp(chat.updatedAt),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = NeuralHubColors.TextDim
                 )
             }
             Box {
@@ -389,7 +394,7 @@ private fun ChatHistoryItem(
                     Icon(
                         Icons.Default.MoreVert,
                         contentDescription = stringResource(R.string.more_options),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = NeuralHubColors.TextDim
                     )
                 }
                 DropdownMenu(
@@ -437,17 +442,21 @@ private fun DrawerNavigationItem(
 ) {
     Surface(
         onClick = onClick,
-        shape = MaterialTheme.shapes.medium,
-        color = Color.Transparent,
+        shape = NeuralHubUiDefaults.glassListItemShape,
+        color = NeuralHubColors.Glass,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Icon(icon, contentDescription = null, tint = NeuralHubColors.AccentCyan)
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = text, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
         }
     }
 }

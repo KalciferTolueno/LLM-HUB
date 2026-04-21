@@ -96,6 +96,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.llmhub.llmhub.R
 import com.llmhub.llmhub.components.FeatureModelSettingsSheet
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.components.ThinkingAwareResultContent
 import com.llmhub.llmhub.viewmodels.CodeLanguage
 import com.llmhub.llmhub.viewmodels.VibeChatSessionSummary
@@ -408,6 +409,7 @@ fun VibeCoderScreen(
     }
 
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.vibe_coder_title)) },
@@ -423,7 +425,8 @@ fun VibeCoderScreen(
                     IconButton(onClick = { showSettingsSheet = true }) {
                         Icon(Icons.Default.Tune, contentDescription = stringResource(R.string.feature_settings_title))
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }

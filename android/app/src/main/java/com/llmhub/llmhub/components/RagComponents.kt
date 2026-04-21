@@ -1,5 +1,6 @@
 package com.llmhub.llmhub.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,8 +35,9 @@ fun RagStatusIndicator(
         Card(
             modifier = modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+                containerColor = NeuralHubColors.AccentCyan.copy(alpha = 0.12f)
             ),
+            border = BorderStroke(1.dp, NeuralHubColors.AccentCyan.copy(alpha = 0.28f)),
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(

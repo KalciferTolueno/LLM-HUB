@@ -9,8 +9,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.llmhub.llmhub.components.NeuralHubColors
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
+import java.util.Locale
 
 @Composable
 fun ModernCard(
@@ -22,13 +27,9 @@ fun ModernCard(
         Card(
             onClick = onClick,
             modifier = modifier,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 2.dp,
-                pressedElevation = 8.dp
-            ),
+            colors = NeuralHubUiDefaults.glassCardColors(),
+            border = NeuralHubUiDefaults.glassCardBorderStroke(),
+            elevation = NeuralHubUiDefaults.glassCardElevation(),
             shape = MaterialTheme.shapes.large
         ) {
             Column(
@@ -39,10 +40,9 @@ fun ModernCard(
     } else {
         Card(
             modifier = modifier,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors = NeuralHubUiDefaults.glassCardColors(),
+            border = NeuralHubUiDefaults.glassCardBorderStroke(),
+            elevation = NeuralHubUiDefaults.glassCardElevation(),
             shape = MaterialTheme.shapes.large
         ) {
             Column(
@@ -89,17 +89,19 @@ fun SectionHeader(
         modifier = modifier.padding(vertical = 16.dp)
     ) {
         Text(
-            text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = title.uppercase(Locale.getDefault()),
+            fontFamily = FontFamily.Monospace,
+            fontSize = 11.sp,
+            letterSpacing = 1.sp,
+            color = NeuralHubColors.TextDim,
             fontWeight = FontWeight.Bold
         )
         if (subtitle != null) {
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.bodySmall,
+                color = NeuralHubColors.TextDim
             )
         }
     }

@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalView
 import android.graphics.Rect
 import android.view.ViewTreeObserver
 import com.llmhub.llmhub.LlmHubApplication
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 
 @OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
@@ -111,6 +112,7 @@ fun CreatorGenerationScreen(
     }
 
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.creator_screen_title), fontWeight = FontWeight.Bold) },
@@ -128,10 +130,7 @@ fun CreatorGenerationScreen(
                         Icon(Icons.Default.Tune, contentDescription = stringResource(R.string.feature_settings_title))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                )
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         }
     ) { paddingValues ->

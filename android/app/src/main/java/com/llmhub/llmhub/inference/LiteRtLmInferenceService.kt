@@ -18,6 +18,7 @@ import com.google.ai.edge.litertlm.ToolProvider
 import com.google.ai.edge.litertlm.tool
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.llmhub.llmhub.R
+import com.llmhub.llmhub.data.DeviceInfo
 import com.llmhub.llmhub.data.LLMModel
 import com.llmhub.llmhub.data.localFileName
 import com.llmhub.llmhub.utils.KidModeManager
@@ -50,6 +51,11 @@ import java.io.File
  * (missing libLiteRtTopKOpenClSampler.so). The fix ships in 0.10.1 (not yet on Maven
  * as of April 2026). GPU is currently forced to CPU — see mapBackend(). Remove the
  * workaround and uncomment the proper mapping once 0.10.1 is available on Maven.
+ *
+ * MediaTek NPU (NeuroPilot): when [DeviceInfo.isLikelyMediaTekLiteRtNpuSoc] is true and
+ * `libLiteRtDispatch_MediaTek.so` is packaged under `jniLibs/arm64-v8a/`, selecting the
+ * GPU backend maps to [Backend.NPU]. Obtain/build the dispatch library per Google AI Edge
+ * (LiteRT MediaTek + LiteRT-LM on NPU docs).
  */
 class LiteRtLmInferenceService(private val applicationContext: Context) : InferenceService {
 
@@ -58,6 +64,7 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
     private var isVisionDisabled: Boolean = false
     private var isAudioDisabled: Boolean = false
     private var currentBackendIsGpu: Boolean = false
+    private var currentBackendIsNpu: Boolean = false
 
     // Generation parameters from UI
     // NOTE: contextWindow is stored but not forwarded to the Engine — the LiteRT-LM API
@@ -88,6 +95,8 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
         private const val DEFAULT_TOP_P = 0.95f
         private const val DEFAULT_TEMPERATURE = 1.0f
 
+        private const val MEDIATEK_DISPATCH_SO = "libLiteRtDispatch_MediaTek.so"
+
         /** Sentinel markers used by ChatComponents.kt to render expandable thinking panel. */
         const val SENTINEL_THINK = "\u200B\u200BTHINK\u200B\u200B"
         const val SENTINEL_ENDTHINK = "\u200B\u200BENDTHINK\u200B\u200B"
@@ -103,6 +112,24 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
      *  the OpenCL sampler GPU decode crash is fixed. Then restore the commented block.
      */
     private fun mapBackend(preferredBackend: LlmInference.Backend?, supportsGpu: Boolean): Backend {
+        val nativeDir = applicationContext.applicationInfo.nativeLibraryDir
+        val dispatch = File(nativeDir, MEDIATEK_DISPATCH_SO)
+        val wantAccel =
+            preferredBackend == LlmInference.Backend.GPU ||
+                (preferredBackend == null && supportsGpu)
+
+        if (wantAccel && DeviceInfo.isLikelyMediaTekLiteRtNpuSoc() && dispatch.exists()) {
+            Log.i(TAG, "LiteRT-LM: Backend.NPU (NeuroPilot dispatch: ${dispatch.absolutePath})")
+            return Backend.NPU(nativeLibraryDir = nativeDir)
+        }
+        if (wantAccel && DeviceInfo.isLikelyMediaTekLiteRtNpuSoc() && !dispatch.exists()) {
+            Log.w(
+                TAG,
+                "MediaTek NPU SoC but $MEDIATEK_DISPATCH_SO missing under $nativeDir — using CPU. " +
+                    "Add the vendor dispatch .so to jniLibs (see LiteRT MediaTek NPU docs)."
+            )
+        }
+
         // Workaround: GPU decode crashes in 0.10.0 (libLiteRtTopKOpenClSampler.so missing).
         // Force CPU for all litertlm models until 0.10.1 ships on Maven.
         if (preferredBackend == LlmInference.Backend.GPU) {
@@ -203,6 +230,7 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
             isAudioDisabled = disableAudio
 
             val backend = mapBackend(preferredBackend, model.supportsGpu)
+            currentBackendIsNpu = backend is Backend.NPU
             currentBackendIsGpu = backend is Backend.GPU
 
             val engineConfig = EngineConfig(
@@ -231,6 +259,8 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
             }
             engine = null
             currentModel = null
+            currentBackendIsGpu = false
+            currentBackendIsNpu = false
             Log.d(TAG, "Engine unloaded")
         }
     }
@@ -249,6 +279,8 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
                 }
                 engine = null
                 currentModel = null
+                currentBackendIsGpu = false
+                currentBackendIsNpu = false
             }
         }
     }
@@ -257,12 +289,15 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
 
     override fun getCurrentlyLoadedBackend(): LlmInference.Backend? {
         if (currentModel == null) return null
-        return if (currentBackendIsGpu) LlmInference.Backend.GPU else LlmInference.Backend.CPU
+        return when {
+            currentBackendIsNpu || currentBackendIsGpu -> LlmInference.Backend.GPU
+            else -> LlmInference.Backend.CPU
+        }
     }
 
     override fun isVisionCurrentlyDisabled(): Boolean = isVisionDisabled
     override fun isAudioCurrentlyDisabled(): Boolean = isAudioDisabled
-    override fun isGpuBackendEnabled(): Boolean = currentBackendIsGpu
+    override fun isGpuBackendEnabled(): Boolean = currentBackendIsGpu || currentBackendIsNpu
 
     override fun setGenerationParameters(
         maxTokens: Int?,

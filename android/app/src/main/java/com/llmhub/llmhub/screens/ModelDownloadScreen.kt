@@ -7,12 +7,15 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -36,6 +39,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.llmhub.llmhub.data.LLMModel
+import com.llmhub.llmhub.data.ModelTrainingVariant
+import com.llmhub.llmhub.data.resolvedTrainingVariant
 import com.llmhub.llmhub.viewmodels.ModelDownloadViewModel
 import androidx.compose.ui.platform.LocalContext
 import android.content.Context
@@ -44,8 +49,12 @@ import com.llmhub.llmhub.ui.components.*
 import androidx.compose.ui.res.stringResource
 import com.llmhub.llmhub.R
 import com.llmhub.llmhub.data.ModelRequirements
+import com.llmhub.llmhub.components.NeuralHubColors
+import com.llmhub.llmhub.components.NeuralHubSectionHeading
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
+import com.llmhub.llmhub.data.catalogFamily
+import com.llmhub.llmhub.data.sortedCatalogFamilyLabels
 import com.llmhub.llmhub.data.DeviceInfo
-import com.llmhub.llmhub.LlmHubApplication
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.net.Uri
@@ -62,6 +71,19 @@ import androidx.compose.runtime.DisposableEffect
 
 enum class ModelFormat {
     TASK, LITERTLM, GGUF, QNN_NPU, MNN_CPU
+}
+
+private enum class CatalogTrainingFilter { ALL, IT, BASE, OTHER }
+
+private fun List<LLMModel>.applyCatalogFilter(filter: CatalogTrainingFilter): List<LLMModel> {
+    if (filter == CatalogTrainingFilter.ALL) return this
+    val target = when (filter) {
+        CatalogTrainingFilter.IT -> ModelTrainingVariant.IT
+        CatalogTrainingFilter.BASE -> ModelTrainingVariant.BASE
+        CatalogTrainingFilter.OTHER -> ModelTrainingVariant.NA
+        else -> return this
+    }
+    return filter { it.resolvedTrainingVariant() == target }
 }
 
 /**
@@ -94,17 +116,116 @@ private fun shouldShowNpuBadge(model: LLMModel): Boolean {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun CatalogFamilyFilterRow(
+    selected: String?,
+    familyLabels: List<String>,
+    onSelect: (String?) -> Unit
+) {
+    val scroll = rememberScrollState()
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = stringResource(R.string.model_catalog_family_heading),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = NeuralHubColors.TextDim
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(scroll),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilterChip(
+                selected = selected == null,
+                onClick = { onSelect(null) },
+                label = { Text(stringResource(R.string.model_catalog_all_families)) }
+            )
+            familyLabels.forEach { label ->
+                FilterChip(
+                    selected = selected == label,
+                    onClick = { onSelect(if (selected == label) null else label) },
+                    label = { Text(label) }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CatalogTrainingFilterRow(
+    selected: CatalogTrainingFilter,
+    onSelect: (CatalogTrainingFilter) -> Unit
+) {
+    val scroll = rememberScrollState()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(scroll),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        CatalogTrainingFilter.values().forEach { filter ->
+            FilterChip(
+                selected = selected == filter,
+                onClick = { onSelect(filter) },
+                label = {
+                    Text(
+                        text = when (filter) {
+                            CatalogTrainingFilter.ALL -> stringResource(R.string.model_filter_all)
+                            CatalogTrainingFilter.IT -> stringResource(R.string.model_filter_it)
+                            CatalogTrainingFilter.BASE -> stringResource(R.string.model_filter_base)
+                            CatalogTrainingFilter.OTHER -> stringResource(R.string.model_filter_other)
+                        }
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TrainingKindBadge(model: LLMModel) {
+    when (val rv = model.resolvedTrainingVariant()) {
+        ModelTrainingVariant.NA -> Unit
+        ModelTrainingVariant.IT -> {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
+            ) {
+                Text(
+                    text = stringResource(R.string.model_badge_it),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+        ModelTrainingVariant.BASE -> {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.9f)
+            ) {
+                Text(
+                    text = stringResource(R.string.model_badge_base),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun ModelDownloadScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToPremium: () -> Unit = {},
     viewModel: ModelDownloadViewModel? = null
 ) {
     val context = LocalContext.current
     val activity = context as ComponentActivity
-
-    // Check premium status
-    val isPremium by (context.applicationContext as LlmHubApplication)
-        .billingManager.isPremium.collectAsState(initial = false)
 
     // Use activity-scoped ViewModel to ensure downloads persist across navigation
     val downloadViewModel = viewModel ?: ViewModelProvider(
@@ -113,16 +234,29 @@ fun ModelDownloadScreen(
     )[ModelDownloadViewModel::class.java]
     
     val models by downloadViewModel.models.collectAsState()
-    val textModels = models.filter { it.category == "text" }
-    val multimodalModels = models.filter { it.category == "multimodal" }
-    val embeddingModels = models.filter { it.category == "embedding" }
-    val imageGenerationModels = models.filter {
-        it.category == "image_generation" || it.category == "qnn_npu" || it.category == "mnn_cpu"
+    var catalogFilter by remember { mutableStateOf(CatalogTrainingFilter.ALL) }
+    var selectedCatalogFamily by remember { mutableStateOf<String?>(null) }
+
+    val catalogModels = remember(models, catalogFilter) {
+        models.applyCatalogFilter(catalogFilter)
     }
-    val textGrouped = textModels.groupBy { it.name.substringBefore("(").trim() }
-    val multimodalGrouped = multimodalModels.groupBy { it.name.substringBefore("(").trim() }
-    val embeddingGrouped = embeddingModels.groupBy { it.name.substringBefore("(").trim() }
-    val imageGenGrouped = imageGenerationModels.groupBy { it.name.substringBefore("(").trim() }
+    val familyLabels = remember(catalogModels) {
+        sortedCatalogFamilyLabels(catalogModels.map { it.catalogFamily() }.toSet())
+    }
+    val familiesToShow = selectedCatalogFamily?.let { listOf(it) }
+        ?: familyLabels
+
+    fun sliceForFamily(fam: String) = catalogModels.filter { it.catalogFamily() == fam }
+
+    val anyCatalogSectionVisible = remember(catalogModels, familiesToShow) {
+        familiesToShow.any { fam ->
+            val s = sliceForFamily(fam)
+            s.any { it.category == "text" } ||
+                s.any { it.category == "multimodal" } ||
+                s.any { it.category == "embedding" } ||
+                s.any { it.category == "image_generation" || it.category == "qnn_npu" || it.category == "mnn_cpu" }
+        }
+    }
 
     var showImportDialog by remember { mutableStateOf(false) }
     var errorDialogInfo by remember { mutableStateOf<Pair<String, String>?>(null) }
@@ -147,16 +281,19 @@ fun ModelDownloadScreen(
         }
     }
 
-    Scaffold(
+        Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(
                         stringResource(R.string.ai_models),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    ) 
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 },
+                colors = NeuralHubUiDefaults.topAppBarColors(),
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack,
@@ -165,7 +302,7 @@ fun ModelDownloadScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.back),
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = Color.White
                         )
                     }
                 }
@@ -173,122 +310,170 @@ fun ModelDownloadScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    if (isPremium) showImportDialog = true
-                    else onNavigateToPremium()
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                onClick = { showImportDialog = true },
+                containerColor = NeuralHubColors.AccentCyan,
+                contentColor = Color.Black
             ) {
                 Icon(
-                    imageVector = if (isPremium) Icons.Default.Add else Icons.Default.Lock,
+                    imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.import_external_model)
                 )
             }
         },
-        containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Text Models Section
-            if (textGrouped.isNotEmpty()) {
+        Box(modifier = Modifier.padding(paddingValues)) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 item {
-                    SectionHeader(
-                        title = stringResource(R.string.text_models),
-                        subtitle = stringResource(R.string.text_models_description)
+                    CatalogFamilyFilterRow(
+                        selected = selectedCatalogFamily,
+                        familyLabels = familyLabels,
+                        onSelect = { selectedCatalogFamily = it }
                     )
                 }
-                
-                textGrouped.forEach { (family, variants) ->
+                item {
+                    CatalogTrainingFilterRow(
+                        selected = catalogFilter,
+                        onSelect = { catalogFilter = it }
+                    )
+                }
+                if (!anyCatalogSectionVisible) {
                     item {
-                        ModelFamilyCard(
-                            family = family,
-                            variants = variants,
-                            context = context,
-                            viewModel = downloadViewModel,
-                            isMultimodal = false,
-                            onDownload = { downloadViewModel.downloadModel(it) }
+                        Text(
+                            text = stringResource(R.string.models_filter_empty),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 24.dp)
                         )
                     }
                 }
-            }
-            
-            // Multimodal Models Section
-            if (multimodalGrouped.isNotEmpty()) {
-                item {
-                    SectionHeader(
-                        title = stringResource(R.string.vision_models),
-                        subtitle = stringResource(R.string.vision_models_description)
-                    )
-                }
-                
-                multimodalGrouped.forEach { (family, variants) ->
-                    item {
-                        ModelFamilyCard(
-                            family = family,
-                            variants = variants,
-                            context = context,
-                            viewModel = downloadViewModel,
-                            isMultimodal = true,
-                            onDownload = { downloadViewModel.downloadModel(it) }
-                        )
+                familiesToShow.forEach { catalogFam ->
+                    val slice = sliceForFamily(catalogFam)
+                    val textGrouped = slice
+                        .filter { it.category == "text" }
+                        .groupBy { it.name.substringBefore("(").trim() }
+                    val multimodalGrouped = slice
+                        .filter { it.category == "multimodal" }
+                        .groupBy { it.name.substringBefore("(").trim() }
+                    val embeddingGrouped = slice
+                        .filter { it.category == "embedding" }
+                        .groupBy { it.name.substringBefore("(").trim() }
+                    val imageGenGrouped = slice
+                        .filter {
+                            it.category == "image_generation" ||
+                                it.category == "qnn_npu" ||
+                                it.category == "mnn_cpu"
+                        }
+                        .groupBy { it.name.substringBefore("(").trim() }
+
+                    val hasAnyInFamily = textGrouped.isNotEmpty() || multimodalGrouped.isNotEmpty() ||
+                        embeddingGrouped.isNotEmpty() || imageGenGrouped.isNotEmpty()
+                    if (!hasAnyInFamily) return@forEach
+
+                    if (selectedCatalogFamily == null) {
+                        item(key = "fam-$catalogFam-head") {
+                            NeuralHubSectionHeading(
+                                text = catalogFam,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
+
+                    if (textGrouped.isNotEmpty()) {
+                        item(key = "fam-$catalogFam-text-h") {
+                            SectionHeader(
+                                title = stringResource(R.string.text_models),
+                                subtitle = stringResource(R.string.text_models_description)
+                            )
+                        }
+                        items(
+                            items = textGrouped.entries.toList(),
+                            key = { "${catalogFam}-text-${it.key}" }
+                        ) { (family, variants) ->
+                            ModelFamilyCard(
+                                family = family,
+                                variants = variants,
+                                context = context,
+                                viewModel = downloadViewModel,
+                                isMultimodal = false,
+                                onDownload = { downloadViewModel.downloadModel(it) }
+                            )
+                        }
+                    }
+
+                    if (multimodalGrouped.isNotEmpty()) {
+                        item(key = "fam-$catalogFam-mm-h") {
+                            SectionHeader(
+                                title = stringResource(R.string.vision_models),
+                                subtitle = stringResource(R.string.vision_models_description)
+                            )
+                        }
+                        items(
+                            items = multimodalGrouped.entries.toList(),
+                            key = { "${catalogFam}-mm-${it.key}" }
+                        ) { (family, variants) ->
+                            ModelFamilyCard(
+                                family = family,
+                                variants = variants,
+                                context = context,
+                                viewModel = downloadViewModel,
+                                isMultimodal = true,
+                                onDownload = { downloadViewModel.downloadModel(it) }
+                            )
+                        }
+                    }
+
+                    if (embeddingGrouped.isNotEmpty()) {
+                        item(key = "fam-$catalogFam-emb-h") {
+                            SectionHeader(
+                                title = stringResource(R.string.embedding_models),
+                                subtitle = stringResource(R.string.embedding_models_description)
+                            )
+                        }
+                        items(
+                            items = embeddingGrouped.entries.toList(),
+                            key = { "${catalogFam}-emb-${it.key}" }
+                        ) { (family, variants) ->
+                            ModelFamilyCard(
+                                family = family,
+                                variants = variants,
+                                context = context,
+                                viewModel = downloadViewModel,
+                                isMultimodal = false,
+                                onDownload = { downloadViewModel.downloadModel(it) }
+                            )
+                        }
+                    }
+
+                    if (imageGenGrouped.isNotEmpty()) {
+                        item(key = "fam-$catalogFam-img-h") {
+                            SectionHeader(
+                                title = stringResource(R.string.image_generation_models),
+                                subtitle = stringResource(R.string.image_generation_models_description)
+                            )
+                        }
+                        items(
+                            items = imageGenGrouped.entries.toList(),
+                            key = { "${catalogFam}-img-${it.key}" }
+                        ) { (family, variants) ->
+                            ModelFamilyCard(
+                                family = family,
+                                variants = variants,
+                                context = context,
+                                viewModel = downloadViewModel,
+                                isMultimodal = false,
+                                onDownload = { downloadViewModel.downloadModel(it) }
+                            )
+                        }
                     }
                 }
-            }
             
-            // Embedding Models Section
-            if (embeddingGrouped.isNotEmpty()) {
                 item {
-                    SectionHeader(
-                        title = stringResource(R.string.embedding_models),
-                        subtitle = stringResource(R.string.embedding_models_description)
-                    )
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
-                
-                embeddingGrouped.forEach { (family, variants) ->
-                    item {
-                        ModelFamilyCard(
-                            family = family,
-                            variants = variants,
-                            context = context,
-                            viewModel = downloadViewModel,
-                            isMultimodal = false,
-                            onDownload = { downloadViewModel.downloadModel(it) }
-                        )
-                    }
-                }
-            }
-            
-            // Image Generation Models Section
-            if (imageGenGrouped.isNotEmpty()) {
-                item {
-                    SectionHeader(
-                        title = stringResource(R.string.image_generation_models),
-                        subtitle = stringResource(R.string.image_generation_models_description)
-                    )
-                }
-                
-                imageGenGrouped.forEach { (family, variants) ->
-                    item {
-                        ModelFamilyCard(
-                            family = family,
-                            variants = variants,
-                            context = context,
-                            viewModel = downloadViewModel,
-                            isMultimodal = false,
-                            onDownload = { downloadViewModel.downloadModel(it) }
-                        )
-                    }
-                }
-            }
-            
-            item {
-                Spacer(modifier = Modifier.height(80.dp))
             }
         }
         
@@ -542,14 +727,23 @@ private fun ModelVariantItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = getModelDisplayName(model, context),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f)
-                )
-                
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = getModelDisplayName(model, context),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White,
+                        modifier = Modifier.weight(1f)
+                    )
+                    TrainingKindBadge(model)
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
                 when {
                     model.isDownloaded && model.source == "Custom" -> StatusChip(
                         text = stringResource(R.string.ready_to_use),
@@ -1107,14 +1301,12 @@ private fun ImportExternalModelDialog(
                     fontWeight = FontWeight.Bold
                 )
             },
-            text = {
-                LazyColumn(
+                        text = {
+                Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
-                        .heightIn(max = 400.dp)
                         .clickable { keyboardController?.hide() }
                 ) {
-                item {
                     OutlinedTextField(
                         value = modelName,
                         onValueChange = { modelName = it },
@@ -1125,115 +1317,95 @@ private fun ImportExternalModelDialog(
                         } else null,
                         modifier = Modifier.fillMaxWidth()
                     )
-                }
-                
-                    item {
-                        Button(
-                            onClick = { filePickerLauncher.launch(arrayOf("*/*")) },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AttachFile,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                if (selectedFileName.isNotBlank()) selectedFileName
-                                else stringResource(R.string.select_model_file)
-                            )
-                        }
+
+                    Button(
+                        onClick = { filePickerLauncher.launch(arrayOf("*/*")) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AttachFile,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            if (selectedFileName.isNotBlank()) selectedFileName
+                            else stringResource(R.string.select_model_file)
+                        )
                     }
 
                     // If user enabled Supports Vision, show a file selector for the Vision Projector
                     if (supportsVision) {
-                        item {
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Button(
-                                onClick = { visionProjectorLauncher.launch(arrayOf("*/*")) },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.PhotoCamera,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                // Show selected projector name when available (same UX as model file button)
-                                Text(
-                                    if (selectedVisionProjectorName.isNotBlank()) selectedVisionProjectorName
-                                    else stringResource(R.string.select) + " Vision Projector"
-                                )
-                            }
-
-
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Button(
+                            onClick = { visionProjectorLauncher.launch(arrayOf("*/*")) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PhotoCamera,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            // Show selected projector name when available (same UX as model file button)
+                            Text(
+                                if (selectedVisionProjectorName.isNotBlank()) selectedVisionProjectorName
+                                else stringResource(R.string.select) + " Vision Projector"
+                            )
                         }
                     }
                     
-                    item {
-                        Text(
-                            text = stringResource(R.string.download_models_from_litert_community),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.download_models_from_litert_community),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     
-                    item {
-                        val context = LocalContext.current
-                        ClickableText(
-                            text = AnnotatedString(stringResource(R.string.litert_community_link)),
-                            style = TextStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                textDecoration = TextDecoration.Underline
-                            ),
-                            onClick = { offset ->
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://huggingface.co/litert-community"))
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    val context = LocalContext.current
+                    ClickableText(
+                        text = AnnotatedString(stringResource(R.string.litert_community_link)),
+                        style = TextStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline
+                        ),
+                        onClick = { offset ->
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://huggingface.co/litert-community"))
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     
-                    item {
-                        Text(
-                            text = stringResource(R.string.download_image_models_from),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.download_image_models_from),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     
-                    item {
-                        val context = LocalContext.current
-                        ClickableText(
-                            text = AnnotatedString(stringResource(R.string.sd_models_link)),
-                            style = TextStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                textDecoration = TextDecoration.Underline
-                            ),
-                            onClick = { offset ->
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://huggingface.co/xororz/sd-qnn/tree/main"))
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    ClickableText(
+                        text = AnnotatedString(stringResource(R.string.sd_models_link)),
+                        style = TextStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline
+                        ),
+                        onClick = { offset ->
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://huggingface.co/xororz/sd-qnn/tree/main"))
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     
-                    item {
-                        Text(
-                            text = stringResource(R.string.import_model_warning),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                
-                
-                // Show Vision option for GGUF and other text formats.
-                // For GGUF: show only the "Supports Vision" toggle (no GPU/audio toggles).
-                if (modelFormat == ModelFormat.GGUF) {
-                    item {
+                    Text(
+                        text = stringResource(R.string.import_model_warning),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // Show Vision option for GGUF and other text formats.
+                    // For GGUF: show only the "Supports Vision" toggle (no GPU/audio toggles).
+                    if (modelFormat == ModelFormat.GGUF) {
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -1248,10 +1420,8 @@ private fun ImportExternalModelDialog(
                                 onClick = { supportsVision = !supportsVision }
                             )
                         }
-                    }
-                } else if (modelFormat != ModelFormat.QNN_NPU && modelFormat != ModelFormat.MNN_CPU) {
-                    // Existing behavior for TASK/LITERTLM and other text formats
-                    item {
+                    } else if (modelFormat != ModelFormat.QNN_NPU && modelFormat != ModelFormat.MNN_CPU) {
+                        // Existing behavior for TASK/LITERTLM and other text formats
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -1266,9 +1436,7 @@ private fun ImportExternalModelDialog(
                                 onClick = { supportsVision = !supportsVision }
                             )
                         }
-                    }
 
-                    item {
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -1283,9 +1451,7 @@ private fun ImportExternalModelDialog(
                                 onClick = { supportsAudio = !supportsAudio }
                             )
                         }
-                    }
 
-                    item {
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -1301,9 +1467,7 @@ private fun ImportExternalModelDialog(
                             )
                         }
                     }
-                }
-                
-                item {
+                    
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxWidth()
@@ -1367,9 +1531,7 @@ private fun ImportExternalModelDialog(
                         }
                     }
                 }
-                
-            }
-        },
+            },
         confirmButton = {
             Button(
                 onClick = {

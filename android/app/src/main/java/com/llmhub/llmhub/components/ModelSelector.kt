@@ -50,9 +50,9 @@ fun ModelSelectorCard(
     
     Card(
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
+        colors = NeuralHubUiDefaults.glassCardColors(),
+        border = NeuralHubUiDefaults.glassCardBorderStroke(),
+        elevation = NeuralHubUiDefaults.glassCardElevation(),
         modifier = modifier
     ) {
         Column(

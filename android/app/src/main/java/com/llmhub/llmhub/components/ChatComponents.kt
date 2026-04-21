@@ -15,6 +15,7 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -33,7 +34,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -118,7 +121,7 @@ fun SelectableMarkdownText(
     linkColorOverride: Color? = null
 ) {
     val context = LocalContext.current
-    val linkColor = linkColorOverride ?: MaterialTheme.colorScheme.primary
+    val linkColor = linkColorOverride ?: NeuralHubColors.AccentCyan
     
     // First parse the markdown (bold/italic/lists etc.)
     val baseAnnotated = remember(markdown, color, linkColor) {
@@ -656,22 +659,23 @@ fun ThinkingAwareResultContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { thinkingExpanded = !thinkingExpanded },
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(8.dp)
+                color = NeuralHubColors.Glass,
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, NeuralHubColors.GlassBorder)
             ) {
                 Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = NeuralHubColors.AccentCyan
                     )
                     if (thinkingExpanded) {
                         Spacer(modifier = Modifier.height(6.dp))
                         RenderMessageSegments(
                             displayContent = thinkingPart,
                             isUser = false,
-                            baseColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            linkColor = MaterialTheme.colorScheme.primary,
+                            baseColor = NeuralHubColors.TextDim,
+                            linkColor = NeuralHubColors.AccentCyan,
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -685,16 +689,17 @@ fun ThinkingAwareResultContent(
             if (useMarkdownForAnswer) {
                 SelectableMarkdownText(
                     markdown = mainContent,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = Color.White,
                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    linkColorOverride = NeuralHubColors.AccentCyan
                 )
             } else {
                 RenderMessageSegments(
                     displayContent = mainContent,
                     isUser = false,
-                    baseColor = MaterialTheme.colorScheme.onSurface,
-                    linkColor = MaterialTheme.colorScheme.primary,
+                    baseColor = Color.White,
+                    linkColor = NeuralHubColors.AccentCyan,
                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -742,8 +747,8 @@ fun MessageBubble(
                     bottomStart = 20.dp,
                     bottomEnd = 20.dp
                 ),
-                    color = MaterialTheme.colorScheme.primary,
-                shadowElevation = 1.dp
+                color = NeuralHubColors.AccentCyan,
+                shadowElevation = 0.dp
             ) {
                 Column(
                     modifier = Modifier
@@ -805,8 +810,8 @@ fun MessageBubble(
                                         RenderMessageSegments(
                                             displayContent = message.content,
                                             isUser = true,
-                                            baseColor = MaterialTheme.colorScheme.onPrimary,
-                                            linkColor = MaterialTheme.colorScheme.onPrimary,
+                                            baseColor = Color.Black,
+                                            linkColor = NeuralHubColors.AccentCyan,
                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                             modifier = Modifier.wrapContentWidth()
                                         )
@@ -834,7 +839,7 @@ fun MessageBubble(
                             Icons.Outlined.ContentCopy,
                             contentDescription = "Copy message",
                             modifier = Modifier.size(12.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = NeuralHubColors.TextDim
                         )
                     }
                     if (onEditUserMessage != null) {
@@ -847,7 +852,7 @@ fun MessageBubble(
                                 Icons.Outlined.Edit,
                                 contentDescription = "Edit message",
                                 modifier = Modifier.size(12.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = NeuralHubColors.TextDim
                             )
                         }
                     }
@@ -954,7 +959,7 @@ fun MessageBubble(
                                             Icons.Default.Close,
                                             contentDescription = stringResource(R.string.cancel),
                                             modifier = Modifier.size(16.dp),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            tint = NeuralHubColors.TextDim
                                         )
                                     }
                                     IconButton(
@@ -973,7 +978,7 @@ fun MessageBubble(
                                             Icons.Default.Check,
                                             contentDescription = stringResource(R.string.save),
                                             modifier = Modifier.size(16.dp),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            tint = NeuralHubColors.TextDim
                                         )
                                     }
                                 }
@@ -989,8 +994,9 @@ fun MessageBubble(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clickable { thinkingExpanded = !thinkingExpanded },
-                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                                        shape = RoundedCornerShape(8.dp)
+                                        color = NeuralHubColors.Glass,
+                                        shape = RoundedCornerShape(8.dp),
+                                        border = BorderStroke(1.dp, NeuralHubColors.GlassBorder)
                                     ) {
                                         Column(
                                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
@@ -998,15 +1004,15 @@ fun MessageBubble(
                                             Text(
                                                 text = label,
                                                 style = MaterialTheme.typography.labelMedium,
-                                                color = MaterialTheme.colorScheme.primary
+                                                color = NeuralHubColors.AccentCyan
                                             )
                                             if (thinkingExpanded) {
                                                 Spacer(modifier = Modifier.height(6.dp))
                                                 RenderMessageSegments(
                                                     displayContent = thinkingPart,
                                                     isUser = false,
-                                                    baseColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    linkColor = MaterialTheme.colorScheme.primary,
+                                                    baseColor = NeuralHubColors.TextDim,
+                                                    linkColor = NeuralHubColors.AccentCyan,
                                                     fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                                                     modifier = Modifier.fillMaxWidth()
                                                 )
@@ -1020,8 +1026,8 @@ fun MessageBubble(
                                     RenderMessageSegments(
                                         displayContent = mainContent,
                                         isUser = false,
-                                        baseColor = MaterialTheme.colorScheme.onSurface,
-                                        linkColor = MaterialTheme.colorScheme.primary,
+                                        baseColor = Color.White,
+                                        linkColor = NeuralHubColors.AccentCyan,
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         modifier = Modifier.fillMaxWidth()
                                     )
@@ -1059,7 +1065,7 @@ fun MessageBubble(
                                     if (isTtsSpeaking) Icons.Filled.Stop else Icons.Filled.VolumeUp,
                                     contentDescription = if (isTtsSpeaking) "Stop reading" else "Read aloud",
                                     modifier = Modifier.size(16.dp),
-                                    tint = if (isTtsSpeaking) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = if (isTtsSpeaking) NeuralHubColors.AccentCyan else NeuralHubColors.TextDim
                                 )
                             }
                         }
@@ -1077,7 +1083,7 @@ fun MessageBubble(
                                 Icons.Outlined.ContentCopy,
                                 contentDescription = "Copy message",
                                 modifier = Modifier.size(16.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = NeuralHubColors.TextDim
                             )
                         }
 
@@ -1094,7 +1100,7 @@ fun MessageBubble(
                                     Icons.Outlined.Edit,
                                     contentDescription = stringResource(R.string.save),
                                     modifier = Modifier.size(16.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = NeuralHubColors.TextDim
                                 )
                             }
                         }
@@ -1109,7 +1115,7 @@ fun MessageBubble(
                                     Icons.Default.Refresh,
                                     contentDescription = "Regenerate response",
                                     modifier = Modifier.size(16.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = NeuralHubColors.TextDim
                                 )
                             }
                         }
@@ -1125,13 +1131,13 @@ fun MessageBubble(
                                     Icons.Outlined.Speed,
                                     contentDescription = null,
                                     modifier = Modifier.size(12.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = NeuralHubColors.TextDim
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "${message.tokenCount} tokens • ${String.format("%.1f", message.tokensPerSecond!!)} tok/sec",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = NeuralHubColors.TextDim
                                 )
                             }
                         }
@@ -1419,18 +1425,21 @@ fun RenderMessageSegments(
                     }
                 }
                 is ParsedSegment.Code -> {
-                    // Render code block with monospace and a subtle background
+                    // Render code block with monospace and neural glass (assistant) / subtle scrim (user bubble)
+                    val codeShape = RoundedCornerShape(8.dp)
                     Box {
                         val codeModifier = if (isUser) {
                             Modifier
                                 .wrapContentWidth()
                                 .widthIn(max = 280.dp)
-                                .background(baseColor.copy(alpha = 0.06f))
+                                .background(Color.Black.copy(alpha = 0.1f), codeShape)
+                                .border(1.dp, Color.Black.copy(alpha = 0.18f), codeShape)
                                 .padding(12.dp)
                         } else {
                             Modifier
                                 .fillMaxWidth()
-                                .background(baseColor.copy(alpha = 0.06f))
+                                .background(NeuralHubColors.Glass, codeShape)
+                                .border(1.dp, NeuralHubColors.GlassBorder, codeShape)
                                 .padding(12.dp)
                         }
 
@@ -1462,7 +1471,7 @@ fun RenderMessageSegments(
                                     Icons.Outlined.ContentCopy,
                                     contentDescription = "Copy code",
                                     modifier = Modifier.size(18.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = NeuralHubColors.TextDim
                                 )
                             }
                         }
@@ -1707,9 +1716,18 @@ fun MessageInput(
     }
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 8.dp
+        modifier = Modifier
+            .fillMaxWidth()
+            .drawBehind {
+                drawLine(
+                    color = NeuralHubColors.GlassBorder,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 1.dp.toPx()
+                )
+            },
+        color = NeuralHubUiDefaults.bottomChromeScrimColor,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(12.dp)
@@ -1720,10 +1738,10 @@ fun MessageInput(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    ),
-                    shape = MaterialTheme.shapes.medium
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
@@ -1747,8 +1765,9 @@ fun MessageInput(
                             // Show file type icon for non-images
                             Surface(
                                 modifier = Modifier.size(48.dp),
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                shape = MaterialTheme.shapes.small
+                                color = NeuralHubColors.Glass,
+                                shape = MaterialTheme.shapes.small,
+                                border = BorderStroke(1.dp, NeuralHubColors.GlassBorder)
                             ) {
                                 Column(
                                     modifier = Modifier.fillMaxSize(),
@@ -1757,7 +1776,8 @@ fun MessageInput(
                                 ) {
                                     Text(
                                         text = attachmentInfo!!.type.icon,
-                                        style = MaterialTheme.typography.headlineSmall
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        color = Color.White
                                     )
                                 }
                             }
@@ -1770,14 +1790,14 @@ fun MessageInput(
                                 text = attachmentInfo!!.name,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = Color.White,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
                                 text = FileUtils.getLocalizedDisplayName(LocalContext.current, attachmentInfo!!.type),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                                color = NeuralHubColors.TextDim
                             )
                         }
                         
@@ -1788,7 +1808,7 @@ fun MessageInput(
                             Icon(
                                 Icons.Default.Close,
                                 contentDescription = "Remove attachment",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                tint = NeuralHubColors.TextDim
                             )
                         }
                     }
@@ -1801,12 +1821,14 @@ fun MessageInput(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isRecording) 
-                            MaterialTheme.colorScheme.errorContainer 
-                        else MaterialTheme.colorScheme.tertiaryContainer
-                    ),
-                    shape = MaterialTheme.shapes.medium
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = if (isRecording) {
+                        BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                    } else {
+                        NeuralHubUiDefaults.glassCardBorderStroke()
+                    },
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
@@ -1815,16 +1837,16 @@ fun MessageInput(
                         // Recording icon with animation
                         Surface(
                             modifier = Modifier.size(48.dp),
-                            color = if (isRecording) 
+                            color = if (isRecording)
                                 MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
-                            else MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
+                            else NeuralHubColors.AccentCyan.copy(alpha = 0.12f),
                             shape = CircleShape
                         ) {
                             Icon(
                                 if (isRecording) Icons.Default.Mic else Icons.Default.MicOff,
                                 contentDescription = if (isRecording) stringResource(R.string.recording) else stringResource(R.string.audio_recorded),
                                 modifier = Modifier.padding(12.dp),
-                                tint = if (isRecording) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.tertiary
+                                tint = if (isRecording) MaterialTheme.colorScheme.error else NeuralHubColors.AccentCyan
                             )
                         }
                         
@@ -1835,24 +1857,22 @@ fun MessageInput(
                                 text = if (isRecording) stringResource(R.string.recording) else stringResource(R.string.audio_recorded),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
-                                color = if (isRecording) 
-                                    MaterialTheme.colorScheme.onErrorContainer
-                                else MaterialTheme.colorScheme.onTertiaryContainer
+                                color = Color.White
                             )
                             if (isRecording) {
                                 Text(
                                     text = "${remainingSeconds}s ${stringResource(R.string.remaining)}",
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = if (remainingSeconds <= 5) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (remainingSeconds <= 5) 
+                                    color = if (remainingSeconds <= 5)
                                         MaterialTheme.colorScheme.error
-                                    else MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f)
+                                    else NeuralHubColors.TextDim
                                 )
                             } else {
                                 Text(
                                     text = "${recordedAudioData?.size?.let { "${it / 1000}KB" } ?: "0KB"} • ${stringResource(R.string.ready_to_send)}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+                                    color = NeuralHubColors.TextDim
                                 )
                             }
                         }
@@ -1917,7 +1937,7 @@ fun MessageInput(
                                 Icon(
                                     if (isPreviewPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                     contentDescription = if (isPreviewPlaying) "Pause" else "Play",
-                                    tint = MaterialTheme.colorScheme.tertiary
+                                    tint = NeuralHubColors.AccentCyan
                                 )
                             }
                             
@@ -1949,7 +1969,8 @@ fun MessageInput(
                 placeholder = { 
                     Text(
                         stringResource(R.string.type_a_message),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = NeuralHubColors.TextDim
                     )
                 },
                 enabled = enabled,
@@ -1966,7 +1987,7 @@ fun MessageInput(
                                 Icon(
                                     Icons.Outlined.AttachFile,
                                     contentDescription = "Attach file",
-                                    tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                    tint = if (enabled) NeuralHubColors.AccentCyan else NeuralHubColors.TextDim.copy(alpha = 0.5f)
                                 )
                             }
                             
@@ -1987,7 +2008,7 @@ fun MessageInput(
                                                     Text(
                                                         stringResource(R.string.images_description),
                                                         style = MaterialTheme.typography.bodySmall,
-                                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                                        color = NeuralHubColors.TextDim
                                                     )
                                                 }
                                             }
@@ -2009,7 +2030,7 @@ fun MessageInput(
                                                 Text(
                                                     stringResource(R.string.documents_description),
                                                     style = MaterialTheme.typography.bodySmall,
-                                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                                    color = NeuralHubColors.TextDim
                                                 )
                                             }
                                         }
@@ -2029,7 +2050,7 @@ fun MessageInput(
                                                 Text(
                                                     stringResource(R.string.text_files_description),
                                                     style = MaterialTheme.typography.bodySmall,
-                                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                                    color = NeuralHubColors.TextDim
                                                 )
                                             }
                                         }
@@ -2052,7 +2073,7 @@ fun MessageInput(
                                                     Text(
                                                         stringResource(R.string.upload_file),
                                                         style = MaterialTheme.typography.bodySmall,
-                                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                                        color = NeuralHubColors.TextDim
                                                     )
                                                 }
                                             }
@@ -2073,7 +2094,7 @@ fun MessageInput(
                                                     Text(
                                                         stringResource(R.string.audio_description),
                                                         style = MaterialTheme.typography.bodySmall,
-                                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                                        color = NeuralHubColors.TextDim
                                                     )
                                                 }
                                             }
@@ -2127,13 +2148,14 @@ fun MessageInput(
                                     Surface(
                                         modifier = Modifier.size(32.dp),
                                         shape = RoundedCornerShape(16.dp),
-                                        color = MaterialTheme.colorScheme.surfaceVariant
+                                        color = NeuralHubColors.Glass,
+                                        border = BorderStroke(1.dp, NeuralHubColors.GlassBorder)
                                     ) {
                                         Icon(
                                             Icons.Default.Close,
                                             contentDescription = stringResource(R.string.close),
                                             modifier = Modifier.padding(6.dp),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            tint = NeuralHubColors.TextDim
                                         )
                                     }
                                 }
@@ -2159,16 +2181,17 @@ fun MessageInput(
                                         modifier = Modifier.size(32.dp),
                                         shape = RoundedCornerShape(16.dp),
                                         color = if (enabled && textState.text.isNotBlank())
-                                            MaterialTheme.colorScheme.primary
-                                        else MaterialTheme.colorScheme.surfaceVariant
+                                            NeuralHubColors.AccentCyan
+                                        else NeuralHubColors.Glass.copy(alpha = 0.45f),
+                                        border = if (enabled && textState.text.isNotBlank()) null else BorderStroke(1.dp, NeuralHubColors.GlassBorder)
                                     ) {
                                         Icon(
                                             Icons.Default.Send,
                                             contentDescription = stringResource(R.string.send),
                                             modifier = Modifier.padding(6.dp),
                                             tint = if (enabled && textState.text.isNotBlank())
-                                                MaterialTheme.colorScheme.onPrimary
-                                            else MaterialTheme.colorScheme.onSurfaceVariant
+                                                Color.Black
+                                            else NeuralHubColors.TextDim
                                         )
                                     }
                                 }
@@ -2194,27 +2217,39 @@ fun MessageInput(
                             Surface(
                                 modifier = Modifier.size(32.dp),
                                 shape = RoundedCornerShape(16.dp),
-                                color = if (enabled && (textState.text.isNotBlank() || attachmentUri != null || recordedAudioData != null)) 
-                                    MaterialTheme.colorScheme.primary 
-                                else MaterialTheme.colorScheme.surfaceVariant
+                                color = if (enabled && (textState.text.isNotBlank() || attachmentUri != null || recordedAudioData != null))
+                                    NeuralHubColors.AccentCyan
+                                else NeuralHubColors.Glass.copy(alpha = 0.45f),
+                                border = if (enabled && (textState.text.isNotBlank() || attachmentUri != null || recordedAudioData != null)) null else BorderStroke(1.dp, NeuralHubColors.GlassBorder)
                             ) {
                                 Icon(
                                     Icons.Default.Send,
                                     contentDescription = stringResource(R.string.send),
                                     modifier = Modifier.padding(6.dp),
-                                    tint = if (enabled && (textState.text.isNotBlank() || attachmentUri != null || recordedAudioData != null)) 
-                                        MaterialTheme.colorScheme.onPrimary 
-                                    else MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = if (enabled && (textState.text.isNotBlank() || attachmentUri != null || recordedAudioData != null))
+                                        Color.Black
+                                    else NeuralHubColors.TextDim
                                 )
                             }
                         }
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    disabledTextColor = NeuralHubColors.TextDim,
+                    focusedBorderColor = NeuralHubColors.AccentCyan,
+                    unfocusedBorderColor = NeuralHubColors.GlassBorder,
+                    disabledBorderColor = NeuralHubColors.GlassBorder.copy(alpha = 0.45f),
+                    cursorColor = NeuralHubColors.AccentCyan,
+                    focusedPlaceholderColor = NeuralHubColors.TextDim,
+                    unfocusedPlaceholderColor = NeuralHubColors.TextDim,
+                    focusedLeadingIconColor = NeuralHubColors.AccentCyan,
+                    unfocusedLeadingIconColor = NeuralHubColors.TextDim,
+                    focusedTrailingIconColor = NeuralHubColors.AccentCyan,
+                    unfocusedTrailingIconColor = NeuralHubColors.TextDim
                 ),
-                textStyle = MaterialTheme.typography.bodyLarge
+                textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
             )
         }
     }
@@ -2294,12 +2329,24 @@ fun FilePreviewDialog(
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f),
             shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.surface
+            color = NeuralHubUiDefaults.panelContainerColor,
+            border = BorderStroke(1.dp, NeuralHubColors.GlassBorder)
         ) {
             Column {
                 // Header
                 Surface(
-                    color = MaterialTheme.colorScheme.surfaceContainer
+                    color = NeuralHubColors.Glass,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .drawBehind {
+                            val y = size.height
+                            drawLine(
+                                color = NeuralHubColors.GlassBorder,
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = 1.dp.toPx()
+                            )
+                        }
                 ) {
                     Row(
                         modifier = Modifier
@@ -2314,16 +2361,21 @@ fun FilePreviewDialog(
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
                             )
                             Text(
                                 text = FileUtils.getLocalizedDisplayName(context, fileType),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = NeuralHubColors.TextDim
                             )
                         }
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.close),
+                                tint = NeuralHubColors.TextDim
+                            )
                         }
                     }
                 }
@@ -2361,19 +2413,21 @@ fun FilePreviewDialog(
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    CircularProgressIndicator()
+                                    CircularProgressIndicator(color = NeuralHubColors.AccentCyan)
                                     Text(
                                         text = "Extracting content...",
                                         modifier = Modifier.padding(top = 64.dp),
-                                        style = MaterialTheme.typography.bodyMedium
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = NeuralHubColors.TextDim
                                     )
                                 }
                             } else {
                                 Card(
                                     modifier = Modifier.fillMaxSize(),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                    )
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = NeuralHubUiDefaults.glassCardColors(),
+                                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                                    elevation = NeuralHubUiDefaults.glassCardElevation()
                                 ) {
                                     LazyColumn(
                                         modifier = Modifier
@@ -2394,7 +2448,7 @@ fun FilePreviewDialog(
                                                     } else {
                                                         androidx.compose.ui.text.font.FontFamily.Default
                                                     },
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    color = Color.White.copy(alpha = 0.92f)
                                                 )
                                             }
                                         }
@@ -2406,9 +2460,10 @@ fun FilePreviewDialog(
                             // For other file types (PDF, Word, etc.)
                             Card(
                                 modifier = Modifier.fillMaxSize(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
+                                shape = RoundedCornerShape(12.dp),
+                                colors = NeuralHubUiDefaults.glassCardColors(),
+                                border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                                elevation = NeuralHubUiDefaults.glassCardElevation()
                             ) {
                                 Column(
                                     modifier = Modifier
@@ -2419,20 +2474,21 @@ fun FilePreviewDialog(
                                 ) {
                                     Text(
                                         text = fileType.icon,
-                                        style = MaterialTheme.typography.displayMedium
+                                        style = MaterialTheme.typography.displayMedium,
+                                        color = Color.White
                                     )
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Text(
                                         text = fileName,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        color = Color.White,
                                         textAlign = TextAlign.Center
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         text = FileUtils.getLocalizedDisplayName(context, fileType),
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        color = NeuralHubColors.TextDim,
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -2443,7 +2499,17 @@ fun FilePreviewDialog(
                 
                 // Actions
                 Surface(
-                    color = MaterialTheme.colorScheme.surfaceContainer
+                    color = NeuralHubColors.Glass,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .drawBehind {
+                            drawLine(
+                                color = NeuralHubColors.GlassBorder,
+                                start = Offset(0f, 0f),
+                                end = Offset(size.width, 0f),
+                                strokeWidth = 1.dp.toPx()
+                            )
+                        }
                 ) {
                     Row(
                         modifier = Modifier
@@ -2451,11 +2517,20 @@ fun FilePreviewDialog(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        val outlineBtnColors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = NeuralHubColors.AccentCyan
+                        )
+                        val primaryBtnColors = ButtonDefaults.buttonColors(
+                            containerColor = NeuralHubColors.AccentCyan,
+                            contentColor = Color.Black
+                        )
                         // Only show remove button if onRemove is provided
                         if (onRemove != null) {
                             OutlinedButton(
                                 onClick = onRemove,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                colors = outlineBtnColors,
+                                border = BorderStroke(1.dp, NeuralHubColors.AccentCyan)
                             ) {
                                 Icon(
                                     Icons.Default.Delete,
@@ -2471,7 +2546,8 @@ fun FilePreviewDialog(
                         if (confirmAction != null) {
                             Button(
                                 onClick = confirmAction,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                colors = primaryBtnColors
                             ) {
                                 Icon(
                                     Icons.Default.Check,
@@ -2484,7 +2560,8 @@ fun FilePreviewDialog(
                         } else {
                             Button(
                                 onClick = onDismiss,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                colors = primaryBtnColors
                             ) {
                                 if (onRemove != null) {
                                     Icon(
@@ -2553,14 +2630,18 @@ fun FileAttachmentCard(
             .clickable { 
                 showPreview = true 
             },
-        colors = CardDefaults.cardColors(
-            containerColor = if (isFromUser) {
-                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        ),
-        shape = MaterialTheme.shapes.medium
+        colors = if (isFromUser) {
+            CardDefaults.cardColors(containerColor = NeuralHubColors.AccentCyan.copy(alpha = 0.16f))
+        } else {
+            NeuralHubUiDefaults.glassCardColors()
+        },
+        border = if (isFromUser) {
+            BorderStroke(1.dp, NeuralHubColors.AccentCyan.copy(alpha = 0.4f))
+        } else {
+            NeuralHubUiDefaults.glassCardBorderStroke()
+        },
+        elevation = NeuralHubUiDefaults.glassCardElevation(),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -2569,8 +2650,12 @@ fun FileAttachmentCard(
             // File type icon
             Surface(
                 modifier = Modifier.size(40.dp),
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                shape = MaterialTheme.shapes.small
+                color = if (isFromUser) NeuralHubColors.AccentCyan.copy(alpha = 0.22f) else NeuralHubColors.Glass,
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(
+                    1.dp,
+                    if (isFromUser) NeuralHubColors.AccentCyan.copy(alpha = 0.45f) else NeuralHubColors.GlassBorder
+                )
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -2579,7 +2664,8 @@ fun FileAttachmentCard(
                 ) {
                     Text(
                         text = fileTypeInfo.icon,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
                     )
                 }
             }
@@ -2591,22 +2677,14 @@ fun FileAttachmentCard(
                     text = displayName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
-                    color = if (isFromUser) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
+                    color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "${FileUtils.getLocalizedDisplayName(context, fileTypeInfo)} • ${stringResource(R.string.tap_to_preview)}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (isFromUser) {
-                        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                    }
+                    color = NeuralHubColors.TextDim
                 )
             }
         }
@@ -2667,16 +2745,16 @@ fun AudioMessageCard(
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(12.dp),
         color = if (isFromUser) {
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            NeuralHubColors.AccentCyan.copy(alpha = 0.12f)
         } else {
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            NeuralHubColors.Glass
         },
         border = BorderStroke(
             1.dp,
             if (isFromUser) {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                NeuralHubColors.AccentCyan.copy(alpha = 0.35f)
             } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                NeuralHubColors.GlassBorder
             }
         )
     ) {
@@ -2735,21 +2813,16 @@ fun AudioMessageCard(
                     Icon(
                         if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                         contentDescription = if (isPlaying) "Pause" else "Play",
-                        tint = if (isFromUser) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        }
+                        tint = NeuralHubColors.AccentCyan
                     )
                 }
                 
                 // Waveform progress visualization
                 val progress = if (duration > 0) currentPosition.toFloat() / duration.toFloat() else 0f
-                // Use high-contrast colors so the waveform is visible on both themes
                 val baseActiveColor = if (isFromUser) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
+                    NeuralHubColors.AccentCyan
                 } else {
-                    MaterialTheme.colorScheme.onSurface
+                    Color.White
                 }
                 val activeColor = baseActiveColor
                 val inactiveColor = baseActiveColor.copy(alpha = 0.35f)
@@ -2788,21 +2861,13 @@ fun AudioMessageCard(
                     Text(
                         text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (isFromUser) {
-                            MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                        }
+                        color = NeuralHubColors.TextDim
                     )
                 } else {
                     Text(
                         text = stringResource(R.string.tap_to_play),
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (isFromUser) {
-                            MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                        }
+                        color = NeuralHubColors.TextDim
                     )
                 }
             }

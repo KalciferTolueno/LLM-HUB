@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,8 +29,8 @@ fun CreatorItem(
     var expanded by remember { mutableStateOf(false) }
     Surface(
         onClick = onClick,
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
+        shape = NeuralHubUiDefaults.glassListItemShape,
+        color = NeuralHubColors.Glass,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -43,6 +44,7 @@ fun CreatorItem(
                 Text(
                     text = "${creator.icon}  ${creator.name}",
                     style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -51,7 +53,7 @@ fun CreatorItem(
                 Icon(
                     Icons.Outlined.Edit,
                     contentDescription = stringResource(R.string.action_rename),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = NeuralHubColors.TextDim
                 )
             }
             // Options dropdown
@@ -60,7 +62,7 @@ fun CreatorItem(
                     Icon(
                         Icons.Default.MoreVert,
                         contentDescription = stringResource(R.string.more_options),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = NeuralHubColors.TextDim
                     )
                 }
                 DropdownMenu(

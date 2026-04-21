@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -13,12 +15,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.llmhub.llmhub.R
+import com.llmhub.llmhub.components.NeuralHubColors
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.data.ChatEntity
 import com.llmhub.llmhub.viewmodels.ChatDrawerViewModel
 import java.text.SimpleDateFormat
@@ -87,6 +92,7 @@ fun ChatHistoryScreen(
     }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = {
@@ -126,7 +132,8 @@ fun ChatHistoryScreen(
                             )
                         }
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         floatingActionButton = {
@@ -160,14 +167,17 @@ fun ChatHistoryScreen(
                         imageVector = Icons.Outlined.ChatBubbleOutline,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        tint = Color.White.copy(alpha = 0.75f)
                     )
                     Text(
                         text = stringResource(R.string.drawer_no_chats),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = NeuralHubColors.TextDim
                     )
-                    Button(onClick = onCreateNewChat) {
+                    OutlinedButton(
+                        onClick = onCreateNewChat,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                    ) {
                         Icon(Icons.Default.Add, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(stringResource(R.string.drawer_new_chat))
@@ -255,8 +265,10 @@ private fun ChatHistoryCard(
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(12.dp),
+        colors = NeuralHubUiDefaults.glassCardColors(),
+        border = NeuralHubUiDefaults.glassCardBorderStroke(),
+        elevation = NeuralHubUiDefaults.glassCardElevation()
     ) {
         Row(
             modifier = Modifier
@@ -273,7 +285,7 @@ private fun ChatHistoryCard(
                 Icon(
                     imageVector = Icons.Default.ChatBubble,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = NeuralHubColors.AccentCyan,
                     modifier = Modifier.size(24.dp)
                 )
                 Column(modifier = Modifier.weight(1f)) {
@@ -281,6 +293,7 @@ private fun ChatHistoryCard(
                         text = chat.title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
+                        color = Color.White,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -288,7 +301,7 @@ private fun ChatHistoryCard(
                     Text(
                         text = formatTimestamp(chat.updatedAt),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = NeuralHubColors.TextDim
                     )
                 }
             }
@@ -297,7 +310,7 @@ private fun ChatHistoryCard(
                     Icon(
                         Icons.Default.MoreVert,
                         contentDescription = stringResource(R.string.more_options),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = NeuralHubColors.TextDim
                     )
                 }
                 DropdownMenu(

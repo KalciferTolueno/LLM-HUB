@@ -33,13 +33,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalUriHandler
 import com.llmhub.llmhub.R
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.repository.GithubRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.platform.LocalContext
-import com.llmhub.llmhub.ads.BannerAd
 import com.llmhub.llmhub.data.ThemePreferences
 
 data class FeatureCard(
@@ -50,9 +50,71 @@ data class FeatureCard(
     val route: String
 )
 
-
-/** Routes that require a Premium subscription. */
-private val PREMIUM_ROUTES = setOf("image_generator", "vibe_coder")
+internal fun homeFeatureCards(): List<FeatureCard> = listOf(
+    FeatureCard(
+        title = R.string.feature_ai_chat,
+        description = R.string.feature_ai_chat_desc,
+        icon = Icons.Filled.Chat,
+        gradient = Pair(Color(0xFF667eea), Color(0xFF764ba2)),
+        route = "chat"
+    ),
+    FeatureCard(
+        title = R.string.feature_writing_aid,
+        description = R.string.feature_writing_aid_desc,
+        icon = Icons.Filled.Edit,
+        gradient = Pair(Color(0xFFf093fb), Color(0xFFf5576c)),
+        route = "writing_aid"
+    ),
+    FeatureCard(
+        title = R.string.feature_translator,
+        description = R.string.feature_translator_desc,
+        icon = Icons.Filled.Language,
+        gradient = Pair(Color(0xFF4facfe), Color(0xFF00f2fe)),
+        route = "translator"
+    ),
+    FeatureCard(
+        title = R.string.feature_transcriber,
+        description = R.string.feature_transcriber_desc,
+        icon = Icons.Filled.Mic,
+        gradient = Pair(Color(0xFF43e97b), Color(0xFF38f9d7)),
+        route = "transcriber"
+    ),
+    FeatureCard(
+        title = R.string.feature_scam_detector,
+        description = R.string.feature_scam_detector_desc,
+        icon = Icons.Filled.Security,
+        gradient = Pair(Color(0xFFfa709a), Color(0xFFfee140)),
+        route = "scam_detector"
+    ),
+    FeatureCard(
+        title = R.string.feature_image_generator,
+        description = R.string.feature_image_generator_desc,
+        icon = Icons.Filled.Palette,
+        gradient = Pair(Color(0xFF6a11cb), Color(0xFF2575fc)),
+        route = "image_generator"
+    ),
+    FeatureCard(
+        title = R.string.feature_vibe_coder,
+        description = R.string.feature_vibe_coder_desc,
+        icon = Icons.Filled.Code,
+        gradient = Pair(Color(0xFFf794a4), Color(0xFFfdd6bd)),
+        route = "vibe_coder"
+    ),
+    FeatureCard(
+        title = R.string.feature_creator_generation,
+        description = R.string.feature_creator_generation_desc,
+        icon = Icons.Filled.AutoAwesome,
+        gradient = Pair(Color(0xFF8EC5FC), Color(0xFFE0C3FC)),
+        route = "creator_generation"
+    ),
+    FeatureCard(
+        title = R.string.feature_vibevoice,
+        description = R.string.feature_vibevoice_desc,
+        icon = Icons.Filled.GraphicEq,
+        gradient = Pair(Color(0xFF7BC6CC), Color(0xFF8A82FB)),
+        route = "vibevoice"
+    )
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,87 +123,19 @@ fun HomeScreen(
     onNavigateToSettings: () -> Unit,
     onNavigateToModels: () -> Unit,
     onNavigateToChatHistory: () -> Unit,
-    onNavigateToPremium: () -> Unit = {},
-    isPremium: Boolean = false
 ) {
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val preferences = remember { ThemePreferences(context) }
     
-    // Feature cards data
-    val features = remember {
-        listOf(
-            FeatureCard(
-                title = R.string.feature_ai_chat,
-                description = R.string.feature_ai_chat_desc,
-                icon = Icons.Filled.Chat,
-                gradient = Pair(Color(0xFF667eea), Color(0xFF764ba2)),
-                route = "chat"
-            ),
-            FeatureCard(
-                title = R.string.feature_writing_aid,
-                description = R.string.feature_writing_aid_desc,
-                icon = Icons.Filled.Edit,
-                gradient = Pair(Color(0xFFf093fb), Color(0xFFf5576c)),
-                route = "writing_aid"
-            ),
-            FeatureCard(
-                title = R.string.feature_translator,
-                description = R.string.feature_translator_desc,
-                icon = Icons.Filled.Language,
-                gradient = Pair(Color(0xFF4facfe), Color(0xFF00f2fe)),
-                route = "translator"
-            ),
-            FeatureCard(
-                title = R.string.feature_transcriber,
-                description = R.string.feature_transcriber_desc,
-                icon = Icons.Filled.Mic,
-                gradient = Pair(Color(0xFF43e97b), Color(0xFF38f9d7)),
-                route = "transcriber"
-            ),
-            FeatureCard(
-                title = R.string.feature_scam_detector,
-                description = R.string.feature_scam_detector_desc,
-                icon = Icons.Filled.Security,
-                gradient = Pair(Color(0xFFfa709a), Color(0xFFfee140)),
-                route = "scam_detector"
-            ),
-            FeatureCard(
-                title = R.string.feature_image_generator,
-                description = R.string.feature_image_generator_desc,
-                icon = Icons.Filled.Palette,
-                gradient = Pair(Color(0xFF6a11cb), Color(0xFF2575fc)),
-                route = "image_generator"
-            ),
-            FeatureCard(
-                title = R.string.feature_vibe_coder,
-                description = R.string.feature_vibe_coder_desc,
-                icon = Icons.Filled.Code,
-                gradient = Pair(Color(0xFFf794a4), Color(0xFFfdd6bd)),
-                route = "vibe_coder"
-            ),
-            FeatureCard(
-                title = R.string.feature_creator_generation,
-                description = R.string.feature_creator_generation_desc,
-                icon = Icons.Filled.AutoAwesome,
-                gradient = Pair(Color(0xFF8EC5FC), Color(0xFFE0C3FC)),
-                route = "creator_generation"
-            ),
-            FeatureCard(
-                title = R.string.feature_vibevoice,
-                description = R.string.feature_vibevoice_desc,
-                icon = Icons.Filled.GraphicEq,
-                gradient = Pair(Color(0xFF7BC6CC), Color(0xFF8A82FB)),
-                route = "vibevoice"
-            )
-        )
-    }
+    val features = remember { homeFeatureCards() }
 
     val aiChatFeature = features.first { it.route == "chat" }
     val toolsFeatures = features.filter { it.route in setOf("writing_aid", "translator", "transcriber", "image_generator") }
     val utilityFeatures = features.filter { it.route in setOf("scam_detector", "vibe_coder", "creator_generation", "vibevoice") }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = {
@@ -237,17 +231,6 @@ fun HomeScreen(
                         )
                     }
 
-                    // Go Premium button (only for free users)
-                    if (!isPremium) {
-                        IconButton(onClick = onNavigateToPremium) {
-                            Icon(
-                                imageVector = Icons.Default.WorkspacePremium,
-                                contentDescription = stringResource(R.string.premium_go_premium),
-                                tint = Color(0xFFFFD700)
-                            )
-                        }
-                    }
-                    
                     // Settings Button
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
@@ -256,7 +239,8 @@ fun HomeScreen(
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         }
     ) { paddingValues ->
@@ -331,10 +315,9 @@ fun HomeScreen(
                         feature = aiChatFeature,
                         cardHeight = heroHeight,
                         compact = compactCards,
-                        isLocked = !isPremium && aiChatFeature.route in PREMIUM_ROUTES,
+                        isLocked = false,
                         onClick = {
-                            val isLocked = !isPremium && aiChatFeature.route in PREMIUM_ROUTES
-                            if (isLocked) onNavigateToPremium() else onNavigateToFeature(aiChatFeature.route)
+                            onNavigateToFeature(aiChatFeature.route)
                         }
                     )
                 }
@@ -353,16 +336,13 @@ fun HomeScreen(
                         toolsFeatures.chunked(toolsColumns).forEach { rowFeatures ->
                             Row(horizontalArrangement = Arrangement.spacedBy(rowSpacing), modifier = Modifier.fillMaxWidth()) {
                                 rowFeatures.forEach { feature ->
-                                    val isLocked = !isPremium && feature.route in PREMIUM_ROUTES
                                     Box(modifier = Modifier.weight(1f)) {
                                         SmallFeatureCard(
                                             feature = feature,
                                             cardHeight = featureCardHeight,
                                             compact = compactCards,
-                                            isLocked = isLocked,
-                                            onClick = {
-                                                if (isLocked) onNavigateToPremium() else onNavigateToFeature(feature.route)
-                                            }
+                                            isLocked = false,
+                                            onClick = { onNavigateToFeature(feature.route) }
                                         )
                                     }
                                 }
@@ -388,16 +368,13 @@ fun HomeScreen(
                         utilityFeatures.chunked(utilityColumns).forEach { rowFeatures ->
                             Row(horizontalArrangement = Arrangement.spacedBy(rowSpacing), modifier = Modifier.fillMaxWidth()) {
                                 rowFeatures.forEach { feature ->
-                                    val isLocked = !isPremium && feature.route in PREMIUM_ROUTES
                                     Box(modifier = Modifier.weight(1f)) {
                                         SmallFeatureCard(
                                             feature = feature,
                                             cardHeight = featureCardHeight,
                                             compact = compactCards,
-                                            isLocked = isLocked,
-                                            onClick = {
-                                                if (isLocked) onNavigateToPremium() else onNavigateToFeature(feature.route)
-                                            }
+                                            isLocked = false,
+                                            onClick = { onNavigateToFeature(feature.route) }
                                         )
                                     }
                                 }
@@ -406,12 +383,6 @@ fun HomeScreen(
                                 }
                             }
                         }
-                    }
-                }
-
-                if (!isPremium && !isLandscapeLayout) {
-                    item {
-                        BannerAd(modifier = Modifier.fillMaxWidth())
                     }
                 }
 

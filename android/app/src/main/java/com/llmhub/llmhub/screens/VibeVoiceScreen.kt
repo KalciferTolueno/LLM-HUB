@@ -73,10 +73,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.llmhub.llmhub.LlmHubApplication
 import com.llmhub.llmhub.R
-import com.llmhub.llmhub.ads.BannerAd
 import com.llmhub.llmhub.components.ModelSelectorCard
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.ui.components.AudioInputService
 import com.llmhub.llmhub.ui.components.TtsService
 import com.llmhub.llmhub.viewmodels.VibeVoiceViewModel
@@ -102,8 +101,6 @@ fun VibeVoiceScreen(
     val conversationTurns by viewModel.conversationTurns.collectAsState()
 
     val context = LocalContext.current
-    val isPremium by (context.applicationContext as LlmHubApplication).billingManager.isPremium.collectAsState(initial = false)
-
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -296,6 +293,7 @@ fun VibeVoiceScreen(
     }
 
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = {
@@ -314,7 +312,8 @@ fun VibeVoiceScreen(
                     IconButton(onClick = { showSettingsSheet = true }) {
                         Icon(Icons.Default.Tune, contentDescription = stringResource(R.string.feature_settings_title))
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -484,14 +483,6 @@ fun VibeVoiceScreen(
                         }
                     }
                 }
-
-                if (!isPremium) {
-                    BannerAd(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                    )
-                }
             }
         }
     }
@@ -499,6 +490,7 @@ fun VibeVoiceScreen(
     if (showSettingsSheet) {
         ModalBottomSheet(
             onDismissRequest = { showSettingsSheet = false },
+            containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
             sheetState = settingsSheetState
         ) {
             Column(

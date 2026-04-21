@@ -34,12 +34,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.activity.ComponentActivity
 import coil.compose.AsyncImage
-import com.llmhub.llmhub.LlmHubApplication
-import com.llmhub.llmhub.ads.BannerAd
 import com.llmhub.llmhub.R
 import com.llmhub.llmhub.components.ModelSelectorCard
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import com.llmhub.llmhub.components.SelectableMarkdownText
 import com.llmhub.llmhub.components.ThinkingAwareResultContent
 import com.llmhub.llmhub.components.getDisplayContentWithoutThinking
@@ -216,7 +214,6 @@ fun TranslatorScreen(
     viewModel: TranslatorViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val isPremium by (context.applicationContext as LlmHubApplication).billingManager.isPremium.collectAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
     val keyboard = LocalSoftwareKeyboardController.current
     
@@ -449,6 +446,7 @@ fun TranslatorScreen(
     if (showSettingsSheet) {
         ModalBottomSheet(
             onDismissRequest = { showSettingsSheet = false },
+            containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ) {
             Column(
@@ -566,6 +564,7 @@ fun TranslatorScreen(
     }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.translator_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) },
@@ -578,7 +577,8 @@ fun TranslatorScreen(
                     IconButton(onClick = { showSettingsSheet = true }) {
                         Icon(Icons.Default.Tune, contentDescription = "Settings")
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -1363,9 +1363,6 @@ fun TranslatorScreen(
                     color = MaterialTheme.colorScheme.surface
                 ) {
                     Column {
-                    if (!isPremium) {
-                        BannerAd(modifier = Modifier.fillMaxWidth())
-                    }
                     if (isTranslating) {
                         // Show Cancel button while translating
                         OutlinedButton(
@@ -1445,7 +1442,6 @@ fun TranscriberScreen(
     
     // Audio recording components (same as Translator)
     val context = LocalContext.current
-    val isPremium by (context.applicationContext as LlmHubApplication).billingManager.isPremium.collectAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
     val audioService = remember { AudioInputService(context) }
     var recordedAudioData by remember { mutableStateOf<ByteArray?>(null) }
@@ -1541,6 +1537,7 @@ fun TranscriberScreen(
     }
 
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.transcriber_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) },
@@ -1553,7 +1550,8 @@ fun TranscriberScreen(
                     IconButton(onClick = { showSettingsSheet = true }) {
                         Icon(Icons.Default.Tune, contentDescription = stringResource(R.string.feature_settings_title))
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -1856,9 +1854,6 @@ fun TranscriberScreen(
                     color = MaterialTheme.colorScheme.surface
                 ) {
                     Column {
-                    if (!isPremium) {
-                        BannerAd(modifier = Modifier.fillMaxWidth())
-                    }
                     if (isTranscribing) {
                         // Show Cancel button while transcribing
                         OutlinedButton(
@@ -1902,6 +1897,7 @@ fun TranscriberScreen(
     if (showSettingsSheet) {
         ModalBottomSheet(
             onDismissRequest = { showSettingsSheet = false },
+            containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
             sheetState = settingsSheetState
         ) {
             Column(
@@ -1947,9 +1943,6 @@ fun ScamDetectorScreen(
     viewModel: com.llmhub.llmhub.viewmodels.ScamDetectorViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val activity = context as ComponentActivity
-    val isPremium by (context.applicationContext as LlmHubApplication).billingManager.isPremium.collectAsState(initial = false)
-    val rewardedAdManager = remember { (context.applicationContext as LlmHubApplication).rewardedAdManager }
     val keyboard = LocalSoftwareKeyboardController.current
     val clipboardManager = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
@@ -2035,6 +2028,7 @@ fun ScamDetectorScreen(
     if (showSettingsSheet) {
         ModalBottomSheet(
             onDismissRequest = { showSettingsSheet = false },
+            containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ) {
             Column(
@@ -2060,12 +2054,8 @@ fun ScamDetectorScreen(
                     isModelLoaded = isModelLoaded,
                     onModelSelected = { viewModel.selectModel(it) },
                     onBackendSelected = { backend, deviceId -> viewModel.selectBackend(backend, deviceId) },
-                    onLoadModel = {
-                        if (isPremium) {
-                            viewModel.loadModel()
-                        } else {
-                            rewardedAdManager.showAdOrGrant(activity) { viewModel.loadModel() }
-                        }
+                                        onLoadModel = {
+                        viewModel.loadModel()
                     },
                     onUnloadModel = { viewModel.unloadModel() },
                     filterMultimodalOnly = false
@@ -2230,6 +2220,7 @@ fun ScamDetectorScreen(
     }
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.scam_detector_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) },
@@ -2242,7 +2233,8 @@ fun ScamDetectorScreen(
                     IconButton(onClick = { showSettingsSheet = true }) {
                         Icon(Icons.Default.Tune, contentDescription = "Settings")
                     }
-                }
+                },
+                colors = NeuralHubUiDefaults.topAppBarColors()
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -2495,9 +2487,6 @@ fun ScamDetectorScreen(
                     color = MaterialTheme.colorScheme.surface
                 ) {
                     Column {
-                    if (!isPremium) {
-                        BannerAd(modifier = Modifier.fillMaxWidth())
-                    }
                     if (isAnalyzing) {
                         FilledTonalButton(
                             onClick = { viewModel.cancelAnalysis() },

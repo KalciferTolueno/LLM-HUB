@@ -39,10 +39,13 @@ import kotlinx.coroutines.withTimeoutOrNull
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.runtime.rememberCoroutineScope
 import android.net.Uri
-import com.llmhub.llmhub.ads.ConsentManager
 import com.llmhub.llmhub.embedding.RagServiceManager
 import com.llmhub.llmhub.utils.FileUtils
 import com.llmhub.llmhub.R
+import androidx.compose.foundation.shape.RoundedCornerShape
+import com.llmhub.llmhub.components.NeuralHubColors
+import com.llmhub.llmhub.components.NeuralHubSectionHeading
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 import java.io.File
 import com.llmhub.llmhub.data.ThemeMode
 import com.llmhub.llmhub.data.localFileName
@@ -55,7 +58,6 @@ fun SettingsScreen(
     onNavigateToModels: () -> Unit,
     onNavigateToAbout: () -> Unit,
     onNavigateToTerms: () -> Unit,
-    onNavigateToPremium: () -> Unit = {},
     themeViewModel: ThemeViewModel = viewModel()
 ) {
     val uriHandler = LocalUriHandler.current
@@ -71,13 +73,13 @@ fun SettingsScreen(
     val selectedEmbeddingModel by themeViewModel.selectedEmbeddingModel.collectAsState()
     val currentLanguage by themeViewModel.appLanguage.collectAsState()
     val autoReadoutEnabled by themeViewModel.autoReadoutEnabled.collectAsState()
-    val isPremium by (context.applicationContext as com.llmhub.llmhub.LlmHubApplication)
-        .billingManager.isPremium.collectAsState(initial = false)
-    
+
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.settings)) },
+                colors = NeuralHubUiDefaults.topAppBarColors(),
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack,
@@ -86,13 +88,20 @@ fun SettingsScreen(
                         Icon(
                             Icons.Default.ArrowBack, 
                             contentDescription = stringResource(R.string.content_description_back),
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = Color.White
                         )
                     }
                 }
             )
         }
     ) { paddingValues ->
+        val switchColors = SwitchDefaults.colors(
+            checkedThumbColor = NeuralHubColors.AccentCyan,
+            checkedTrackColor = NeuralHubColors.AccentCyan.copy(alpha = 0.35f),
+            uncheckedThumbColor = NeuralHubColors.TextDim,
+            uncheckedTrackColor = NeuralHubColors.Glass.copy(alpha = 0.5f),
+            uncheckedBorderColor = NeuralHubColors.GlassBorder
+        )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -116,7 +125,7 @@ fun SettingsScreen(
             
             item {
                 SettingsSection(title = stringResource(R.string.features)) {
-                    // Web Search toggle (Premium feature)
+                    // Web Search toggle
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -126,8 +135,7 @@ fun SettingsScreen(
                         Icon(
                             Icons.Default.Search,
                             contentDescription = null,
-                            tint = if (isPremium) MaterialTheme.colorScheme.onSurfaceVariant
-                                   else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            tint = NeuralHubColors.AccentCyan,
                             modifier = Modifier.size(24.dp)
                         )
 
@@ -140,50 +148,27 @@ fun SettingsScreen(
                                 Text(
                                     text = stringResource(R.string.web_search),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = if (isPremium) MaterialTheme.colorScheme.onSurface
-                                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                    color = Color.White
                                 )
-                                if (!isPremium) {
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Icon(
-                                        Icons.Default.Lock,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(14.dp),
-                                        tint = Color(0xFFFFD700)
-                                    )
-                                }
                             }
                             Text(
-                                text = if (isPremium) {
-                                    if (webSearchEnabled) stringResource(R.string.web_search_description_enabled)
-                                    else stringResource(R.string.web_search_description_disabled)
-                                } else {
-                                    stringResource(R.string.premium_tap_to_unlock)
-                                },
+                                text = if (webSearchEnabled) stringResource(R.string.web_search_description_enabled)
+                                       else stringResource(R.string.web_search_description_disabled),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = if (isPremium) MaterialTheme.colorScheme.onSurfaceVariant
-                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                color = NeuralHubColors.TextDim
                             )
                         }
 
-                        if (isPremium) {
-                            Switch(
-                                checked = webSearchEnabled,
-                                onCheckedChange = { enabled ->
-                                    themeViewModel.setWebSearchEnabled(enabled)
-                                }
-                            )
-                        } else {
-                            TextButton(onClick = onNavigateToPremium) {
-                                Text(
-                                    stringResource(R.string.premium_go_premium),
-                                    color = Color(0xFFFFD700)
-                                )
-                            }
-                        }
+                        Switch(
+                            checked = webSearchEnabled,
+                            onCheckedChange = { enabled ->
+                                themeViewModel.setWebSearchEnabled(enabled)
+                            },
+                            colors = switchColors
+                        )
                     }
 
-                    // Memory (global context) toggle (Premium feature)
+                    // Memory (global context) toggle
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -193,8 +178,7 @@ fun SettingsScreen(
                         Icon(
                             Icons.Default.Storage,
                             contentDescription = null,
-                            tint = if (isPremium) MaterialTheme.colorScheme.onSurfaceVariant
-                                   else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            tint = NeuralHubColors.AccentCyan,
                             modifier = Modifier.size(24.dp)
                         )
 
@@ -207,34 +191,21 @@ fun SettingsScreen(
                                 Text(
                                     text = stringResource(R.string.memory),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = if (isPremium) MaterialTheme.colorScheme.onSurface
-                                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                    color = Color.White
                                 )
-                                if (!isPremium) {
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Icon(
-                                        Icons.Default.Lock,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(14.dp),
-                                        tint = Color(0xFFFFD700)
-                                    )
-                                }
                             }
                             Text(
-                                text = if (!isPremium) stringResource(R.string.premium_tap_to_unlock)
-                                       else if (memoryEnabled) stringResource(R.string.memory_description_enabled)
+                                text = if (memoryEnabled) stringResource(R.string.memory_description_enabled)
                                        else stringResource(R.string.memory_requires_rag),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = if (isPremium) MaterialTheme.colorScheme.onSurfaceVariant
-                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                color = NeuralHubColors.TextDim
                             )
                         }
 
-                        if (isPremium) {
-                            Switch(
-                                checked = memoryEnabled,
-                                onCheckedChange = { enabled ->
-                                    // Only allow enabling if embeddings/RAG are enabled AND an embedding model is selected
+                        Switch(
+                            checked = memoryEnabled,
+                            onCheckedChange = { enabled ->
+                                // Only allow enabling if embeddings/RAG are enabled AND an embedding model is selected
                                     if (enabled && (!embeddingEnabled || selectedEmbeddingModel.isNullOrBlank())) {
                                         // Ignore — UI indicates why toggle is disabled
                                         return@Switch
@@ -295,19 +266,12 @@ fun SettingsScreen(
                                         }
                                     }
                                 },
-                                enabled = embeddingEnabled && !selectedEmbeddingModel.isNullOrBlank()
+                                enabled = embeddingEnabled && !selectedEmbeddingModel.isNullOrBlank(),
+                                colors = switchColors
                             )
-                        } else {
-                            TextButton(onClick = onNavigateToPremium) {
-                                Text(
-                                    stringResource(R.string.premium_go_premium),
-                                    color = Color(0xFFFFD700)
-                                )
-                            }
-                        }
                     }
 
-                    // Auto Readout toggle (Premium feature)
+                    // Auto Readout toggle
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -317,8 +281,7 @@ fun SettingsScreen(
                         Icon(
                             Icons.Default.VolumeUp,
                             contentDescription = null,
-                            tint = if (isPremium) MaterialTheme.colorScheme.onSurfaceVariant
-                                   else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            tint = NeuralHubColors.AccentCyan,
                             modifier = Modifier.size(24.dp)
                         )
 
@@ -331,45 +294,23 @@ fun SettingsScreen(
                                 Text(
                                     text = stringResource(R.string.auto_readout),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = if (isPremium) MaterialTheme.colorScheme.onSurface
-                                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                    color = Color.White
                                 )
-                                if (!isPremium) {
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Icon(
-                                        Icons.Default.Lock,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(14.dp),
-                                        tint = Color(0xFFFFD700)
-                                    )
-                                }
                             }
                             Text(
-                                text = if (isPremium)
-                                    stringResource(R.string.auto_readout_description)
-                                else
-                                    stringResource(R.string.premium_tap_to_unlock),
+                                text = stringResource(R.string.auto_readout_description),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = if (isPremium) MaterialTheme.colorScheme.onSurfaceVariant
-                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                color = NeuralHubColors.TextDim
                             )
                         }
 
-                        if (isPremium) {
-                            Switch(
-                                checked = autoReadoutEnabled,
-                                onCheckedChange = { enabled ->
-                                    themeViewModel.setAutoReadoutEnabled(enabled)
-                                }
-                            )
-                        } else {
-                            TextButton(onClick = onNavigateToPremium) {
-                                Text(
-                                    stringResource(R.string.premium_go_premium),
-                                    color = Color(0xFFFFD700)
-                                )
-                            }
-                        }
+                        Switch(
+                            checked = autoReadoutEnabled,
+                            onCheckedChange = { enabled ->
+                                themeViewModel.setAutoReadoutEnabled(enabled)
+                            },
+                            colors = switchColors
+                        )
                     }
 
                     // Memory manager: allow paste/upload when memory is enabled
@@ -510,7 +451,7 @@ fun SettingsScreen(
                                 Surface(
                                     shape = MaterialTheme.shapes.large,
                                     tonalElevation = 8.dp,
-                                    color = MaterialTheme.colorScheme.surfaceContainer,
+                                    color = NeuralHubUiDefaults.panelContainerColor,
                                     modifier = Modifier
                                         .fillMaxWidth(0.92f)
                                         .heightIn(max = dialogMaxHeight)
@@ -665,7 +606,7 @@ fun SettingsScreen(
                                         Spacer(modifier = Modifier.height(8.dp))
 
                                         if (memoryList.isEmpty()) {
-                                            Text(stringResource(R.string.no_memories), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Text(stringResource(R.string.no_memories), style = MaterialTheme.typography.bodySmall, color = NeuralHubColors.TextDim)
                                         } else {
                                             // Clear All button
                                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -717,7 +658,7 @@ fun SettingsScreen(
                                                                 "chat_import" -> context.getString(R.string.chat_imported_to_memory)
                                                                 else -> mem.metadata
                                                             }
-                                                            Text(metaLabel + " • " + android.text.format.DateFormat.getDateFormat(context).format(mem.createdAt), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                            Text(metaLabel + " • " + android.text.format.DateFormat.getDateFormat(context).format(mem.createdAt), style = MaterialTheme.typography.bodySmall, color = NeuralHubColors.TextDim)
                                                         }
                                                         
                                                         // Edit button (only for pasted memories)
@@ -853,17 +794,6 @@ fun SettingsScreen(
                         title = stringResource(R.string.terms_of_service),
                         subtitle = stringResource(R.string.legal_terms_conditions),
                         onClick = onNavigateToTerms
-                    )
-
-                    // Privacy & Ads — shows AdMob consent form (visible to all users)
-                    val activity = context as? androidx.activity.ComponentActivity
-                    SettingsItem(
-                        icon = Icons.Default.PrivacyTip,
-                        title = stringResource(R.string.privacy_ads_title),
-                        subtitle = stringResource(R.string.privacy_ads_subtitle),
-                        onClick = {
-                            activity?.let { ConsentManager.showPrivacyOptionsForm(it) }
-                        }
                     )
                 }
             }
@@ -1010,8 +940,8 @@ fun SettingsScreen(
         Dialog(onDismissRequest = { /* block dismiss while running */ }) {
             Surface(
                 shape = MaterialTheme.shapes.large,
-                tonalElevation = 8.dp,
-                color = MaterialTheme.colorScheme.surfaceContainer,
+                tonalElevation = 0.dp,
+                color = NeuralHubUiDefaults.panelContainerColor,
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
                     .wrapContentHeight()
@@ -1021,7 +951,11 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(id = com.llmhub.llmhub.R.string.reembedding_memory_in_progress), style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = stringResource(id = com.llmhub.llmhub.R.string.reembedding_memory_in_progress),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White
+                    )
                     CircularProgressIndicator()
                 }
             }
@@ -1035,16 +969,18 @@ private fun SettingsSection(
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = NeuralHubUiDefaults.glassCardColors(),
+        border = NeuralHubUiDefaults.glassCardBorderStroke(),
+        elevation = NeuralHubUiDefaults.glassCardElevation()
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
+            NeuralHubSectionHeading(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             content()
@@ -1062,9 +998,10 @@ private fun SettingsItem(
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        shape = RoundedCornerShape(10.dp),
+        colors = NeuralHubUiDefaults.glassCardColors(),
+        border = NeuralHubUiDefaults.glassCardBorderStroke(),
+        elevation = NeuralHubUiDefaults.glassCardElevation()
     ) {
         Row(
             modifier = Modifier
@@ -1076,7 +1013,7 @@ private fun SettingsItem(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = NeuralHubColors.AccentCyan
             )
             
             Spacer(modifier = Modifier.width(16.dp))
@@ -1085,19 +1022,19 @@ private fun SettingsItem(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color.White
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = NeuralHubColors.TextDim
                 )
             }
             
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = NeuralHubColors.TextDim
             )
         }
     }
@@ -1261,7 +1198,7 @@ private fun EmbeddingModelSelector(themeViewModel: ThemeViewModel) {
             Surface(
                 shape = MaterialTheme.shapes.large,
                 tonalElevation = 6.dp,
-                color = MaterialTheme.colorScheme.surfaceContainer,
+                color = NeuralHubUiDefaults.panelContainerColor,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .wrapContentHeight()
@@ -1271,7 +1208,11 @@ private fun EmbeddingModelSelector(themeViewModel: ThemeViewModel) {
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(id = com.llmhub.llmhub.R.string.reembedding_memory_in_progress), style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = stringResource(id = com.llmhub.llmhub.R.string.reembedding_memory_in_progress),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White
+                    )
                     CircularProgressIndicator()
                 }
             }
@@ -1293,7 +1234,7 @@ fun ChatImportDialog(
         Surface(
             shape = MaterialTheme.shapes.large,
             tonalElevation = 6.dp,
-            color = MaterialTheme.colorScheme.surfaceContainer,
+            color = NeuralHubUiDefaults.panelContainerColor,
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .fillMaxHeight(0.7f)
@@ -1303,13 +1244,14 @@ fun ChatImportDialog(
             ) {
                 Text(
                     text = stringResource(R.string.import_chat_history),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.select_chats_to_import),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = NeuralHubColors.TextDim
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 
@@ -1349,12 +1291,13 @@ fun ChatImportDialog(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = chat.title,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.White
                                 )
                                 Text(
                                     text = android.text.format.DateFormat.getDateFormat(context).format(chat.updatedAt),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = NeuralHubColors.TextDim
                                 )
                             }
                         }
