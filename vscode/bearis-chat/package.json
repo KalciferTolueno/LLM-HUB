@@ -1,0 +1,218 @@
+{
+  "name": "bearis-chat",
+  "displayName": "Bearis Chat",
+  "description": "Chat with your Bearis on-device LLM over the local network (OpenAI-compatible API).",
+  "version": "0.10.2",
+  "publisher": "llmhub",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/LLM-HUB"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:bearis.openChat"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "bearis.openChat",
+        "title": "Bearis: Open Chat",
+        "category": "Bearis"
+      },
+      {
+        "command": "bearis.setAgentFolder",
+        "title": "Bearis: Set Agent Folder…",
+        "category": "Bearis"
+      },
+      {
+        "command": "bearis.clearAgentFolder",
+        "title": "Bearis: Clear Saved Agent Folder",
+        "category": "Bearis"
+      },
+      {
+        "command": "bearis.refreshCodeIndex",
+        "title": "Bearis: Refresh Code Index",
+        "category": "Bearis"
+      }
+    ],
+    "configuration": {
+      "title": "Bearis",
+      "properties": {
+        "bearis.apiBaseUrl": {
+          "type": "string",
+          "default": "http://192.168.0.2:8080/v1",
+          "description": "Bearis OpenAI-compatible base URL. Use your phone's Wi‑Fi IP and port 8080, ending with /v1 (e.g. http://192.168.0.2:8080/v1)."
+        },
+        "bearis.agentMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "When enabled, the model can create/overwrite files using BEARIS_WRITE blocks (paths stay inside the workspace or the folder you pick)."
+        },
+        "bearis.autoApplyMarkdownFences": {
+          "type": "boolean",
+          "default": true,
+          "description": "If the reply has no BEARIS_WRITE blocks, infer files from Markdown code fences (e.g. ```html → index.html, ```css → styles.css) and offer the same write confirmation."
+        },
+        "bearis.confirmWrites": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a confirmation dialog listing files before creating or overwriting them on disk."
+        },
+        "bearis.previewDiffBeforeApply": {
+          "type": "boolean",
+          "default": true,
+          "description": "When confirming writes/patches, offer opening a VS Code diff tab per file (current vs proposed) before applying to disk. Disable to use only the Allow/Deny dialog."
+        },
+        "bearis.maxDiffPreviewTabs": {
+          "type": "number",
+          "default": 12,
+          "minimum": 1,
+          "maximum": 40,
+          "description": "Recommended batch size: when there are more changed files than this, a multi-select quick pick opens so you choose which diffs to open (first N are pre-selected). You can select more; Apply still affects every validated file."
+        },
+        "bearis.openDiffPreviewBeside": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the first diff preview in the editor column beside the active one (keeps the chat/webview column easier to reach)."
+        },
+        "bearis.maxAgentSteps": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 20,
+          "description": "Max model turns per user message (read-tool loops: each BEARIS_READ round + final reply counts as one)."
+        },
+        "bearis.maxReadFileChars": {
+          "type": "number",
+          "default": 150000,
+          "minimum": 1024,
+          "maximum": 2000000,
+          "description": "Max characters read per file for BEARIS_READ tool results (large files are truncated)."
+        },
+        "bearis.listMaxDepth": {
+          "type": "number",
+          "default": 4,
+          "minimum": 0,
+          "maximum": 12,
+          "description": "Max subdirectory depth when running BEARIS_LIST (0 = only the listed folder’s files)."
+        },
+        "bearis.listMaxEntries": {
+          "type": "number",
+          "default": 400,
+          "minimum": 50,
+          "maximum": 5000,
+          "description": "Max file paths returned per BEARIS_LIST request (listing stops when reached)."
+        },
+        "bearis.codeIndexEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable BEARIS_SEARCH and on-disk TF‑IDF index (classic relevance vectors; not neural embeddings)."
+        },
+        "bearis.codeIndexMaxFiles": {
+          "type": "number",
+          "default": 2500,
+          "minimum": 100,
+          "maximum": 10000,
+          "description": "Max files scanned when building the code index."
+        },
+        "bearis.codeIndexMaxFileBytes": {
+          "type": "number",
+          "default": 400000,
+          "minimum": 4096,
+          "maximum": 2000000,
+          "description": "Skip files larger than this when indexing."
+        },
+        "bearis.codeIndexChunkChars": {
+          "type": "number",
+          "default": 2000,
+          "minimum": 500,
+          "maximum": 8000,
+          "description": "Approximate characters per index chunk (line-based packing)."
+        },
+        "bearis.searchMaxResults": {
+          "type": "number",
+          "default": 15,
+          "minimum": 3,
+          "maximum": 50,
+          "description": "Max hits per BEARIS_SEARCH query."
+        },
+        "bearis.injectProjectRules": {
+          "type": "boolean",
+          "default": true,
+          "description": "Append bearis.md and .bearisrules from the project root to the system prompt (Cursor-style project rules)."
+        },
+        "bearis.projectRulesMaxChars": {
+          "type": "number",
+          "default": 8000,
+          "minimum": 500,
+          "maximum": 50000,
+          "description": "Max characters of project rules to inject."
+        },
+        "bearis.grepMaxFiles": {
+          "type": "number",
+          "default": 800,
+          "minimum": 50,
+          "maximum": 5000,
+          "description": "Max files scanned per BEARIS_GREP request."
+        },
+        "bearis.grepMaxFileBytes": {
+          "type": "number",
+          "default": 400000,
+          "minimum": 4096,
+          "maximum": 2000000,
+          "description": "Skip larger files when grepping."
+        },
+        "bearis.grepMaxMatches": {
+          "type": "number",
+          "default": 100,
+          "minimum": 10,
+          "maximum": 500,
+          "description": "Max matching lines returned per BEARIS_GREP block in the model reply."
+        },
+        "bearis.grepMaxLineChars": {
+          "type": "number",
+          "default": 400,
+          "minimum": 80,
+          "maximum": 2000,
+          "description": "Max characters of each matching line shown in grep output."
+        },
+        "bearis.grepMaxPatternLength": {
+          "type": "number",
+          "default": 512,
+          "minimum": 32,
+          "maximum": 2000,
+          "description": "Max length of a BEARIS_GREP pattern string."
+        },
+        "bearis.includeActiveFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Append the active editor file (truncated) to each user message so the model sees current code."
+        },
+        "bearis.maxActiveFileChars": {
+          "type": "number",
+          "default": 12000,
+          "minimum": 0,
+          "description": "Max characters of the active file to send when includeActiveFile is on. Use 0 for a large default cap (~300k chars)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  }
+}
