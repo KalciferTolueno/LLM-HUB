@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <!-- Altura real del viewport visible (Chrome móvil / WebView). Evita banda gris abajo. -->
+    <script>
+      (function () {
+        function syncAppHeight() {
+          var inner = window.innerHeight || 0;
+          var vv = window.visualViewport;
+          var vh =
+            vv && typeof vv.height === "number" && vv.height > 0 ? vv.height : 0;
+          var client = document.documentElement.clientHeight || 0;
+          // El mayor evita #root más bajo que la pantalla (banda negra abajo) cuando
+          // visualViewport.height queda por debajo del layout real (p. ej. WebView).
+          var h = Math.max(inner, vh, client);
+          document.documentElement.style.setProperty("--app-height", h + "px");
+        }
+        syncAppHeight();
+        window.addEventListener("resize", syncAppHeight);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener("resize", syncAppHeight);
+          window.visualViewport.addEventListener("scroll", syncAppHeight);
+        }
+      })();
+    </script>
+    <title>Bearis · Chat local</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

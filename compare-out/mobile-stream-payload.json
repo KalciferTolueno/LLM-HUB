@@ -1,0 +1,59 @@
+﻿{
+    "messages":  [
+                     {
+                         "content":  "hazme una web de una cafeteria futurista con animaciones, vaporwave, menu, sobre nosotros, carrito de compras, trancisiones fluidas, html,css y js",
+                         "role":  "user"
+                     }
+                 ],
+    "stream":  true,
+    "max_tokens":  320,
+    "temperature":  0.2,
+    "model":  "BEARIS",
+    "tool_choice":  "auto",
+    "tools":  [
+                  {
+                      "function":  {
+                                       "description":  "Create or overwrite a file under workspace root",
+                                       "name":  "create_new_file",
+                                       "parameters":  {
+                                                          "properties":  {
+                                                                             "contents":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                             "filepath":  {
+                                                                                              "type":  "string"
+                                                                                          }
+                                                                         },
+                                                          "type":  "object",
+                                                          "required":  [
+                                                                           "filepath",
+                                                                           "contents"
+                                                                       ]
+                                                      }
+                                   },
+                      "type":  "function"
+                  },
+                  {
+                      "function":  {
+                                       "description":  "Alias",
+                                       "name":  "write_file",
+                                       "parameters":  {
+                                                          "properties":  {
+                                                                             "contents":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                             "filepath":  {
+                                                                                              "type":  "string"
+                                                                                          }
+                                                                         },
+                                                          "type":  "object",
+                                                          "required":  [
+                                                                           "filepath",
+                                                                           "contents"
+                                                                       ]
+                                                      }
+                                   },
+                      "type":  "function"
+                  }
+              ]
+}

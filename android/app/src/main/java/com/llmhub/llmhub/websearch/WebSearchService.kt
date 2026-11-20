@@ -1,6 +1,7 @@
 package com.llmhub.llmhub.websearch
 
 import android.util.Log
+import com.llmhub.llmhub.data.LLMModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -352,7 +353,7 @@ class DuckDuckGoSearchService : WebSearchService {
             
             val request = Request.Builder()
                 .url(url)
-                .addHeader("User-Agent", "LLM Hub Android App")
+                .addHeader("User-Agent", "Bearis Android App")
                 .build()
             
             val response = client.newCall(request).execute()
@@ -672,8 +673,8 @@ object SearchIntentDetector {
         "pesquisar", "pesquise", "procure", "procurar informações sobre", "pesquisa na web", "buscar na web",
         // Russian
         "поиск", "найди", "найти", "найди информацию о", "поиск в интернете", "веб-поиск",
-        // Turkish
-        "ara", "arama", "bul", "bana bul", "hakkında bilgi bul", "web'de ara", "web araması", "internette ara",
+        // Turkish (avoid standalone "ara" — it matches Spanish "para", "barra", etc.)
+        "arama", "araştır", "bul", "bana bul", "hakkında bilgi bul", "web'de ara", "web araması", "internette ara",
         // Polish
         "szukaj", "szukać", "znajdź", "znajdź mi", "znajdź informacje o", "szukaj w internecie", "wyszukiwanie w sieci",
         // Arabic
@@ -1040,6 +1041,12 @@ object SearchIntentDetector {
     
     fun needsWebSearch(query: String): Boolean {
         val lowerQuery = query.lowercase().trim()
+
+        // Code, markup, and “build me a…” web UI tasks don’t need live search — the model can answer offline.
+        if (isLikelyOfflineCodeOrWebDevRequest(lowerQuery)) {
+            Log.d(TAG, "Skipping web search (code/web-dev style request): $lowerQuery")
+            return false
+        }
         
         // Don't search for simple math or basic questions
         if (isSimpleMathQuestion(lowerQuery) || isBasicFactualQuestion(lowerQuery)) {
@@ -1095,6 +1102,36 @@ object SearchIntentDetector {
         }
         
         return shouldSearch
+    }
+
+    /**
+     * Detects requests for source code, HTML/CSS/JS, or static web pieces where web search is unnecessary
+     * and was incorrectly triggered (e.g. Spanish "para mi página" matching Turkish "ara").
+     */
+    private fun isLikelyOfflineCodeOrWebDevRequest(query: String): Boolean {
+        val markers = listOf(
+            // Spanish / Portuguese
+            "código", "codigo", "dame el código", "dame el codigo", "escríbeme", "escribeme",
+            "barra de navegación", "barra de navegacion", "menú de navegación", "menu de navegacion",
+            "página web", "pagina web", "sitio web",
+            // English
+            "html", "css", "javascript", "typescript", "react", "vue", "angular", "svelte",
+            "navbar", "nav bar", "navigation bar", "give me the code", "write code", "sample code",
+            "snippet", "component", "tailwind", "bootstrap",
+            // Markup / dev
+            "<div", "<html", "<nav", "<header", "<!doctype", "<?php", "import ", "function(", "def ",
+            "export default", "addEventListener",
+            // Generic “build UI” (offline)
+            "crear una web", "hacer una web", "landing page", "página estática", "pagina estatica",
+        )
+        if (markers.any { query.contains(it) }) return true
+        // Short patterns: “code for …”, “codigo para …”
+        if (query.contains("code for ") || query.contains("code to ") ||
+            query.contains("codigo para ") || query.contains("código para ")
+        ) {
+            return true
+        }
+        return false
     }
     
     private fun isSimpleMathQuestion(query: String): Boolean {
@@ -1165,4 +1202,35 @@ object SearchIntentDetector {
         
         return if (cleaned.isNotEmpty()) cleaned else prompt
     }
+}
+
+private const val WEB_PROMPT_CAP_TAG = "WebSearchPrompt"
+
+/**
+ * Caps total web-snippet size so the augmented prompt fits on-device context windows.
+ * Without this, "Found N results → Analyzing…" can be followed by very slow or stalled generation.
+ */
+fun formatWebSearchResultsForPrompt(searchResults: List<SearchResult>, model: LLMModel): String {
+    if (searchResults.isEmpty()) return ""
+    val perSnippetChars = 320
+    val maxTotalChars = (model.contextWindowSize * 3).coerceIn(3_500, 20_000)
+    val sb = StringBuilder()
+    var used = 0
+    for (r in searchResults) {
+        val snippet = r.snippet.take(perSnippetChars)
+        val block = "SOURCE: ${r.source}\nTITLE: ${r.title}\nCONTENT: $snippet\n---\n"
+        if (used + block.length > maxTotalChars) {
+            Log.w(WEB_PROMPT_CAP_TAG, "Web results truncated: used=$used cap=$maxTotalChars model=${model.name}")
+            break
+        }
+        sb.append(block)
+        used += block.length
+    }
+    var out = sb.toString().trimEnd()
+    if (out.isEmpty()) {
+        val r = searchResults.first()
+        out =
+            "SOURCE: ${r.source}\nTITLE: ${r.title}\nCONTENT: ${r.snippet.take(400)}\n---"
+    }
+    return out
 }

@@ -7,6 +7,7 @@ import android.net.Uri
 import com.llmhub.llmhub.data.LLMModel
 import com.llmhub.llmhub.websearch.WebSearchService
 import com.llmhub.llmhub.websearch.DuckDuckGoSearchService
+import com.llmhub.llmhub.websearch.formatWebSearchResultsForPrompt
 import com.llmhub.llmhub.websearch.SearchIntentDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -53,7 +54,9 @@ interface InferenceService {
         images: List<Bitmap> = emptyList(), 
         audioData: ByteArray? = null,
         webSearchEnabled: Boolean = true,
-        imagePaths: List<String> = emptyList()
+        imagePaths: List<String> = emptyList(),
+        /** When false, Gemma agent tools are disabled (e.g. OpenAI `/v1/chat/completions` on LAN). */
+        useAgentTools: Boolean = true
     ): Flow<String>
     suspend fun resetChatSession(chatId: String)
     suspend fun onCleared()
@@ -718,7 +721,8 @@ class MediaPipeInferenceService(private val applicationContext: Context) : Infer
         images: List<Bitmap>, 
         audioData: ByteArray?,
         webSearchEnabled: Boolean,
-        imagePaths: List<String>
+        imagePaths: List<String>,
+        @Suppress("UNUSED_PARAMETER") useAgentTools: Boolean
     ): Flow<String> = callbackFlow {
         ensureModelLoaded(model)
         
@@ -756,11 +760,10 @@ class MediaPipeInferenceService(private val applicationContext: Context) : Infer
                     if (searchResults.isNotEmpty()) {
                         Log.d(TAG, "Found ${searchResults.size} search results")
                         trySend(getCurrentContext().getString(R.string.web_search_found_results, searchResults.size))
+                        trySend(getCurrentContext().getString(R.string.web_search_generating) + "\n\n")
                         
                         // Create enhanced prompt with search results
-                        val resultsText = searchResults.joinToString("\n\n") { result ->
-                            "SOURCE: ${result.source}\nTITLE: ${result.title}\nCONTENT: ${result.snippet}\n---"
-                        }
+                        val resultsText = formatWebSearchResultsForPrompt(searchResults, model)
                         
                         // Extract just the current user question for better clarity
                         enhancedPrompt = """

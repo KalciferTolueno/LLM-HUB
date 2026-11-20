@@ -1,8 +1,8 @@
 {
   "name": "bearis-chat",
-  "displayName": "Bearis Chat",
+  "displayName": "Bearis Chat LAN Tools Fix",
   "description": "Chat with your Bearis on-device LLM over the local network (OpenAI-compatible API).",
-  "version": "0.10.2",
+  "version": "0.10.6",
   "publisher": "llmhub",
   "license": "MIT",
   "repository": {
@@ -50,15 +50,29 @@
           "default": "http://192.168.0.2:8080/v1",
           "description": "Bearis OpenAI-compatible base URL. Use your phone's Wi‑Fi IP and port 8080, ending with /v1 (e.g. http://192.168.0.2:8080/v1)."
         },
-        "bearis.agentMode": {
+        "bearis.strictOpenAiAgent": {
           "type": "boolean",
           "default": true,
-          "description": "When enabled, the model can create/overwrite files using BEARIS_WRITE blocks (paths stay inside the workspace or the folder you pick)."
+          "description": "When enabled (default), agent mode uses OpenAI-style tools only (create_new_file / write_file via tool_calls). No BEARIS_* blocks, no BEARIS_PATCH, and no Markdown-fence file inference. Turn off for legacy BEARIS_READ/LIST/SEARCH/GREP/WRITE/PATCH behavior."
+        },
+        "bearis.agentMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Continue-like default: off = chat only (HTTP body has messages, no write tools). Turn on when you want the extension to apply file changes. With strictOpenAiAgent (default), OpenAI tool_calls are used; when strict is off, BEARIS_* blocks apply."
+        },
+        "bearis.writeToolsPolicy": {
+          "type": "string",
+          "enum": [
+            "fileIntent",
+            "everyMessage"
+          ],
+          "default": "fileIntent",
+          "description": "Only applies when bearis.agentMode is true. \"fileIntent\": send create_new_file/write_file tools only when the user message looks like code/file work (or when the chat checkbox forces tools). \"everyMessage\": always attach write tools each agent turn (older behavior; less Continue-like)."
         },
         "bearis.autoApplyMarkdownFences": {
           "type": "boolean",
-          "default": true,
-          "description": "If the reply has no BEARIS_WRITE blocks, infer files from Markdown code fences (e.g. ```html → index.html, ```css → styles.css) and offer the same write confirmation."
+          "default": false,
+          "description": "Fallback only: if the reply has no tool calls/BEARIS_WRITE, infer files from Markdown fences (e.g. ```html → index.html). Keep off for Continue-like tool-call behavior."
         },
         "bearis.confirmWrites": {
           "type": "boolean",

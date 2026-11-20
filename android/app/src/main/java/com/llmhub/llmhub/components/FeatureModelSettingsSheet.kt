@@ -84,12 +84,15 @@ fun FeatureModelSettingsSheet(
     val baseMaxTokensCap = remember(selectedModel) {
         selectedModel?.let { MediaPipeInferenceService.getMaxTokensForModelStatic(it) } ?: 4096
     }
-    val isLiteRtLm = remember(selectedModel) { selectedModel?.modelFormat == "litertlm" }
+    val isGemma4LiteRt = remember(selectedModel) {
+        selectedModel?.modelFormat == "litertlm" &&
+            selectedModel?.name?.contains("Gemma-4", ignoreCase = true) == true
+    }
     val isPhi4Mini = remember(selectedModel) {
         selectedModel?.name?.contains("Phi-4 Mini", ignoreCase = true) == true
     }
-    val canSelectAccelerator = remember(selectedModel) {
-        selectedModel?.supportsGpu == true
+    val canSelectAccelerator = remember(selectedModel, isGemma4LiteRt) {
+        selectedModel?.supportsGpu == true && !isGemma4LiteRt
     }
     val defaultUseGpu = remember(selectedModel) {
         if (isPhi4Mini) false else selectedModel?.supportsGpu == true
@@ -116,7 +119,7 @@ fun FeatureModelSettingsSheet(
     }
     var useNpu by remember(initialSelectedNpuDeviceId) { mutableStateOf(initialSelectedNpuDeviceId != null) }
     var gpuLayers by remember { mutableStateOf(999) }
-    var enableThinking by remember { mutableStateOf(true) }
+    var enableThinking by remember { mutableStateOf(false) }
 
     LaunchedEffect(selectedModel?.name) {
         selectedModel?.let { model ->
@@ -169,6 +172,7 @@ fun FeatureModelSettingsSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        containerColor = NeuralHubUiDefaults.modalBottomSheetContainerColor,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ) {
         Column(
@@ -187,7 +191,9 @@ fun FeatureModelSettingsSheet(
 
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                colors = NeuralHubUiDefaults.glassCardColors(),
+                border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                elevation = NeuralHubUiDefaults.glassCardElevation(),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -377,6 +383,13 @@ fun FeatureModelSettingsSheet(
                                     }
                                 }
                             }
+                        } else if (selectedModel != null) {
+                            Text(
+                                text = stringResource(R.string.feature_settings_gpu_not_supported_hint),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
                         }
 
                         if (currentlyLoadedModel?.name == selectedModel?.name) {
@@ -441,7 +454,9 @@ fun FeatureModelSettingsSheet(
             if (selectedModel != null) {
                 Card(
                     shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(

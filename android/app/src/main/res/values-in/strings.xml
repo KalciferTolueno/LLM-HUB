@@ -1,5 +1,5 @@
-﻿<resources>
-    <string name="app_name">LLM Hub</string>
+<resources>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">OK</string>
@@ -16,7 +16,7 @@
     <string name="vision">Visi</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">Selamat Datang di LLM Hub!</string>
+    <string name="welcome_to_llm_hub">Selamat Datang di Bearis!</string>
     <string name="no_models_downloaded">Belum ada model yang diunduh</string>
     <!-- Displayed when there are no saved global memories for RAG -->
     <string name="no_memories">Belum ada memori</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">Muat Ulang Model</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">Tentang LLM Hub</string>
-    <string name="about_description">LLM Hub adalah aplikasi Android sumber terbuka yang membawa kekuatan Model Bahasa Besar langsung ke perangkat seluler Anda. Rasakan percakapan AI dengan model terkini seperti Gemma, Llama, dan Phi - semuanya berjalan secara lokal di ponsel Anda untuk privasi maksimal dan aksesibilitas offline.</string>
+    <string name="about_llm_hub">Tentang Bearis</string>
+    <string name="about_description">Bearis adalah aplikasi Android sumber terbuka yang membawa kekuatan Model Bahasa Besar langsung ke perangkat seluler Anda. Rasakan percakapan AI dengan model terkini seperti Gemma, Llama, dan Phi - semuanya berjalan secara lokal di ponsel Anda untuk privasi maksimal dan aksesibilitas offline.</string>
     <string name="key_features">Fitur Utama</string>
     <string name="feature_multiple_models">🤖 Beberapa Model LLM: Gemma-3, Llama-3.2, Phi-4, dan Gemma-3n</string>
     <string name="feature_on_device">📱 Pemrosesan di Perangkat: Privasi lengkap, tidak perlu internet</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">Info Pengembang</string>
     <string name="about_developer_info">Proyek ini dikembangkan oleh penggemar yang bersemangat membuat teknologi AI lebih mudah diakses oleh semua orang. Umpan balik dan kontribusi Anda selalu diterima!</string>
     <string name="tech_stack">Tumpukan Teknologi</string>
-    <string name="about_tech_stack">LLM Hub dibangun menggunakan teknologi pengembangan Android modern: Kotlin, Jetpack Compose, Material Design 3, dan pustaka llama.cpp untuk inferensi yang efisien di perangkat.</string>
+    <string name="about_tech_stack">Bearis dibangun menggunakan teknologi pengembangan Android modern: Kotlin, Jetpack Compose, Material Design 3, dan pustaka llama.cpp untuk inferensi yang efisien di perangkat.</string>
     <string name="tech_kotlin_compose">🏗️ Dibangun dengan Kotlin dan Jetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 Didukung oleh MediaPipe dan LiteRT</string>
     <string name="tech_quantization">🚀 Dioptimalkan dengan kuantisasi INT4/INT8</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Ketentuan Layanan</string>
     <string name="tos_last_updated">Terakhir diperbarui: 16 Juli 2025</string>
-    <string name="tos_welcome_text">Selamat datang di LLM Hub. Dengan menggunakan aplikasi kami, Anda setuju untuk terikat oleh Ketentuan Layanan ini. Harap baca dengan seksama.</string>
-    <string name="tos_welcome">Selamat datang di LLM Hub. Dengan menggunakan aplikasi kami, Anda setuju untuk terikat oleh Ketentuan Layanan ini. Harap baca dengan seksama.</string>
+    <string name="tos_welcome_text">Selamat datang di Bearis. Dengan menggunakan aplikasi kami, Anda setuju untuk terikat oleh Ketentuan Layanan ini. Harap baca dengan seksama.</string>
+    <string name="tos_welcome">Selamat datang di Bearis. Dengan menggunakan aplikasi kami, Anda setuju untuk terikat oleh Ketentuan Layanan ini. Harap baca dengan seksama.</string>
     <string name="tos_acceptance_title">1. Penerimaan Ketentuan</string>
-    <string name="tos_acceptance_text">Dengan mengunduh, menginstal, atau menggunakan LLM Hub, Anda mengakui bahwa Anda telah membaca, memahami, dan setuju untuk terikat oleh Ketentuan Layanan ini. Jika Anda tidak setuju dengan ketentuan ini, jangan gunakan aplikasi.</string>
+    <string name="tos_acceptance_text">Dengan mengunduh, menginstal, atau menggunakan Bearis, Anda mengakui bahwa Anda telah membaca, memahami, dan setuju untuk terikat oleh Ketentuan Layanan ini. Jika Anda tidak setuju dengan ketentuan ini, jangan gunakan aplikasi.</string>
     <string name="tos_app_description_title">2. Deskripsi Aplikasi</string>
-    <string name="tos_app_description_text">LLM Hub adalah aplikasi Android sumber terbuka yang menyediakan akses ke Model Bahasa Besar (LLM) untuk percakapan AI di perangkat. Aplikasi memproses semua data secara lokal di perangkat Anda dan tidak mengirimkan informasi pribadi ke server eksternal.</string>
+    <string name="tos_app_description_text">Bearis adalah aplikasi Android sumber terbuka yang menyediakan akses ke Model Bahasa Besar (LLM) untuk percakapan AI di perangkat. Aplikasi memproses semua data secara lokal di perangkat Anda dan tidak mengirimkan informasi pribadi ke server eksternal.</string>
     <string name="tos_user_responsibilities_title">3. Tanggung Jawab Pengguna</string>
-    <string name="tos_user_responsibilities_text">Anda setuju untuk menggunakan LLM Hub secara bertanggung jawab dan sesuai dengan hukum yang berlaku. Anda bertanggung jawab untuk:\n\n• Menggunakan aplikasi hanya untuk tujuan yang sah\n• Tidak mencoba merekayasa balik atau memodifikasi aplikasi\n• Tidak menggunakan aplikasi untuk menghasilkan konten yang berbahaya, ilegal, atau menyinggung\n• Menghormati hak kekayaan intelektual pihak ketiga\n• Memastikan perangkat Anda memenuhi persyaratan minimum untuk operasi yang tepat</string>
+    <string name="tos_user_responsibilities_text">Anda setuju untuk menggunakan Bearis secara bertanggung jawab dan sesuai dengan hukum yang berlaku. Anda bertanggung jawab untuk:\n\n• Menggunakan aplikasi hanya untuk tujuan yang sah\n• Tidak mencoba merekayasa balik atau memodifikasi aplikasi\n• Tidak menggunakan aplikasi untuk menghasilkan konten yang berbahaya, ilegal, atau menyinggung\n• Menghormati hak kekayaan intelektual pihak ketiga\n• Memastikan perangkat Anda memenuhi persyaratan minimum untuk operasi yang tepat</string>
     <string name="tos_privacy_data_title">4. Privasi dan Data</string>
-    <string name="tos_privacy_data_text">LLM Hub dirancang dengan mengutamakan privasi:\n\n• Semua percakapan dan pemrosesan data terjadi secara lokal di perangkat Anda\n• Tidak ada data pribadi yang dikirim ke server eksternal\n• Riwayat obrolan disimpan secara lokal dan dapat dihapus kapan saja\n• Pengunduhan model dilakukan langsung dari repositori resmi (HuggingFace, Google)\n• Aplikasi tidak mengumpulkan analitik atau data penggunaan</string>
+    <string name="tos_privacy_data_text">Bearis dirancang dengan mengutamakan privasi:\n\n• Semua percakapan dan pemrosesan data terjadi secara lokal di perangkat Anda\n• Tidak ada data pribadi yang dikirim ke server eksternal\n• Riwayat obrolan disimpan secara lokal dan dapat dihapus kapan saja\n• Pengunduhan model dilakukan langsung dari repositori resmi (HuggingFace, Google)\n• Aplikasi tidak mengumpulkan analitik atau data penggunaan</string>
     <string name="tos_disclaimer_title">5. Penafian Jaminan</string>
-    <string name="tos_disclaimer_text">LLM Hub disediakan \"sebagaimana adanya\" tanpa jaminan apa pun. Kami tidak menjamin keakuratan, keandalan, atau ketersediaan aplikasi atau konten yang dihasilkannya. Penggunaan model AI dapat menghasilkan hasil yang tidak terduga.</string>
+    <string name="tos_disclaimer_text">Bearis disediakan \"sebagaimana adanya\" tanpa jaminan apa pun. Kami tidak menjamin keakuratan, keandalan, atau ketersediaan aplikasi atau konten yang dihasilkannya. Penggunaan model AI dapat menghasilkan hasil yang tidak terduga.</string>
     <string name="tos_limitation_liability_title">6. Batasan Tanggung Jawab</string>
-    <string name="tos_limitation_liability_text">Dalam hal apa pun pengembang tidak akan bertanggung jawab atas kerusakan tidak langsung, insidental, khusus, atau konsekuensial yang timbul dari penggunaan LLM Hub. Penggunaan aplikasi adalah risiko Anda sendiri.</string>
+    <string name="tos_limitation_liability_text">Dalam hal apa pun pengembang tidak akan bertanggung jawab atas kerusakan tidak langsung, insidental, khusus, atau konsekuensial yang timbul dari penggunaan Bearis. Penggunaan aplikasi adalah risiko Anda sendiri.</string>
     <string name="tos_model_usage_title">7. Penggunaan Model dan Lisensi</string>
-    <string name="tos_model_usage_text">Model AI yang tersedia melalui LLM Hub tunduk pada lisensi dan ketentuan penggunaan masing-masing. Pengguna bertanggung jawab untuk mematuhi persyaratan lisensi khusus model saat menggunakan model yang diunduh.</string>
+    <string name="tos_model_usage_text">Model AI yang tersedia melalui Bearis tunduk pada lisensi dan ketentuan penggunaan masing-masing. Pengguna bertanggung jawab untuk mematuhi persyaratan lisensi khusus model saat menggunakan model yang diunduh.</string>
     <string name="tos_open_source_title">8. Lisensi Sumber Terbuka</string>
-    <string name="tos_open_source_text">LLM Hub adalah perangkat lunak sumber terbuka. Kode sumber tersedia di bawah Lisensi MIT, yang mengizinkan penggunaan, modifikasi, dan distribusi dengan tunduk pada ketentuan lisensi. Pustaka dan model pihak ketiga mungkin memiliki ketentuan lisensi yang berbeda.</string>
+    <string name="tos_open_source_text">Bearis adalah perangkat lunak sumber terbuka. Kode sumber tersedia di bawah Lisensi MIT, yang mengizinkan penggunaan, modifikasi, dan distribusi dengan tunduk pada ketentuan lisensi. Pustaka dan model pihak ketiga mungkin memiliki ketentuan lisensi yang berbeda.</string>
     <string name="tos_changes_title">9. Perubahan pada Ketentuan</string>
     <string name="tos_changes_text">Kami dapat memperbarui Ketentuan Layanan ini dari waktu ke waktu. Pengguna akan diberitahu tentang perubahan signifikan melalui pembaruan aplikasi. Penggunaan aplikasi yang berkelanjutan setelah perubahan merupakan penerimaan ketentuan baru.</string>
     <string name="tos_contact_title">10. Informasi Kontak</string>
@@ -205,7 +205,7 @@
     <string name="model_text_only">Teks saja</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">Obrolan Baru</string>
     <string name="drawer_recent_chats">Obrolan Terkini</string>
     <string name="drawer_no_chats">Belum ada obrolan</string>
@@ -428,7 +428,7 @@
     <string name="import_model_warning">⚠️ Penting: Harap baca README model di Hugging Face sebelum mengimpor. Masukkan kemampuan yang benar (visi, audio, GPU) dan ukuran jendela konteks seperti yang ditentukan dalam dokumentasi model. Pengaturan yang salah dapat menyebabkan model tidak berfungsi dengan benar. Penting: Model GGUF yang mendukung visi memerlukan Vision Projector (mmproj). Impor file projector untuk mengaktifkan input gambar.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">Selamat Datang di LLM Hub</string>
+    <string name="home_welcome">Selamat Datang di Bearis</string>
     <string name="home_subtitle">Buka kekuatan AI di saku Anda — pribadi, cepat, dan offline!</string>
     
     <!-- Feature Cards -->
@@ -804,7 +804,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Buka pengalaman penuh</string>
     <string name="premium_feature_no_ads">Tanpa iklan, selamanya</string>
     <string name="premium_feature_vibe_coder">VibeCoder – Generator kode AI</string>

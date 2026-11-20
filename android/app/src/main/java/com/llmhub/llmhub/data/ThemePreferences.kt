@@ -27,8 +27,9 @@ class ThemePreferences(private val context: Context) {
         private val SELECTED_EMBEDDING_MODEL_KEY = stringPreferencesKey("selected_embedding_model")
         private val MEMORY_ENABLED_KEY = booleanPreferencesKey("memory_enabled")
         private val AUTO_READOUT_ENABLED_KEY = booleanPreferencesKey("auto_readout_enabled")
-        private val IS_PREMIUM_KEY = booleanPreferencesKey("is_premium")
         private val GITHUB_STARS_KEY = androidx.datastore.preferences.core.intPreferencesKey("github_stars")
+        private val LOCAL_API_DEFAULT_MODEL_KEY = stringPreferencesKey("local_api_default_model")
+        private val LOCAL_API_REASONING_KEY = booleanPreferencesKey("local_api_reasoning_enabled")
     }
 
     val themeMode: Flow<ThemeMode> = context.dataStore.data
@@ -43,7 +44,7 @@ class ThemePreferences(private val context: Context) {
 
     val webSearchEnabled: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[WEB_SEARCH_KEY] ?: false // Default to disabled
+            preferences[WEB_SEARCH_KEY] ?: true // Default: enabled (user can turn off in Settings)
         }
 
     val appLanguage: Flow<String?> = context.dataStore.data
@@ -69,11 +70,6 @@ class ThemePreferences(private val context: Context) {
     val autoReadoutEnabled: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[AUTO_READOUT_ENABLED_KEY] ?: false // Default to disabled
-        }
-
-    val isPremium: Flow<Boolean> = context.dataStore.data
-        .map { preferences ->
-            preferences[IS_PREMIUM_KEY] ?: false
         }
 
     suspend fun setThemeMode(themeMode: ThemeMode) {
@@ -126,20 +122,45 @@ class ThemePreferences(private val context: Context) {
         }
     }
 
-    suspend fun setIsPremium(premium: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[IS_PREMIUM_KEY] = premium
-        }
-    }
-
     val githubStars: Flow<Int> = context.dataStore.data
         .map { preferences ->
             preferences[GITHUB_STARS_KEY] ?: 0 // Default to 0
         }
 
+    /** Display name of the LLM to load when using "Start" on the home Primary engine card. */
+    val localApiDefaultModelName: Flow<String?> = context.dataStore.data
+        .map { preferences ->
+            preferences[LOCAL_API_DEFAULT_MODEL_KEY]
+        }
+
+    /**
+     * When the client omits `bearis_enable_thinking` on `/v1/chat/completions`, this value is used
+     * (thinking / reasoning trace for Gemma-class models on the LAN API).
+     */
+    val localApiReasoningEnabled: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[LOCAL_API_REASONING_KEY] ?: false
+        }
+
     suspend fun setGithubStars(stars: Int) {
         context.dataStore.edit { preferences ->
             preferences[GITHUB_STARS_KEY] = stars
+        }
+    }
+
+    suspend fun setLocalApiDefaultModelName(name: String?) {
+        context.dataStore.edit { preferences ->
+            if (name != null) {
+                preferences[LOCAL_API_DEFAULT_MODEL_KEY] = name
+            } else {
+                preferences.remove(LOCAL_API_DEFAULT_MODEL_KEY)
+            }
+        }
+    }
+
+    suspend fun setLocalApiReasoningEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[LOCAL_API_REASONING_KEY] = enabled
         }
     }
 }

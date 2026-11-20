@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">好</string>
@@ -16,7 +16,7 @@
     <string name="vision">视觉</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">欢迎来到 LLM Hub!</string>
+    <string name="welcome_to_llm_hub">欢迎来到 Bearis!</string>
     <string name="no_models_downloaded">暂无任何模型</string>
     <!-- Displayed when there are no saved global memories for RAG -->
     <string name="no_memories">暂无任何记忆</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">重新加载模型</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">关于 LLM Hub</string>
-    <string name="about_description">LLM Hub 是一个开源的安卓应用程序，它将大型语言模型的强大功能直接带到您的设备上。使用最先进的模型如 Gemma、Llama 和 Phi 进行 AI 对话。所有这些模型都在您的设备上本地运行，以实现最大的隐私保护和离线可访问性。</string>
+    <string name="about_llm_hub">关于 Bearis</string>
+    <string name="about_description">Bearis 是一个开源的安卓应用程序，它将大型语言模型的强大功能直接带到您的设备上。使用最先进的模型如 Gemma、Llama 和 Phi 进行 AI 对话。所有这些模型都在您的设备上本地运行，以实现最大的隐私保护和离线可访问性。</string>
     <string name="key_features">主要功能</string>
     <string name="feature_multiple_models">🤖 有多种 LLM 模型: Gemma-3, Llama-3.2, Phi-4, and Gemma-3n</string>
     <string name="feature_on_device">📱 设备端侧处理: 完全隐私，无需互联网</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">开发者信息</string>
     <string name="about_developer_info">这个项目由一个对让 AI 技术更易于访问充满热情的爱好者开发。我们欢迎您的反馈和贡献！</string>
     <string name="tech_stack">技术结构</string>
-    <string name="about_tech_stack">LLM Hub 由现代的安卓技术构建: Kotlin, Jetpack Compose, Material Design 3, 以及 llama.cpp 库，用于高效的设备端推理</string>
+    <string name="about_tech_stack">Bearis 由现代的安卓技术构建: Kotlin, Jetpack Compose, Material Design 3, 以及 llama.cpp 库，用于高效的设备端推理</string>
     <string name="tech_kotlin_compose">🏗️ 使用 Kotlin &amp; Jetpack Compose 构建</string>
     <string name="tech_mediapipe_litert">🧠 由 MediaPipe &amp; LiteRT 驱动</string>
     <string name="tech_quantization">🚀 使用 INT4/INT8 量化优化</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">服务条款</string>
     <string name="tos_last_updated">上次更新于 2025 年 7 月 16 日</string>
-    <string name="tos_welcome_text">欢迎来到 LLM Hub。使用本应用即表示您同意遵守本服务条款。请仔细阅读。</string>
-    <string name="tos_welcome">欢迎来到 LLM Hub。使用本应用即表示您同意遵守本服务条款。请仔细阅读。</string>
+    <string name="tos_welcome_text">欢迎来到 Bearis。使用本应用即表示您同意遵守本服务条款。请仔细阅读。</string>
+    <string name="tos_welcome">欢迎来到 Bearis。使用本应用即表示您同意遵守本服务条款。请仔细阅读。</string>
     <string name="tos_acceptance_title">1. 接受条款</string>
-    <string name="tos_acceptance_text">下载、安装或使用 LLM Hub 即表示您已阅读、理解并同意受本服务条款约束。如果您不同意这些条款，请勿使用本应用程序。</string>
+    <string name="tos_acceptance_text">下载、安装或使用 Bearis 即表示您已阅读、理解并同意受本服务条款约束。如果您不同意这些条款，请勿使用本应用程序。</string>
     <string name="tos_app_description_title">2. 应用说明</string>
-    <string name="tos_app_description_text">LLM Hub 是一款开源的安卓应用，它提供对大型语言模型 (LLM) 的访问，用于设备端 AI 对话。该应用会在您的设备本地处理所有数据，不会将个人信息传输到外部服务器。</string>
+    <string name="tos_app_description_text">Bearis 是一款开源的安卓应用，它提供对大型语言模型 (LLM) 的访问，用于设备端 AI 对话。该应用会在您的设备本地处理所有数据，不会将个人信息传输到外部服务器。</string>
     <string name="tos_user_responsibilities_title">" 24 3. 用户职责"</string>
-    <string name="tos_user_responsibilities_text">您同意负责任地使用 LLM Hub，并遵守适用法律。您需承担以下责任：• 仅将应用程序用于合法目的• 不得尝试对应用程序进行反向工程或修改• 不得利用应用程序生成有害、非法或冒犯性内容• 尊重第三方知识产权• 确保您的设备满足正常运行的最低要求。</string>
+    <string name="tos_user_responsibilities_text">您同意负责任地使用 Bearis，并遵守适用法律。您需承担以下责任：• 仅将应用程序用于合法目的• 不得尝试对应用程序进行反向工程或修改• 不得利用应用程序生成有害、非法或冒犯性内容• 尊重第三方知识产权• 确保您的设备满足正常运行的最低要求。</string>
     <string name="tos_privacy_data_title">4. 隐私和数据</string>
-    <string name="tos_privacy_data_text">LLM Hub 的设计以隐私保护为核心：• 所有对话和数据处理均在您的设备本地进行 • 不会将任何个人数据传输到外部服务器 • 聊天记录存储在本地，您可以随时删除 • 模型下载直接从官方存储库（HuggingFace、Google）进行 • 该应用程序不会收集分析或使用数据。</string>
+    <string name="tos_privacy_data_text">Bearis 的设计以隐私保护为核心：• 所有对话和数据处理均在您的设备本地进行 • 不会将任何个人数据传输到外部服务器 • 聊天记录存储在本地，您可以随时删除 • 模型下载直接从官方存储库（HuggingFace、Google）进行 • 该应用程序不会收集分析或使用数据。</string>
     <string name="tos_disclaimer_title">5. 免责声明</string>
-    <string name="tos_disclaimer_text">LLM Hub 按现状提供，不提供任何形式的担保。我们不保证应用程序及其生成内容的准确性、可靠性或可用性。使用人工智能模型可能会产生不可预测的结果。</string>
+    <string name="tos_disclaimer_text">Bearis 按现状提供，不提供任何形式的担保。我们不保证应用程序及其生成内容的准确性、可靠性或可用性。使用人工智能模型可能会产生不可预测的结果。</string>
     <string name="tos_limitation_liability_title">6. 责任限制</string>
-    <string name="tos_limitation_liability_text">在任何情况下，开发者均不对因使用 LLM Hub 而导致的任何间接、附带、特殊或后果性损害承担责任。您需自行承担使用该应用程序的风险。</string>
+    <string name="tos_limitation_liability_text">在任何情况下，开发者均不对因使用 Bearis 而导致的任何间接、附带、特殊或后果性损害承担责任。您需自行承担使用该应用程序的风险。</string>
     <string name="tos_model_usage_title">7. 模型使用和许可</string>
-    <string name="tos_model_usage_text">通过 LLM Hub 获取的 AI 模型均受其各自许可协议和使用条款约束。用户在使用下载的模型时，须自行负责遵守模型特定的许可要求。</string>
+    <string name="tos_model_usage_text">通过 Bearis 获取的 AI 模型均受其各自许可协议和使用条款约束。用户在使用下载的模型时，须自行负责遵守模型特定的许可要求。</string>
     <string name="tos_open_source_title">8. 开源许可</string>
-    <string name="tos_open_source_text">LLM Hub 是开源软件。其源代码采用 MIT 许可证，允许在遵守许可证条款的前提下使用、修改和分发。第三方库和模型可能采用不同的许可证条款。</string>
+    <string name="tos_open_source_text">Bearis 是开源软件。其源代码采用 MIT 许可证，允许在遵守许可证条款的前提下使用、修改和分发。第三方库和模型可能采用不同的许可证条款。</string>
     <string name="tos_changes_title">9. 条款变更</string>
     <string name="tos_changes_text">我们可能会随时更新本服务条款。重大变更将通过应用程序更新通知用户。变更后继续使用本应用即视为接受新条款。</string>
     <string name="tos_contact_title">10. 联系方式</string>
@@ -210,7 +210,7 @@
     <string name="not_loaded">未加载</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">新对话</string>
     <string name="drawer_recent_chats">最近对话</string>
     <string name="drawer_no_chats">暂无对话</string>
@@ -442,7 +442,7 @@
     <string name="import_model_warning">⚠️ 重要提示：导入前请务必阅读 Hugging Face 平台上的模型 README 文档。请严格按照模型文档要求设置正确的功能参数（视觉、音频、显卡加速）及上下文窗口大小。错误设置可能导致模型运行异常。重要提示：视觉 GGUF 模型需配合视觉投影器（mmproj）使用。请导入投影器文件以启用图像输入功能</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">欢迎来到 LLM Hub</string>
+    <string name="home_welcome">欢迎来到 Bearis</string>
     <string name="home_subtitle">解锁口袋里的 AI 力量 —— 私密、快速且离线可用！</string>
     
     <!-- Feature Cards -->
@@ -808,7 +808,7 @@
     <string name="prompt_too_long">提示信息过长。请缩短您的消息并重试。</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub 高级版</string>
+    <string name="premium_title">Bearis 高级版</string>
     <string name="premium_subtitle">解锁完整体验</string>
     <string name="premium_feature_no_ads">永久去广告</string>
     <string name="premium_feature_vibe_coder">代码生成器 – AI 代码构建</string>

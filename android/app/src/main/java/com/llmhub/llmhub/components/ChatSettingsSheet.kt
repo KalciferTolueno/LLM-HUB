@@ -25,6 +25,7 @@ import com.llmhub.llmhub.data.ModelPreferences
 import com.llmhub.llmhub.data.hasDownloadedVisionProjector
 import com.llmhub.llmhub.data.requiresExternalVisionProjector
 import com.llmhub.llmhub.inference.MediaPipeInferenceService
+import com.llmhub.llmhub.ui.LocalLanApiRunning
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -45,12 +46,15 @@ fun ChatSettingsSheet(
     onBackendSelected: (LlmInference.Backend, String?) -> Unit,
     onLoadModel: (model: LLMModel, maxTokens: Int, topK: Int, topP: Float, temperature: Float, backend: LlmInference.Backend?, deviceId: String?, disableVision: Boolean, disableAudio: Boolean, nGpuLayers: Int, enableThinking: Boolean, contextWindow: Int, enableAgentTools: Boolean) -> Unit,
     onUnloadModel: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    /** Called when the user toggles reasoning — forwards to inference immediately so chat keeps working without reloading the model. */
+    onEnableThinkingChanged: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
     val modelPrefs = ModelPreferences(context)
+    val lanApiActive = LocalLanApiRunning.current
     
     var showModelMenu by remember { mutableStateOf(false) }
     var showBackendMenu by remember { mutableStateOf(false) }
@@ -127,7 +131,7 @@ fun ChatSettingsSheet(
 
     var disableVision by remember { mutableStateOf(isGemma3nModel) }
     var disableAudio by remember { mutableStateOf(isGemma3nModel) }
-    var enableThinking by remember { mutableStateOf(true) }
+    var enableThinking by remember { mutableStateOf(false) }
     var agentToolsEnabled by remember { mutableStateOf(true) }
     var systemPromptText by remember { mutableStateOf("") }
 
@@ -201,7 +205,7 @@ fun ChatSettingsSheet(
                     useNpu = false
                     disableVision = newIsGemma3n || !selectedModelSupportsVisionInput
                     disableAudio = newIsGemma3n
-                    enableThinking = true
+                    enableThinking = false
                     agentToolsEnabled = true
                     systemPromptText = ""
                 }
@@ -221,7 +225,7 @@ fun ChatSettingsSheet(
                 useNpu = false
                 disableVision = newIsGemma3n || !selectedModelSupportsVisionInput
                 disableAudio = newIsGemma3n
-                enableThinking = true
+                enableThinking = false
                 agentToolsEnabled = true
                 systemPromptText = ""
             }
@@ -561,7 +565,7 @@ fun ChatSettingsSheet(
                                             } catch (_: Exception) {}
                                         }
                                         
-                                        onLoadModel(model, finalMax, topK, topP, temperature, backend, deviceId, disableVision, disableAudio, gpuLayers, enableThinking, finalCtxWindow, agentToolsEnabled)
+                                        onLoadModel(model, finalMax, topK, topP, temperature, backend, deviceId, disableVision, disableAudio, gpuLayers, enableThinking, finalCtxWindow, agentToolsEnabled && !lanApiActive)
                                     }
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -845,7 +849,22 @@ fun ChatSettingsSheet(
                                 )
                                 Switch(
                                     checked = enableThinking,
-                                    onCheckedChange = { enableThinking = it }
+                                    onCheckedChange = { v ->
+                                        enableThinking = v
+                                        onEnableThinkingChanged(v)
+                                        selectedModel?.let { m ->
+                                            scope.launch(Dispatchers.IO) {
+                                                try {
+                                                    val cur = modelPrefs.getModelConfig(m.name)
+                                                        ?: return@launch
+                                                    modelPrefs.setModelConfig(
+                                                        m.name,
+                                                        cur.copy(enableThinking = v)
+                                                    )
+                                                } catch (_: Exception) {}
+                                            }
+                                        }
+                                    }
                                 )
                             }
                         }
@@ -862,8 +881,9 @@ fun ChatSettingsSheet(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Switch(
-                                    checked = agentToolsEnabled,
-                                    onCheckedChange = { agentToolsEnabled = it }
+                                    checked = agentToolsEnabled && !lanApiActive,
+                                    enabled = !lanApiActive,
+                                    onCheckedChange = { if (!lanApiActive) agentToolsEnabled = it }
                                 )
                             }
                             Text(
@@ -871,6 +891,14 @@ fun ChatSettingsSheet(
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            if (lanApiActive) {
+                                Text(
+                                    text = stringResource(R.string.agent_tools_locked_while_lan_api),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
                         }
 
                         // Per-model system prompt
@@ -926,9 +954,10 @@ fun ChatSettingsSheet(
                                     useNpu = false
                                     disableVision = newIsGemma3n || !selectedModelSupportsVisionInput
                                     disableAudio = newIsGemma3n
-                                    enableThinking = true
+                                    enableThinking = false
                                     agentToolsEnabled = true
                                     systemPromptText = ""
+                                    onEnableThinkingChanged(false)
                                 }
                             },
                             modifier = Modifier.align(Alignment.End)

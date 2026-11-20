@@ -42,6 +42,21 @@ object DeviceInfo {
     }
 
     /**
+     * SoC model IDs listed for LiteRT + MediaTek NeuroPilot (see Google AI Edge).
+     * Used with `libLiteRtDispatch_MediaTek.so` under jniLibs for LiteRT-LM Backend.NPU.
+     */
+    private val liteRtMediaTekNpuSocIds = setOf(
+        "MT6878", "MT6897", "MT6983", "MT6985", "MT6989", "MT6991", "MT6990"
+    )
+
+    fun isLikelyMediaTekLiteRtNpuSoc(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return false
+        val soc = getDeviceSoc()
+        if (soc.isBlank() || soc == "UNKNOWN") return false
+        return liteRtMediaTekNpuSocIds.contains(soc)
+    }
+
+    /**
      * Normalize chipset suffix for SD QNN package naming.
      * Current hosted SD-QNN variants are keyed as 8gen1 and 8gen2, where 8gen2 is
      * also used for newer chips (8gen3/8gen4/8s/Elite class) for compatibility.
@@ -138,6 +153,50 @@ object ModelData {
             requirements = ModelRequirements(minRamGB = 6, recommendedRamGB = 8),
             contextWindowSize = 4096,
             modelFormat = "task"
+        ),
+
+        // Small base (pretrained, non-instruct) GGUF — completion / fine-tune; not optimized for chat like IT models
+        LLMModel(
+            name = "Llama-3.2 1B Base (Q4_K_M)",
+            description = "Meta Llama 3.2 1B base checkpoint (not Instruct). Use for completion-style prompts or custom fine-tuning; for assistant chat prefer Instruct/IT models. Q4_K_M GGUF (~770MB).",
+            url = "https://huggingface.co/bartowski/Meta-Llama-3.2-1B-GGUF/resolve/main/Meta-Llama-3.2-1B-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 808000000L,
+            source = "Meta via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 2, recommendedRamGB = 3),
+            contextWindowSize = 131072,
+            modelFormat = "gguf",
+            trainingKind = ModelTrainingVariant.BASE
+        ),
+        LLMModel(
+            name = "Qwen2.5 0.5B Base (Q4_K_M)",
+            description = "Alibaba Qwen2.5 0.5B base (not Instruct). Pretrained causal LM; for chat use the Instruct variants in this catalog. Q4_K_M GGUF.",
+            url = "https://huggingface.co/bartowski/Qwen2.5-0.5B-GGUF/resolve/main/Qwen2.5-0.5B-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 380000000L,
+            source = "Alibaba via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 2, recommendedRamGB = 3),
+            contextWindowSize = 32768,
+            modelFormat = "gguf",
+            trainingKind = ModelTrainingVariant.BASE
+        ),
+        LLMModel(
+            name = "Qwen2.5 1.5B Base (Q4_K_M)",
+            description = "Alibaba Qwen2.5 1.5B base (not Instruct). Heavier than 0.5B; same use case as other base models. Q4_K_M GGUF.",
+            url = "https://huggingface.co/bartowski/Qwen2.5-1.5B-GGUF/resolve/main/Qwen2.5-1.5B-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 986048800L,
+            source = "Alibaba via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 3, recommendedRamGB = 4),
+            contextWindowSize = 32768,
+            modelFormat = "gguf",
+            trainingKind = ModelTrainingVariant.BASE
         ),
 
         // Llama-3.2 1B GGUF Models from bartowski
@@ -1021,6 +1080,101 @@ object ModelData {
             modelFormat = "litertlm"
         ),
 
+        // Qwen2.5 Instruct (Alibaba GGUF via bartowski)
+        LLMModel(
+            name = "Qwen2.5-0.5B Instruct (Q4_K_M)",
+            description = "Alibaba Qwen2.5 0.5B instruct, Q4_K_M GGUF. Strong quality for size; 128k context on capable backends.",
+            url = "https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 397808192L,
+            source = "Alibaba via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 2, recommendedRamGB = 3),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+        LLMModel(
+            name = "Qwen2.5-1.5B Instruct (Q4_K_M)",
+            description = "Alibaba Qwen2.5 1.5B instruct, Q4_K_M GGUF. Good balance of speed and quality; 128k context.",
+            url = "https://huggingface.co/bartowski/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-1.5B-Instruct-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 986048768L,
+            source = "Alibaba via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 3, recommendedRamGB = 4),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+        LLMModel(
+            name = "Qwen2.5-3B Instruct (Q4_K_M)",
+            description = "Alibaba Qwen2.5 3B instruct, Q4_K_M GGUF. Higher quality; needs more RAM. 128k context.",
+            url = "https://huggingface.co/bartowski/Qwen2.5-3B-Instruct-GGUF/resolve/main/Qwen2.5-3B-Instruct-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 1929903264L,
+            source = "Alibaba via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 4, recommendedRamGB = 6),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+        LLMModel(
+            name = "Qwen2.5-Coder 1.5B Instruct (Q4_K_M)",
+            description = "Alibaba Qwen2.5-Coder: instruction model tuned for code (Python, JS, HTML, etc.). Same ~1GB size as Qwen2.5 1.5B general but better for Vibecode and programming tasks. Q4_K_M GGUF; 128k context.",
+            url = "https://huggingface.co/bartowski/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Coder-1.5B-Instruct-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 986048800L,
+            source = "Alibaba via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 3, recommendedRamGB = 4),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+
+        // DeepSeek-R1-Distill (GGUF, reasoning) — Qwen 1.5B/7B & Meta Llama 8B; Nexa on-device via llama.cpp-compatible GGUF
+        LLMModel(
+            name = "DeepSeek-R1-Distill Qwen 1.5B (Reasoning, Q4_K_M)",
+            description = "DeepSeek-R1 reasoning distilled into Qwen-1.5B. Q4_K_M GGUF for on-device chat. Outputs chain-of-thought in think tags; final answer after. HuggingFace recommends temperature ~0.5–0.7. ~1.12GB (HF).",
+            url = "https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 1202590848L, // 1.12 GiB (Hugging Face file size)
+            source = "DeepSeek via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 3, recommendedRamGB = 4),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+        LLMModel(
+            name = "DeepSeek-R1-Distill Qwen 7B (Reasoning, Q4_K_M)",
+            description = "DeepSeek-R1 reasoning distilled into Qwen-7B. Q4_K_M GGUF. Stronger reasoning than 1.5B; needs more RAM. Chain-of-thought in think tags. ~4.7GB.",
+            url = "https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 5025628938L, // ~4.68 GiB typical for this quant
+            source = "DeepSeek via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 6, recommendedRamGB = 8),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+        LLMModel(
+            name = "DeepSeek-R1-Distill Llama 8B (Reasoning, Q4_K_M)",
+            description = "DeepSeek-R1 reasoning distilled into Llama-3-8B. Q4_K_M GGUF. Chain-of-thought in think tags. ~4.9GB.",
+            url = "https://huggingface.co/bartowski/DeepSeek-R1-Distill-Llama-8B-GGUF/resolve/main/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf?download=true",
+            category = "text",
+            sizeBytes = 5281895035L,
+            source = "DeepSeek via bartowski",
+            supportsVision = false,
+            supportsGpu = true,
+            requirements = ModelRequirements(minRamGB = 8, recommendedRamGB = 12),
+            contextWindowSize = 131072,
+            modelFormat = "gguf"
+        ),
+
         // LFM-2.5 1.2B Instruct Models (LiquidAI GGUF)
         LLMModel(
             name = "LFM-2.5 1.2B Instruct (Q4_0)",
@@ -1534,7 +1688,7 @@ object ModelData {
         // Gemma-3n Models (Multimodal - Text + Vision + Audio)
         LLMModel(
             name = "Gemma-3n E2B",
-            description = "Google Gemma-3n E2B with multimodal capabilities (text, vision, and audio). Effective 2B parameters with selective parameter activation. Supports 4k context window and multimodal input including text, images, and audio. Ready to download from HuggingFace (3.1.15GB)",
+            description = "Google Gemma-3n E2B with multimodal capabilities (text, vision, and audio). Effective 2B parameters with selective parameter activation. Supports 4k context window and multimodal input including text, images, and audio. LiteRT-LM format — on supported MediaTek Dimensity (NeuroPilot), bundle libLiteRtDispatch_MediaTek.so in jniLibs and choose GPU in settings to run on NPU. Ready to download from HuggingFace (3.1.15GB)",
             url = "https://huggingface.co/google/gemma-3n-E2B-it-litert-lm/resolve/73b019b63436d346f68dd9c1dbfd117eb264d888/gemma-3n-E2B-it-int4.litertlm?download=true",
             category = "multimodal",
             sizeBytes = 3388604416L, // 3.1.15GB (actual downloaded size)

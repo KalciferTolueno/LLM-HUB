@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="multimodal">Multimodal</string>
     <string name="text_only">Nur Text</string>
@@ -6,7 +6,7 @@
     <string name="select_model">Modell auswählen</string>
     <string name="unload_model">Modell entladen</string>
     <string name="reload_model">Modell neu laden</string>
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">OK</string>
@@ -23,7 +23,7 @@
     <string name="vision">Vision</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">Willkommen bei LLM Hub!</string>
+    <string name="welcome_to_llm_hub">Willkommen bei Bearis!</string>
     <string name="no_models_downloaded">Noch keine Modelle heruntergeladen</string>
     <!-- Angezeigt, wenn keine globalen Erinnerungen für RAG vorhanden sind -->
     <string name="no_memories">Noch keine Erinnerungen</string>
@@ -48,8 +48,8 @@
     <string name="context_multimodal_format">%1$dk Kontext • %2$s</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">Über LLM Hub</string>
-    <string name="about_description">LLM Hub ist eine Open-Source-Android-Anwendung, die die Macht der Large Language Models direkt auf Ihr mobiles Gerät bringt. Erleben Sie KI-Gespräche mit hochmodernen Modellen wie Gemma, Llama und Phi - alle laufen lokal auf Ihrem Telefon für maximale Privatsphäre und Offline-Zugänglichkeit.</string>
+    <string name="about_llm_hub">Über Bearis</string>
+    <string name="about_description">Bearis ist eine Open-Source-Android-Anwendung, die die Macht der Large Language Models direkt auf Ihr mobiles Gerät bringt. Erleben Sie KI-Gespräche mit hochmodernen Modellen wie Gemma, Llama und Phi - alle laufen lokal auf Ihrem Telefon für maximale Privatsphäre und Offline-Zugänglichkeit.</string>
     <string name="key_features">Hauptfunktionen</string>
     <string name="feature_multiple_models">🤖 Mehrere LLM-Modelle: Gemma-3, Llama-3.2, Phi-4, und Gemma-3n</string>
     <string name="feature_on_device">📱 Geräteverarbeitung: Vollständige Privatsphäre, kein Internet erforderlich</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">Entwicklerinformationen</string>
     <string name="about_developer_info">Dieses Projekt wird von einem Enthusiasten entwickelt, der leidenschaftlich daran arbeitet, KI-Technologie für alle zugänglicher zu machen. Ihr Feedback und Ihre Beiträge sind immer willkommen!</string>
     <string name="tech_stack">Technologie-Stack</string>
-    <string name="about_tech_stack">LLM Hub ist mit modernen Android-Entwicklungstechnologien erstellt: Kotlin, Jetpack Compose, Material Design 3 und der llama.cpp-Bibliothek für effiziente Geräteinferenz.</string>
+    <string name="about_tech_stack">Bearis ist mit modernen Android-Entwicklungstechnologien erstellt: Kotlin, Jetpack Compose, Material Design 3 und der llama.cpp-Bibliothek für effiziente Geräteinferenz.</string>
     <string name="tech_kotlin_compose">🏗️ Erstellt mit Kotlin und Jetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 Angetrieben von MediaPipe und LiteRT</string>
     <string name="tech_quantization">🚀 Optimiert mit INT4/INT8-Quantisierung</string>
@@ -81,24 +81,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Nutzungsbedingungen</string>
     <string name="tos_last_updated">Zuletzt aktualisiert: 16. Juli 2025</string>
-    <string name="tos_welcome_text">Willkommen bei LLM Hub. Durch die Nutzung unserer Anwendung stimmen Sie zu, an diese Nutzungsbedingungen gebunden zu sein. Bitte lesen Sie sie sorgfältig durch.</string>
-    <string name="tos_welcome">Willkommen bei LLM Hub. Durch die Nutzung unserer Anwendung stimmen Sie zu, an diese Nutzungsbedingungen gebunden zu sein. Bitte lesen Sie sie sorgfältig durch.</string>
+    <string name="tos_welcome_text">Willkommen bei Bearis. Durch die Nutzung unserer Anwendung stimmen Sie zu, an diese Nutzungsbedingungen gebunden zu sein. Bitte lesen Sie sie sorgfältig durch.</string>
+    <string name="tos_welcome">Willkommen bei Bearis. Durch die Nutzung unserer Anwendung stimmen Sie zu, an diese Nutzungsbedingungen gebunden zu sein. Bitte lesen Sie sie sorgfältig durch.</string>
     <string name="tos_acceptance_title">1. Annahme der Bedingungen</string>
-    <string name="tos_acceptance_text">Durch das Herunterladen, Installieren oder Verwenden von LLM Hub bestätigen Sie, dass Sie diese Nutzungsbedingungen gelesen, verstanden haben und zustimmen, an sie gebunden zu sein. Wenn Sie diesen Bedingungen nicht zustimmen, verwenden Sie die Anwendung bitte nicht.</string>
+    <string name="tos_acceptance_text">Durch das Herunterladen, Installieren oder Verwenden von Bearis bestätigen Sie, dass Sie diese Nutzungsbedingungen gelesen, verstanden haben und zustimmen, an sie gebunden zu sein. Wenn Sie diesen Bedingungen nicht zustimmen, verwenden Sie die Anwendung bitte nicht.</string>
     <string name="tos_app_description_title">2. Anwendungsbeschreibung</string>
-    <string name="tos_app_description_text">LLM Hub ist eine Open-Source-Android-Anwendung, die Zugang zu Large Language Models (LLMs) für KI-Gespräche auf dem Gerät bietet. Die App verarbeitet alle Daten lokal auf Ihrem Gerät und überträgt keine persönlichen Informationen an externe Server.</string>
+    <string name="tos_app_description_text">Bearis ist eine Open-Source-Android-Anwendung, die Zugang zu Large Language Models (LLMs) für KI-Gespräche auf dem Gerät bietet. Die App verarbeitet alle Daten lokal auf Ihrem Gerät und überträgt keine persönlichen Informationen an externe Server.</string>
     <string name="tos_user_responsibilities_title">3. Benutzerverantwortlichkeiten</string>
-    <string name="tos_user_responsibilities_text">Sie stimmen zu, LLM Hub verantwortungsbewusst und in Übereinstimmung mit den geltenden Gesetzen zu verwenden. Sie sind verantwortlich für:\n\n• Die Verwendung der Anwendung nur für rechtmäßige Zwecke\n• Keine Versuche, die Anwendung zu reverse-engineeren oder zu modifizieren\n• Keine Verwendung der Anwendung zur Generierung schädlicher, illegaler oder anstößiger Inhalte\n• Respektierung der Rechte des geistigen Eigentums Dritter\n• Sicherstellung, dass Ihr Gerät die Mindestanforderungen für den ordnungsgemäßen Betrieb erfüllt</string>
+    <string name="tos_user_responsibilities_text">Sie stimmen zu, Bearis verantwortungsbewusst und in Übereinstimmung mit den geltenden Gesetzen zu verwenden. Sie sind verantwortlich für:\n\n• Die Verwendung der Anwendung nur für rechtmäßige Zwecke\n• Keine Versuche, die Anwendung zu reverse-engineeren oder zu modifizieren\n• Keine Verwendung der Anwendung zur Generierung schädlicher, illegaler oder anstößiger Inhalte\n• Respektierung der Rechte des geistigen Eigentums Dritter\n• Sicherstellung, dass Ihr Gerät die Mindestanforderungen für den ordnungsgemäßen Betrieb erfüllt</string>
     <string name="tos_privacy_data_title">4. Datenschutz und Daten</string>
-    <string name="tos_privacy_data_text">LLM Hub wurde mit Blick auf den Datenschutz entwickelt:\n\n• Alle Gespräche und Datenverarbeitung erfolgen lokal auf Ihrem Gerät\n• Keine persönlichen Daten werden an externe Server übertragen\n• Der Chat-Verlauf wird lokal gespeichert und kann jederzeit gelöscht werden\n• Model-Downloads werden direkt von offiziellen Repositories durchgeführt (HuggingFace, Google)\n• Die Anwendung sammelt keine Analyse- oder Nutzungsdaten</string>
+    <string name="tos_privacy_data_text">Bearis wurde mit Blick auf den Datenschutz entwickelt:\n\n• Alle Gespräche und Datenverarbeitung erfolgen lokal auf Ihrem Gerät\n• Keine persönlichen Daten werden an externe Server übertragen\n• Der Chat-Verlauf wird lokal gespeichert und kann jederzeit gelöscht werden\n• Model-Downloads werden direkt von offiziellen Repositories durchgeführt (HuggingFace, Google)\n• Die Anwendung sammelt keine Analyse- oder Nutzungsdaten</string>
     <string name="tos_disclaimer_title">5. Gewährleistungsausschluss</string>
-    <string name="tos_disclaimer_text">LLM Hub wird \"wie besehen\" ohne Gewährleistungen jeglicher Art bereitgestellt. Wir garantieren nicht die Genauigkeit, Zuverlässigkeit oder Verfügbarkeit der Anwendung oder ihres generierten Inhalts. Die Verwendung von KI-Modellen kann unvorhersagbare Ergebnisse produzieren.</string>
+    <string name="tos_disclaimer_text">Bearis wird \"wie besehen\" ohne Gewährleistungen jeglicher Art bereitgestellt. Wir garantieren nicht die Genauigkeit, Zuverlässigkeit oder Verfügbarkeit der Anwendung oder ihres generierten Inhalts. Die Verwendung von KI-Modellen kann unvorhersagbare Ergebnisse produzieren.</string>
     <string name="tos_limitation_liability_title">6. Haftungsbeschränkung</string>
-    <string name="tos_limitation_liability_text">In keinem Fall sind die Entwickler für indirekte, zufällige, besondere oder Folgeschäden haftbar, die aus der Verwendung von LLM Hub entstehen. Ihre Nutzung der Anwendung erfolgt auf eigenes Risiko.</string>
+    <string name="tos_limitation_liability_text">In keinem Fall sind die Entwickler für indirekte, zufällige, besondere oder Folgeschäden haftbar, die aus der Verwendung von Bearis entstehen. Ihre Nutzung der Anwendung erfolgt auf eigenes Risiko.</string>
     <string name="tos_model_usage_title">7. Modellnutzung und Lizenzierung</string>
-    <string name="tos_model_usage_text">Die über LLM Hub verfügbaren KI-Modelle unterliegen ihren jeweiligen Lizenzen und Nutzungsbedingungen. Benutzer sind dafür verantwortlich, die modellspezifischen Lizenzierungsanforderungen bei der Verwendung heruntergeladener Modelle einzuhalten.</string>
+    <string name="tos_model_usage_text">Die über Bearis verfügbaren KI-Modelle unterliegen ihren jeweiligen Lizenzen und Nutzungsbedingungen. Benutzer sind dafür verantwortlich, die modellspezifischen Lizenzierungsanforderungen bei der Verwendung heruntergeladener Modelle einzuhalten.</string>
     <string name="tos_open_source_title">8. Open-Source-Lizenz</string>
-    <string name="tos_open_source_text">LLM Hub ist Open-Source-Software. Der Quellcode ist unter der MIT-Lizenz verfügbar, die Nutzung, Modifikation und Verteilung unter den Lizenzbedingungen erlaubt. Drittanbieter-Bibliotheken und Modelle können unterschiedliche Lizenzbedingungen haben.</string>
+    <string name="tos_open_source_text">Bearis ist Open-Source-Software. Der Quellcode ist unter der MIT-Lizenz verfügbar, die Nutzung, Modifikation und Verteilung unter den Lizenzbedingungen erlaubt. Drittanbieter-Bibliotheken und Modelle können unterschiedliche Lizenzbedingungen haben.</string>
     <string name="tos_changes_title">9. Änderungen der Bedingungen</string>
     <string name="tos_changes_text">Wir können diese Nutzungsbedingungen von Zeit zu Zeit aktualisieren. Benutzer werden über wesentliche Änderungen durch App-Updates benachrichtigt. Die fortgesetzte Nutzung der Anwendung nach Änderungen stellt die Annahme der neuen Bedingungen dar.</string>
     <string name="tos_contact_title">10. Kontaktinformationen</string>
@@ -187,7 +187,7 @@
     <string name="model_text_only">Nur Text</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">Neuer Chat</string>
     <string name="drawer_recent_chats">Aktuelle Chats</string>
     <string name="drawer_no_chats">Noch keine Chats</string>
@@ -403,7 +403,7 @@
     <string name="import_model_warning">⚠️ Wichtig: Bitte lesen Sie die README des Modells auf Hugging Face vor dem Importieren. Geben Sie die korrekten Fähigkeiten (Vision, Audio, GPU) und Kontextfenstergröße wie in der Modelldokumentation angegeben ein. Falsche Einstellungen können dazu führen, dass das Modell nicht ordnungsgemäß funktioniert. Wichtig: GGUF-Modelle mit Vision-Unterstützung benötigen einen Vision Projector (mmproj). Importieren Sie die Projector-Datei, um die Bild-Eingabe zu aktivieren.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">Willkommen bei LLM Hub</string>
+    <string name="home_welcome">Willkommen bei Bearis</string>
     <string name="home_subtitle">Entfesseln Sie die Kraft der KI in Ihrer Tasche — privat, schnell und offline!</string>
     
     <!-- Feature Cards -->
@@ -768,7 +768,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Vollständige Erfahrung freischalten</string>
     <string name="premium_feature_no_ads">Keine Werbung, nie</string>
     <string name="premium_feature_vibe_coder">VibeCoder – KI-Code-Generator</string>

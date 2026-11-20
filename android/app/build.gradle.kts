@@ -2,6 +2,7 @@ import java.util.Properties
 import java.io.FileInputStream
 import java.util.zip.ZipFile
 import java.util.zip.ZipEntry
+import org.gradle.api.file.DuplicatesStrategy
 
 // Load local.properties at the top-level so it's available everywhere
 val localProperties = Properties()
@@ -14,6 +15,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
 
@@ -31,24 +33,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val hfToken: String = localProperties.getProperty("HF_TOKEN", "")
         buildConfigField("String", "HF_TOKEN", "\"$hfToken\"")
-        val debugPremium: Boolean = localProperties.getProperty("DEBUG_PREMIUM", "false").toBoolean()
-        buildConfigField("Boolean", "DEBUG_PREMIUM", "$debugPremium")
 
-        // AdMob IDs — override in local.properties; test IDs are the defaults
-        val admobAppId: String = localProperties.getProperty(
-            "ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713")
-        val admobBannerId: String = localProperties.getProperty(
-            "ADMOB_BANNER_ID", "ca-app-pub-3940256099942544/6300978111")
-        val admobInterstitialId: String = localProperties.getProperty(
-            "ADMOB_INTERSTITIAL_ID", "ca-app-pub-3940256099942544/1033173712")
-        val admobRewardedId: String = localProperties.getProperty(
-            "ADMOB_REWARDED_ID", "ca-app-pub-3940256099942544/5224354917")
-        buildConfigField("String", "ADMOB_APP_ID", "\"$admobAppId\"")
-        buildConfigField("String", "ADMOB_BANNER_ID", "\"$admobBannerId\"")
-        buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"$admobInterstitialId\"")
-        buildConfigField("String", "ADMOB_REWARDED_ID", "\"$admobRewardedId\"")
-        manifestPlaceholders["admobAppId"] = admobAppId
-        
         // Enable 16KB page size support for Android 15+ compatibility
         // Required for Google Play Store submission starting Nov 1st, 2025
         ndk {
@@ -72,6 +57,13 @@ android {
     assetPacks += mutableSetOf(":qnn_pack", ":sd_pack", ":nexa_npu_pack")
 
     buildTypes {
+        debug {
+            // Emulators are x86/x86_64; device builds stay arm64-only in defaultConfig.
+            ndk {
+                abiFilters.clear()
+                abiFilters += listOf("arm64-v8a", "x86_64")
+            }
+        }
         release {
             // Disable R8 minification to prevent stripping ONNX/Nexa JNI classes
             isMinifyEnabled = false
@@ -117,6 +109,9 @@ android {
             excludes += "META-INF/LICENSE.txt"
             // Avoid duplicate Kotlin module descriptors
             excludes += "META-INF/*.kotlin_module"
+            // Avoid duplicate Netty metadata files during packaging
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
             // Exclude duplicate protobuf .proto files
             excludes += "google/protobuf/*.proto"
         }
@@ -133,6 +128,7 @@ android {
             // Pick only the architecture we need to reduce size and alignment issues
             // Prevent duplicate .so files from different MediaPipe tasks modules
             pickFirsts += setOf("**/libmediapipe_tasks_text_jni.so")
+            pickFirsts += setOf("**/libonnxruntime.so")
             // Exclude DeepSeek OCR library to avoid 16KB page alignment issues
             excludes += setOf("**/libdeepseek-ocr.so")
             // Exclude Nexa SDK's bundled stable-diffusion — app uses its own libstable_diffusion_core.so subprocess
@@ -161,6 +157,12 @@ configurations.all {
         force("com.google.protobuf:protobuf-java:3.25.1")
         // Force Microsoft's ONNX Runtime version to win over any version Nexa SDK pulls in
         force("com.microsoft.onnxruntime:onnxruntime-android:1.24.1")
+        // Single kotlinx-coroutines across app + Ktor/Netty (avoids LockFreeLinkedListHead.addLast NoSuchMethodError)
+        eachDependency {
+            if (requested.group == "org.jetbrains.kotlinx" && requested.name.startsWith("kotlinx-coroutines")) {
+                useVersion(libs.versions.coroutinesVersion.get())
+            }
+        }
     }
     // Exclude protobuf-javalite from all dependencies to prevent duplicate classes
     exclude(group = "com.google.protobuf", module = "protobuf-javalite")
@@ -232,7 +234,8 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.6")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.6")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.6")
-    
+    // Local LAN API uses java.net.ServerSocket (see LlmApiServer) — no ktor-server to avoid coroutines/Netty DEX issues on Android
+
     // OkHttp for SD backend communication
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
@@ -278,14 +281,6 @@ dependencies {
     implementation("com.google.android.play:asset-delivery:2.2.2")
     implementation("com.google.android.play:asset-delivery-ktx:2.2.2")
 
-    // Google Play Billing (IAP)
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
-
-    // AdMob
-    implementation("com.google.android.gms:play-services-ads:23.6.0")
-    // AdMob UMP SDK — EU consent (GDPR) form
-    implementation("com.google.android.ump:user-messaging-platform:3.1.0")
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -293,6 +288,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// LAN chat web UI: run `npm run build` in ../local-api-chat-web, then:
+//   .\gradlew :app:syncLocalApiWebAssets
+tasks.register<Copy>("syncLocalApiWebAssets") {
+    group = "build"
+    description =
+        "Copies local-api-chat-web/dist into src/main/assets/local_api_web (run npm run build in local-api-chat-web first)."
+    from(rootProject.file("local-api-chat-web/dist"))
+    into(file("src/main/assets/local_api_web"))
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 // ── Extract npu HTP assets from Nexa AAR into nexa_npu_pack ──────────────────

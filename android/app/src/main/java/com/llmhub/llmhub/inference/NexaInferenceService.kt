@@ -38,6 +38,7 @@ import com.nexa.sdk.bean.ChatMessage
 import com.nexa.sdk.bean.LlmApplyChatTemplateOutput
 import com.llmhub.llmhub.R
 import com.llmhub.llmhub.websearch.WebSearchService
+import com.llmhub.llmhub.websearch.formatWebSearchResultsForPrompt
 import com.llmhub.llmhub.websearch.DuckDuckGoSearchService
 import com.llmhub.llmhub.websearch.SearchIntentDetector
 
@@ -351,7 +352,7 @@ class NexaInferenceService @Inject constructor(
                     nCtx = nCtx,
                     max_tokens = nCtx,
                     nGpuLayers = gpuLayers,
-                    enable_thinking = overrideEnableThinking ?: isThinkingModelForConfig
+                    enable_thinking = overrideEnableThinking ?: false
                 )
                 Log.i(
                     TAG,
@@ -595,7 +596,8 @@ class NexaInferenceService @Inject constructor(
         images: List<Bitmap>,
         audioData: ByteArray?,
         webSearchEnabled: Boolean,
-        imagePaths: List<String>
+        imagePaths: List<String>,
+        @Suppress("UNUSED_PARAMETER") useAgentTools: Boolean
     ): Flow<String> {
         val prepStart = System.currentTimeMillis()
         val imagePaths = if (images.isNotEmpty()) {
@@ -670,10 +672,9 @@ class NexaInferenceService @Inject constructor(
                 if (searchResults.isNotEmpty()) {
                     Log.d(TAG, "Found ${searchResults.size} search results")
                     trySend(context.getString(R.string.web_search_found_results, searchResults.size))
+                    trySend(context.getString(R.string.web_search_generating) + "\n\n")
 
-                    val resultsText = searchResults.joinToString("\n\n") { result ->
-                        "SOURCE: ${result.source}\nTITLE: ${result.title}\nCONTENT: ${result.snippet}\n---"
-                    }
+                    val resultsText = formatWebSearchResultsForPrompt(searchResults, model)
 
                     effectivePrompt = """
                         CURRENT WEB SEARCH RESULTS:
@@ -717,7 +718,7 @@ class NexaInferenceService @Inject constructor(
         // - LFM-Thinking: /no_think is injected by formatPrompt into the formatted string.
         // - GPT-OSS Harmony: an empty analysis prefill is injected after formatting in the
         //   LLM generation path so template processing cannot strip it.
-        val thinkingEnabled = overrideEnableThinking ?: true
+        val thinkingEnabled = overrideEnableThinking ?: false
 
         // Reset per-generation Harmony state
         harmonyBuffer.clear()
@@ -773,7 +774,8 @@ class NexaInferenceService @Inject constructor(
                     // APPLY: time the template + inject + generate steps so we can measure bottlenecks
                     val tStart = System.currentTimeMillis()
 
-                    val templateResult = vlm.applyChatTemplate(vlmMessages, null, isThinkingModel)
+                    val effectiveThinking = isThinkingModel && thinkingEnabled
+                    val templateResult = vlm.applyChatTemplate(vlmMessages, null, effectiveThinking)
                     val tAfterTemplate = System.currentTimeMillis()
                     val formattedPrompt = if (templateResult.isSuccess) {
                         templateResult.getOrNull()?.formattedText?.takeIf { it.isNotEmpty() } ?: userText
@@ -812,7 +814,7 @@ class NexaInferenceService @Inject constructor(
                                         val totalMs = end - requestStart
                                         Log.i(TAG, "GEN[$requestId] VLM completed total=${totalMs}ms decode=${decodeMs}ms tokens=$tokenCount")
                                     }
-                                    handleStreamResult(streamResult, isThinkingModel, isHarmonyModel)
+                                    handleStreamResult(streamResult, effectiveThinking, isHarmonyModel)
                                 }
                             }
                     } catch (t: Throwable) {
@@ -883,7 +885,7 @@ class NexaInferenceService @Inject constructor(
                                         val totalMs = end - requestStart
                                         Log.i(TAG, "GEN[$requestId] LLM completed total=${totalMs}ms decode=${decodeMs}ms tokens=$tokenCount")
                                     }
-                                    handleStreamResult(streamResult, isThinkingModel, isHarmonyModel)
+                                    handleStreamResult(streamResult, isThinkingModel && thinkingEnabled, isHarmonyModel)
                                 }
                             }
                     } catch (t: Throwable) {

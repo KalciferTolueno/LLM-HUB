@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.LlmHub" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.LlmHub" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/neural_window_bg</item>
+        <item name="android:colorBackground">@color/neural_window_bg</item>
+        <item name="android:statusBarColor">@color/neural_window_bg</item>
+        <item name="android:navigationBarColor">@color/neural_window_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
 </resources>

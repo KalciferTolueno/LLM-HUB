@@ -1,5 +1,5 @@
-﻿<resources>
-    <string name="app_name">LLM Hub</string>
+<resources>
+    <string name="app_name">Bearis</string>
 
     <!-- Common -->
     <string name="ok">موافق</string>
@@ -16,7 +16,7 @@
     <string name="vision">الرؤية</string>
 
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">مرحبًا بك في LLM Hub!</string>
+    <string name="welcome_to_llm_hub">مرحبًا بك في Bearis!</string>
     <string name="no_models_downloaded">لا توجد نماذج مُنزّلة بعد</string>
     <!-- Displayed when there are no saved global memories for RAG -->
     <string name="no_memories">لا توجد ذكريات بعد</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">إعادة تحميل النموذج</string>
 
     <!-- About Screen -->
-    <string name="about_llm_hub">نبذة عن LLM Hub</string>
-    <string name="about_description">LLM Hub هو تطبيق أندرويد مفتوح المصدر يجلب قوة نماذج اللغة الضخمة مباشرة إلى جهازك المحمول. اختبر محادثات الذكاء الاصطناعي مع نماذج متقدمة مثل Gemma وLlama وPhi — جميعها تعمل محليًا على هاتفك لأقصى قدر من الخصوصية وإمكانية الاستخدام دون اتصال.</string>
+    <string name="about_llm_hub">نبذة عن Bearis</string>
+    <string name="about_description">Bearis هو تطبيق أندرويد مفتوح المصدر يجلب قوة نماذج اللغة الضخمة مباشرة إلى جهازك المحمول. اختبر محادثات الذكاء الاصطناعي مع نماذج متقدمة مثل Gemma وLlama وPhi — جميعها تعمل محليًا على هاتفك لأقصى قدر من الخصوصية وإمكانية الاستخدام دون اتصال.</string>
     <string name="key_features">الميزات الرئيسية</string>
     <string name="feature_multiple_models">🤖 عدة نماذج LLM: ‏Gemma-3 وLlama-3.2 وPhi-4 وGemma-3n</string>
     <string name="feature_on_device">📱 معالجة على الجهاز: خصوصية كاملة، بدون إنترنت</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">معلومات المطوّر</string>
     <string name="about_developer_info">تم تطوير هذا المشروع بشغف لجعل تقنيات الذكاء الاصطناعي في متناول الجميع. يسعدنا تلقي ملاحظاتك ومساهماتك دائمًا!</string>
     <string name="tech_stack">التقنيات المستخدمة</string>
-    <string name="about_tech_stack">تم بناء LLM Hub بتقنيات تطوير أندرويد الحديثة: ‏Kotlin وJetpack Compose وMaterial Design 3 ومكتبة llama.cpp للاستدلال الفعال على الجهاز.</string>
+    <string name="about_tech_stack">تم بناء Bearis بتقنيات تطوير أندرويد الحديثة: ‏Kotlin وJetpack Compose وMaterial Design 3 ومكتبة llama.cpp للاستدلال الفعال على الجهاز.</string>
     <string name="tech_kotlin_compose">🏗️ مبني بـ Kotlin وJetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 مدعوم بـ MediaPipe وLiteRT</string>
     <string name="tech_quantization">🚀 مُحسَّن بكمّية INT4/INT8</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">شروط الخدمة</string>
     <string name="tos_last_updated">آخر تحديث: 16 يوليو 2025</string>
-    <string name="tos_welcome_text">مرحبًا بك في LLM Hub. باستخدامك لتطبيقنا، فإنك توافق على الالتزام بهذه الشروط. يرجى قراءتها بعناية.</string>
-    <string name="tos_welcome">مرحبًا بك في LLM Hub. باستخدامك لتطبيقنا، فإنك توافق على الالتزام بهذه الشروط. يرجى قراءتها بعناية.</string>
+    <string name="tos_welcome_text">مرحبًا بك في Bearis. باستخدامك لتطبيقنا، فإنك توافق على الالتزام بهذه الشروط. يرجى قراءتها بعناية.</string>
+    <string name="tos_welcome">مرحبًا بك في Bearis. باستخدامك لتطبيقنا، فإنك توافق على الالتزام بهذه الشروط. يرجى قراءتها بعناية.</string>
     <string name="tos_acceptance_title">1. قبول الشروط</string>
-    <string name="tos_acceptance_text">بتنزيلك أو تثبيتك أو استخدامك لـ LLM Hub، فإنك تقر بأنك قرأت وفهمت ووافقت على الالتزام بهذه الشروط. إذا لم توافق على الشروط، يرجى عدم استخدام التطبيق.</string>
+    <string name="tos_acceptance_text">بتنزيلك أو تثبيتك أو استخدامك لـ Bearis، فإنك تقر بأنك قرأت وفهمت ووافقت على الالتزام بهذه الشروط. إذا لم توافق على الشروط، يرجى عدم استخدام التطبيق.</string>
     <string name="tos_app_description_title">2. وصف التطبيق</string>
-    <string name="tos_app_description_text">LLM Hub هو تطبيق أندرويد مفتوح المصدر يوفّر الوصول إلى نماذج اللغة الضخمة لإجراء محادثات ذكاء اصطناعي على الجهاز. تتم معالجة جميع البيانات محليًا على جهازك ولا يتم إرسال أي معلومات شخصية إلى خوادم خارجية.</string>
+    <string name="tos_app_description_text">Bearis هو تطبيق أندرويد مفتوح المصدر يوفّر الوصول إلى نماذج اللغة الضخمة لإجراء محادثات ذكاء اصطناعي على الجهاز. تتم معالجة جميع البيانات محليًا على جهازك ولا يتم إرسال أي معلومات شخصية إلى خوادم خارجية.</string>
     <string name="tos_user_responsibilities_title">3. مسؤوليات المستخدم</string>
-    <string name="tos_user_responsibilities_text">أنت توافق على استخدام LLM Hub بمسؤولية ووفقًا للقوانين المعمول بها. أنت مسؤول عن:\n\n• استخدام التطبيق لأغراض قانونية فقط\n• عدم محاولة الهندسة العكسية أو تعديل التطبيق\n• عدم استخدام التطبيق لإنشاء محتوى ضار أو غير قانوني أو مسيء\n• احترام حقوق الملكية الفكرية للغير\n• التأكد من أن جهازك يلبّي الحد الأدنى من المتطلبات للتشغيل الصحيح</string>
+    <string name="tos_user_responsibilities_text">أنت توافق على استخدام Bearis بمسؤولية ووفقًا للقوانين المعمول بها. أنت مسؤول عن:\n\n• استخدام التطبيق لأغراض قانونية فقط\n• عدم محاولة الهندسة العكسية أو تعديل التطبيق\n• عدم استخدام التطبيق لإنشاء محتوى ضار أو غير قانوني أو مسيء\n• احترام حقوق الملكية الفكرية للغير\n• التأكد من أن جهازك يلبّي الحد الأدنى من المتطلبات للتشغيل الصحيح</string>
     <string name="tos_privacy_data_title">4. الخصوصية والبيانات</string>
-    <string name="tos_privacy_data_text">تم تصميم LLM Hub مع مراعاة الخصوصية:\n\n• تتم جميع المحادثات والمعالجة محليًا على جهازك\n• لا يتم إرسال أي بيانات شخصية إلى خوادم خارجية\n• يتم حفظ سجل الدردشة محليًا ويمكن حذفه في أي وقت\n• يتم تنزيل النماذج مباشرة من المستودعات الرسمية (HuggingFace وGoogle)\n• لا يجمع التطبيق أي تحليلات أو بيانات استخدام</string>
+    <string name="tos_privacy_data_text">تم تصميم Bearis مع مراعاة الخصوصية:\n\n• تتم جميع المحادثات والمعالجة محليًا على جهازك\n• لا يتم إرسال أي بيانات شخصية إلى خوادم خارجية\n• يتم حفظ سجل الدردشة محليًا ويمكن حذفه في أي وقت\n• يتم تنزيل النماذج مباشرة من المستودعات الرسمية (HuggingFace وGoogle)\n• لا يجمع التطبيق أي تحليلات أو بيانات استخدام</string>
     <string name="tos_disclaimer_title">5. إخلاء المسؤولية</string>
-    <string name="tos_disclaimer_text">يُقدَّم LLM Hub "كما هو" دون أي ضمانات من أي نوع. لا نضمن دقة أو موثوقية أو توافر التطبيق أو المحتوى المولّد. قد ينتج عن استخدام نماذج الذكاء الاصطناعي نتائج غير متوقعة.</string>
+    <string name="tos_disclaimer_text">يُقدَّم Bearis "كما هو" دون أي ضمانات من أي نوع. لا نضمن دقة أو موثوقية أو توافر التطبيق أو المحتوى المولّد. قد ينتج عن استخدام نماذج الذكاء الاصطناعي نتائج غير متوقعة.</string>
     <string name="tos_limitation_liability_title">6. تحديد المسؤولية</string>
-    <string name="tos_limitation_liability_text">في أي حال، لا يتحمّل المطوّرون أي مسؤولية عن الأضرار غير المباشرة أو العرضية أو الخاصة أو اللاحقة الناشئة عن استخدام LLM Hub. استخدامك للتطبيق على مسؤوليتك الخاصة.</string>
+    <string name="tos_limitation_liability_text">في أي حال، لا يتحمّل المطوّرون أي مسؤولية عن الأضرار غير المباشرة أو العرضية أو الخاصة أو اللاحقة الناشئة عن استخدام Bearis. استخدامك للتطبيق على مسؤوليتك الخاصة.</string>
     <string name="tos_model_usage_title">7. استخدام النماذج والتراخيص</string>
-    <string name="tos_model_usage_text">تخضع نماذج الذكاء الاصطناعي المتاحة عبر LLM Hub لتراخيصها وشروط استخدامها الخاصة. يتحمّل المستخدم مسؤولية الالتزام بمتطلبات الترخيص الخاصة بكل نموذج عند استخدامه.</string>
+    <string name="tos_model_usage_text">تخضع نماذج الذكاء الاصطناعي المتاحة عبر Bearis لتراخيصها وشروط استخدامها الخاصة. يتحمّل المستخدم مسؤولية الالتزام بمتطلبات الترخيص الخاصة بكل نموذج عند استخدامه.</string>
     <string name="tos_open_source_title">8. ترخيص المصدر المفتوح</string>
-    <string name="tos_open_source_text">LLM Hub هو برنامج مفتوح المصدر. الشيفرة المصدرية متاحة بموجب ترخيص MIT، والذي يسمح بالاستخدام والتعديل والتوزيع وفق شروط الترخيص. قد تخضع مكتبات ونماذج الجهات الخارجية لشروط ترخيص مختلفة.</string>
+    <string name="tos_open_source_text">Bearis هو برنامج مفتوح المصدر. الشيفرة المصدرية متاحة بموجب ترخيص MIT، والذي يسمح بالاستخدام والتعديل والتوزيع وفق شروط الترخيص. قد تخضع مكتبات ونماذج الجهات الخارجية لشروط ترخيص مختلفة.</string>
     <string name="tos_changes_title">9. تغييرات على الشروط</string>
     <string name="tos_changes_text">قد نقوم بتحديث شروط الخدمة هذه من حين لآخر. سيتم إخطار المستخدمين بالتغييرات المهمة من خلال تحديثات التطبيق. يشكّل الاستمرار في استخدام التطبيق بعد التغييرات قبولًا للشروط الجديدة.</string>
     <string name="tos_contact_title">10. معلومات الاتصال</string>
@@ -205,7 +205,7 @@
     <string name="model_text_only">نص فقط</string>
 
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">دردشة جديدة</string>
     <string name="drawer_recent_chats">الدردشات الحديثة</string>
     <string name="drawer_no_chats">لا توجد دردشات بعد</string>
@@ -425,7 +425,7 @@
     <string name="import_model_warning">⚠️ مهم: يرجى قراءة ملف README للنموذج على Hugging Face قبل الاستيراد. أدخل القدرات الصحيحة (الرؤية، الصوت، GPU) وحجم نافذة السياق كما هو مذكور في توثيق النموذج. قد تؤدي الإعدادات غير الصحيحة إلى عدم عمل النموذج كما ينبغي. مهم: تتطلب نماذج GGUF الداعمة للرؤية Vision Projector (mmproj). استورد ملف الـ projector لتمكين إدخال الصور.</string>
 
     <!-- Home Screen -->
-    <string name="home_welcome">مرحبًا بك في LLM Hub</string>
+    <string name="home_welcome">مرحبًا بك في Bearis</string>
     <string name="home_subtitle">أطلق قوة الذكاء الاصطناعي في جيبك — خاص وسريع ودون اتصال!</string>
 
     <!-- Feature Cards -->
@@ -801,7 +801,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">افتح التجربة الكاملة</string>
     <string name="premium_feature_no_ads">لا إعلانات أبداً</string>
     <string name="premium_feature_vibe_coder">VibeCoder – مولّد كود بالذكاء الاصطناعي</string>

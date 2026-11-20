@@ -13,7 +13,8 @@ navigationCompose = "2.7.4"
 roomVersion = "2.8.4"
 retrofitVersion = "2.9.0"
 okHttpVersion = "4.12.0"
-coroutinesVersion = "1.7.3"
+# Must match Kotlin 2.2.x; 1.7.x is too old and mixes badly with Ktor/Netty (NoSuchMethodError on coroutines internals)
+coroutinesVersion = "1.10.2"
 viewModelCompose = "2.7.0"
 accompanistPermissions = "0.32.0"
 coilCompose = "2.5.0"
@@ -72,4 +73,5 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

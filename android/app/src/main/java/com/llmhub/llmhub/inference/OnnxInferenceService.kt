@@ -32,6 +32,7 @@ import javax.inject.Singleton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.llmhub.llmhub.websearch.WebSearchService
+import com.llmhub.llmhub.websearch.formatWebSearchResultsForPrompt
 import com.llmhub.llmhub.websearch.DuckDuckGoSearchService
 import com.llmhub.llmhub.websearch.SearchIntentDetector
 import com.llmhub.llmhub.R
@@ -503,7 +504,7 @@ class OnnxInferenceService @Inject constructor(
                     // /no_think after the last <|im_start|>user\n marker in the formatted prompt.
                     val isThinkingModelOnnx = model.name.contains("Thinking", ignoreCase = true) ||
                         model.name.contains("Reasoning", ignoreCase = true)
-                    val thinkingEnabledOnnx = overrideEnableThinking ?: true
+                    val thinkingEnabledOnnx = overrideEnableThinking ?: false
                     if (!thinkingEnabledOnnx && isThinkingModelOnnx) {
                         val marker = "<|im_start|>user\n"
                         val idx = formattedPrompt.lastIndexOf(marker)
@@ -835,7 +836,8 @@ class OnnxInferenceService @Inject constructor(
     override suspend fun generateResponseStreamWithSession(
         prompt: String, model: LLMModel, chatId: String,
         images: List<Bitmap>, audioData: ByteArray?, webSearchEnabled: Boolean,
-        imagePaths: List<String>
+        imagePaths: List<String>,
+        @Suppress("UNUSED_PARAMETER") useAgentTools: Boolean
     ): Flow<String> = callbackFlow {
         ensureModelLoaded(model)
         
@@ -857,11 +859,10 @@ class OnnxInferenceService @Inject constructor(
                 if (searchResults.isNotEmpty()) {
                     Log.d(TAG, "Found ${searchResults.size} search results")
                     trySend(context.getString(R.string.web_search_found_results, searchResults.size))
+                    trySend(context.getString(R.string.web_search_generating) + "\n\n")
                     
                     // Create enhanced prompt with search results
-                    val resultsText = searchResults.joinToString("\n\n") { result ->
-                        "SOURCE: ${result.source}\nTITLE: ${result.title}\nCONTENT: ${result.snippet}\n---"
-                    }
+                    val resultsText = formatWebSearchResultsForPrompt(searchResults, model)
                     
                     // Extract just the current user question for better clarity
                     enhancedPrompt = """

@@ -1,5 +1,5 @@
-﻿<resources>
-    <string name="app_name">LLM Hub</string>
+<resources>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">확인</string>
@@ -16,7 +16,7 @@
     <string name="vision">비전</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">LLM Hub에 오신 것을 환영합니다!</string>
+    <string name="welcome_to_llm_hub">Bearis에 오신 것을 환영합니다!</string>
     <string name="no_models_downloaded">아직 다운로드된 모델이 없습니다</string>
     <!-- Displayed when there are no saved global memories for RAG -->
     <string name="no_memories">아직 메모리가 없습니다</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">모델 다시 로드</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">LLM Hub 정보</string>
-    <string name="about_description">LLM Hub는 대형 언어 모델의 강력한 기능을 모바일 기기로 직접 제공하는 오픈 소스 안드로이드 애플리케이션입니다. Gemma, Llama, Phi와 같은 최첨단 모델로 AI 대화를 경험하세요 - 모두 최대한의 프라이버시와 오프라인 접근성을 위해 휴대폰에서 로컬로 실행됩니다.</string>
+    <string name="about_llm_hub">Bearis 정보</string>
+    <string name="about_description">Bearis는 대형 언어 모델의 강력한 기능을 모바일 기기로 직접 제공하는 오픈 소스 안드로이드 애플리케이션입니다. Gemma, Llama, Phi와 같은 최첨단 모델로 AI 대화를 경험하세요 - 모두 최대한의 프라이버시와 오프라인 접근성을 위해 휴대폰에서 로컬로 실행됩니다.</string>
     <string name="key_features">주요 기능</string>
     <string name="feature_multiple_models">🤖 다양한 LLM 모델: Gemma-3, Llama-3.2, Phi-4, Gemma-3n</string>
     <string name="feature_on_device">📱 기기 내 처리: 완전한 프라이버시, 인터넷 불필요</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">개발자 정보</string>
     <string name="about_developer_info">이 프로젝트는 AI 기술을 모두에게 더 접근 가능하게 만드는 데 열정적인 애호가가 개발했습니다. 여러분의 피드백과 기여는 언제나 환영합니다!</string>
     <string name="tech_stack">기술 스택</string>
-    <string name="about_tech_stack">LLM Hub는 현대적인 안드로이드 개발 기술을 사용하여 구축되었습니다: Kotlin, Jetpack Compose, Material Design 3, 그리고 효율적인 기기 내 추론을 위한 llama.cpp 라이브러리.</string>
+    <string name="about_tech_stack">Bearis는 현대적인 안드로이드 개발 기술을 사용하여 구축되었습니다: Kotlin, Jetpack Compose, Material Design 3, 그리고 효율적인 기기 내 추론을 위한 llama.cpp 라이브러리.</string>
     <string name="tech_kotlin_compose">🏗️ Kotlin &amp; Jetpack Compose로 구축</string>
     <string name="tech_mediapipe_litert">🧠 MediaPipe &amp; LiteRT로 구동</string>
     <string name="tech_quantization">🚀 INT4/INT8 양자화로 최적화</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">서비스 약관</string>
     <string name="tos_last_updated">최종 업데이트: 2025년 7월 16일</string>
-    <string name="tos_welcome_text">LLM Hub에 오신 것을 환영합니다. 애플리케이션을 사용함으로써 귀하는 이 서비스 약관에 구속되는 데 동의합니다. 주의 깊게 읽어주시기 바랍니다.</string>
-    <string name="tos_welcome">LLM Hub에 오신 것을 환영합니다. 애플리케이션을 사용함으로써 귀하는 이 서비스 약관에 구속되는 데 동의합니다. 주의 깊게 읽어주시기 바랍니다.</string>
+    <string name="tos_welcome_text">Bearis에 오신 것을 환영합니다. 애플리케이션을 사용함으로써 귀하는 이 서비스 약관에 구속되는 데 동의합니다. 주의 깊게 읽어주시기 바랍니다.</string>
+    <string name="tos_welcome">Bearis에 오신 것을 환영합니다. 애플리케이션을 사용함으로써 귀하는 이 서비스 약관에 구속되는 데 동의합니다. 주의 깊게 읽어주시기 바랍니다.</string>
     <string name="tos_acceptance_title">1. 약관 수락</string>
-    <string name="tos_acceptance_text">LLM Hub를 다운로드, 설치 또는 사용함으로써 귀하는 이 서비스 약관을 읽고 이해하며 구속되는 데 동의함을 인정합니다. 이 약관에 동의하지 않으면 애플리케이션을 사용하지 마십시오.</string>
+    <string name="tos_acceptance_text">Bearis를 다운로드, 설치 또는 사용함으로써 귀하는 이 서비스 약관을 읽고 이해하며 구속되는 데 동의함을 인정합니다. 이 약관에 동의하지 않으면 애플리케이션을 사용하지 마십시오.</string>
     <string name="tos_app_description_title">2. 애플리케이션 설명</string>
-    <string name="tos_app_description_text">LLM Hub는 기기 내 AI 대화를 위한 대형 언어 모델(LLM)에 대한 액세스를 제공하는 오픈 소스 안드로이드 애플리케이션입니다. 앱은 모든 데이터를 기기에서 로컬로 처리하며 개인 정보를 외부 서버로 전송하지 않습니다.</string>
+    <string name="tos_app_description_text">Bearis는 기기 내 AI 대화를 위한 대형 언어 모델(LLM)에 대한 액세스를 제공하는 오픈 소스 안드로이드 애플리케이션입니다. 앱은 모든 데이터를 기기에서 로컬로 처리하며 개인 정보를 외부 서버로 전송하지 않습니다.</string>
     <string name="tos_user_responsibilities_title">3. 사용자 책임</string>
-    <string name="tos_user_responsibilities_text">귀하는 LLM Hub를 책임감 있게 그리고 관련 법률에 따라 사용하는 데 동의합니다. 귀하는 다음에 대한 책임이 있습니다:\n\n• 합법적인 목적으로만 애플리케이션 사용\n• 애플리케이션을 리버스 엔지니어링하거나 수정하지 않음\n• 유해하거나 불법적이거나 모욕적인 콘텐츠를 생성하는 데 애플리케이션을 사용하지 않음\n• 제3자의 지적 재산권 존중\n• 기기가 적절한 작동을 위한 최소 요구 사항을 충족하는지 확인</string>
+    <string name="tos_user_responsibilities_text">귀하는 Bearis를 책임감 있게 그리고 관련 법률에 따라 사용하는 데 동의합니다. 귀하는 다음에 대한 책임이 있습니다:\n\n• 합법적인 목적으로만 애플리케이션 사용\n• 애플리케이션을 리버스 엔지니어링하거나 수정하지 않음\n• 유해하거나 불법적이거나 모욕적인 콘텐츠를 생성하는 데 애플리케이션을 사용하지 않음\n• 제3자의 지적 재산권 존중\n• 기기가 적절한 작동을 위한 최소 요구 사항을 충족하는지 확인</string>
     <string name="tos_privacy_data_title">4. 프라이버시 및 데이터</string>
-    <string name="tos_privacy_data_text">LLM Hub는 프라이버시를 염두에 두고 설계되었습니다:\n\n• 모든 대화 및 데이터 처리는 기기에서 로컬로 발생합니다\n• 개인 데이터는 외부 서버로 전송되지 않습니다\n• 채팅 기록은 로컬로 저장되며 언제든지 삭제할 수 있습니다\n• 모델 다운로드는 공식 저장소(HuggingFace, Google)에서 직접 수행됩니다\n• 애플리케이션은 분석 또는 사용 데이터를 수집하지 않습니다</string>
+    <string name="tos_privacy_data_text">Bearis는 프라이버시를 염두에 두고 설계되었습니다:\n\n• 모든 대화 및 데이터 처리는 기기에서 로컬로 발생합니다\n• 개인 데이터는 외부 서버로 전송되지 않습니다\n• 채팅 기록은 로컬로 저장되며 언제든지 삭제할 수 있습니다\n• 모델 다운로드는 공식 저장소(HuggingFace, Google)에서 직접 수행됩니다\n• 애플리케이션은 분석 또는 사용 데이터를 수집하지 않습니다</string>
     <string name="tos_disclaimer_title">5. 보증 부인</string>
-    <string name="tos_disclaimer_text">LLM Hub는 어떠한 종류의 보증 없이 \"있는 그대로\" 제공됩니다. 우리는 애플리케이션 또는 생성된 콘텐츠의 정확성, 신뢰성 또는 가용성을 보증하지 않습니다. AI 모델 사용은 예측할 수 없는 결과를 생성할 수 있습니다.</string>
+    <string name="tos_disclaimer_text">Bearis는 어떠한 종류의 보증 없이 \"있는 그대로\" 제공됩니다. 우리는 애플리케이션 또는 생성된 콘텐츠의 정확성, 신뢰성 또는 가용성을 보증하지 않습니다. AI 모델 사용은 예측할 수 없는 결과를 생성할 수 있습니다.</string>
     <string name="tos_limitation_liability_title">6. 책임 제한</string>
-    <string name="tos_limitation_liability_text">어떠한 경우에도 개발자는 LLM Hub 사용으로 인해 발생하는 간접적, 부수적, 특별 또는 결과적 손해에 대해 책임을 지지 않습니다. 애플리케이션 사용은 귀하의 책임입니다.</string>
+    <string name="tos_limitation_liability_text">어떠한 경우에도 개발자는 Bearis 사용으로 인해 발생하는 간접적, 부수적, 특별 또는 결과적 손해에 대해 책임을 지지 않습니다. 애플리케이션 사용은 귀하의 책임입니다.</string>
     <string name="tos_model_usage_title">7. 모델 사용 및 라이선스</string>
-    <string name="tos_model_usage_text">LLM Hub를 통해 사용 가능한 AI 모델은 해당 라이선스 및 사용 약관의 적용을 받습니다. 사용자는 다운로드한 모델을 사용할 때 모델별 라이선스 요구 사항을 준수할 책임이 있습니다.</string>
+    <string name="tos_model_usage_text">Bearis를 통해 사용 가능한 AI 모델은 해당 라이선스 및 사용 약관의 적용을 받습니다. 사용자는 다운로드한 모델을 사용할 때 모델별 라이선스 요구 사항을 준수할 책임이 있습니다.</string>
     <string name="tos_open_source_title">8. 오픈 소스 라이선스</string>
-    <string name="tos_open_source_text">LLM Hub는 오픈 소스 소프트웨어입니다. 소스 코드는 MIT 라이선스에 따라 제공되며, 라이선스 조건에 따라 사용, 수정 및 배포를 허용합니다. 타사 라이브러리 및 모델은 다른 라이선스 조건을 가질 수 있습니다.</string>
+    <string name="tos_open_source_text">Bearis는 오픈 소스 소프트웨어입니다. 소스 코드는 MIT 라이선스에 따라 제공되며, 라이선스 조건에 따라 사용, 수정 및 배포를 허용합니다. 타사 라이브러리 및 모델은 다른 라이선스 조건을 가질 수 있습니다.</string>
     <string name="tos_changes_title">9. 약관 변경</string>
     <string name="tos_changes_text">우리는 때때로 이 서비스 약관을 업데이트할 수 있습니다. 사용자는 앱 업데이트를 통해 중요한 변경 사항에 대해 통지받게 됩니다. 변경 후 애플리케이션을 계속 사용하는 것은 새로운 약관의 수락을 구성합니다.</string>
     <string name="tos_contact_title">10. 연락처 정보</string>
@@ -205,7 +205,7 @@
     <string name="model_text_only">텍스트만</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">새 채팅</string>
     <string name="drawer_recent_chats">최근 채팅</string>
     <string name="drawer_no_chats">아직 채팅 없음</string>
@@ -426,7 +426,7 @@
     <string name="import_model_warning">⚠️ 중요: 가져오기 전에 Hugging Face에서 모델의 README를 읽어주세요. 모델 문서에 명시된 대로 올바른 기능(비전, 오디오, GPU) 및 컨텍스트 창 크기를 입력하세요. 잘못된 설정은 모델이 제대로 작동하지 않을 수 있습니다. 중요: 비전을 지원하는 GGUF 모델은 Vision Projector (mmproj)가 필요합니다. 이미지 입력을 사용하려면 프로젝터 파일을 가져오세요.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">LLM Hub에 오신 것을 환영합니다</string>
+    <string name="home_welcome">Bearis에 오신 것을 환영합니다</string>
     <string name="home_subtitle">주머니 속 AI의 힘을 발휘하세요 — 프라이빗하고, 빠르며, 오프라인!</string>
     
     <!-- Feature Cards -->
@@ -802,7 +802,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">전체 기능을 잠금 해제하세요</string>
     <string name="premium_feature_no_ads">광고 없음, 영원히</string>
     <string name="premium_feature_vibe_coder">VibeCoder – AI 코드 생성기</string>

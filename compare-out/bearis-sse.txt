@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-1776965656221","created":1776965677,"model":"BEARIS","choices":[{"index":0,"delta":{"role":"assistant"}}]}
+
+data: {"id":"chatcmpl-1776965656221","created":1776965677,"model":"BEARIS","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_1776965677189_0","type":"function","function":{"name":"create_new_file","arguments":"{\"filepath\":\"prueba-ps1.txt\",\"contents\":\"ok-bearis\"}"}}]}}]}
+
+data: {"id":"chatcmpl-1776965656221","created":1776965677,"model":"BEARIS","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}]}
+
+data: [DONE]
+

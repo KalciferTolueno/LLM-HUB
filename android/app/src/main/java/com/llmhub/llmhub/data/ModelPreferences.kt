@@ -18,7 +18,7 @@ data class ModelConfig(
     val disableVision: Boolean,
     val disableAudio: Boolean,
     val nGpuLayers: Int = 999, // layers offloaded to GPU/NPU (GGUF/Nexa SDK only)
-    val enableThinking: Boolean = true, // whether thinking/reasoning output is enabled
+    val enableThinking: Boolean = false, // whether thinking/reasoning output is enabled (default off — faster)
     val systemPrompt: String = "", // optional per-model system prompt injected for chat generation
     val contextWindow: Int = 0, // KV cache allocation (context window size); 0 = use model default
     val agentToolsEnabled: Boolean = true // whether Gemma-4 agent tools are active
@@ -54,7 +54,7 @@ data class ModelConfig(
                 disableVision = obj.optBoolean("disableVision", false),
                 disableAudio = obj.optBoolean("disableAudio", false),
                 nGpuLayers = obj.optInt("nGpuLayers", 999),
-                enableThinking = obj.optBoolean("enableThinking", true),
+                enableThinking = obj.optBoolean("enableThinking", false),
                 systemPrompt = obj.optString("systemPrompt", ""),
                 contextWindow = obj.optInt("contextWindow", 0),
                 agentToolsEnabled = obj.optBoolean("agentToolsEnabled", true)

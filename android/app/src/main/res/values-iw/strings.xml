@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Common -->
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     <string name="ok">אישור</string>
     <string name="cancel">ביטול</string>
     <string name="close">סגור</string>
@@ -16,7 +16,7 @@
     <string name="vision">ראייה</string>
 
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">ברוך הבא ל-LLM Hub!</string>
+    <string name="welcome_to_llm_hub">ברוך הבא ל-Bearis!</string>
     <string name="no_models_downloaded">אין מודלים שהורדו עדיין</string>
     <string name="no_memories">אין זיכרונות עדיין</string>
     <string name="download_a_model">הורד מודל</string>
@@ -47,8 +47,8 @@
     <string name="reload_model">טען מודל מחדש</string>
 
     <!-- About Screen -->
-    <string name="about_llm_hub">על LLM Hub</string>
-    <string name="about_description">LLM Hub היא אפליקציית אנדרואיד בקוד פתוח שמביאה את כוחם של מודלי שפה גדולים ישירות למכשיר הנייד שלך. חווה שיחות AI עם מודלים מתקדמים כמו Gemma, ‏Llama ו-Phi — כולם רצים מקומית על הטלפון שלך לפרטיות מירבית ונגישות לא מקוונת.</string>
+    <string name="about_llm_hub">על Bearis</string>
+    <string name="about_description">Bearis היא אפליקציית אנדרואיד בקוד פתוח שמביאה את כוחם של מודלי שפה גדולים ישירות למכשיר הנייד שלך. חווה שיחות AI עם מודלים מתקדמים כמו Gemma, ‏Llama ו-Phi — כולם רצים מקומית על הטלפון שלך לפרטיות מירבית ונגישות לא מקוונת.</string>
     <string name="key_features">תכונות עיקריות</string>
     <string name="feature_multiple_models">🤖 מספר מודלי LLM: ‏Gemma-3, ‏Llama-3.2, ‏Phi-4 ו-Gemma-3n</string>
     <string name="feature_on_device">📱 עיבוד על המכשיר: פרטיות מלאה, ללא צורך באינטרנט</string>
@@ -60,7 +60,7 @@
     <string name="developer_info">מידע למפתח</string>
     <string name="about_developer_info">הפרויקט מפותח על ידי חובב נלהב ששם למטרה להנגיש את טכנולוגיית ה-AI לכולם. משוב ותרומות תמיד יתקבלו בברכה!</string>
     <string name="tech_stack">מחסנית טכנולוגית</string>
-    <string name="about_tech_stack">LLM Hub נבנתה בטכנולוגיות אנדרואיד מודרניות: ‏Kotlin, ‏Jetpack Compose, ‏Material Design 3 וספריית llama.cpp לעיבוד יעיל על המכשיר.</string>
+    <string name="about_tech_stack">Bearis נבנתה בטכנולוגיות אנדרואיד מודרניות: ‏Kotlin, ‏Jetpack Compose, ‏Material Design 3 וספריית llama.cpp לעיבוד יעיל על המכשיר.</string>
     <string name="tech_kotlin_compose">🏗️ נבנה עם Kotlin ו-Jetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 מופעל על ידי MediaPipe ו-LiteRT</string>
     <string name="tech_quantization">🚀 אופטימיזציה עם קוונטיזציה ‏INT4/INT8</string>
@@ -83,24 +83,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">תנאי שימוש</string>
     <string name="tos_last_updated">עודכן לאחרונה: 16 ביולי 2025</string>
-    <string name="tos_welcome_text">ברוך הבא ל-LLM Hub. בשימוש באפליקציה אתה מסכים לתנאי השימוש. קרא אותם בעיון.</string>
-    <string name="tos_welcome">ברוך הבא ל-LLM Hub. בשימוש באפליקציה אתה מסכים לתנאי השימוש. קרא אותם בעיון.</string>
+    <string name="tos_welcome_text">ברוך הבא ל-Bearis. בשימוש באפליקציה אתה מסכים לתנאי השימוש. קרא אותם בעיון.</string>
+    <string name="tos_welcome">ברוך הבא ל-Bearis. בשימוש באפליקציה אתה מסכים לתנאי השימוש. קרא אותם בעיון.</string>
     <string name="tos_acceptance_title">1. קבלת התנאים</string>
-    <string name="tos_acceptance_text">בהורדה, התקנה או שימוש ב-LLM Hub אתה מאשר שקראת, הבנת והסכמת לתנאי השימוש. אם אינך מסכים, אנא אל תשתמש באפליקציה.</string>
+    <string name="tos_acceptance_text">בהורדה, התקנה או שימוש ב-Bearis אתה מאשר שקראת, הבנת והסכמת לתנאי השימוש. אם אינך מסכים, אנא אל תשתמש באפליקציה.</string>
     <string name="tos_app_description_title">2. תיאור האפליקציה</string>
-    <string name="tos_app_description_text">LLM Hub מספקת גישה למודלי שפה גדולים (LLMs) לשיחות AI על המכשיר. העיבוד מתבצע מקומית והמידע האישי אינו נשלח לשרתים.</string>
+    <string name="tos_app_description_text">Bearis מספקת גישה למודלי שפה גדולים (LLMs) לשיחות AI על המכשיר. העיבוד מתבצע מקומית והמידע האישי אינו נשלח לשרתים.</string>
     <string name="tos_user_responsibilities_title">3. אחריות המשתמש</string>
     <string name="tos_user_responsibilities_text">השתמש באפליקציה באחריות ובהתאם לחוק, כבד זכויות יוצרים של צדדים שלישיים וודא שמכשירך עומד בדרישות.</string>
     <string name="tos_privacy_data_title">4. פרטיות ונתונים</string>
     <string name="tos_privacy_data_text">שיחות ועיבוד נתונים מתבצעים מקומית במכשירך; היסטוריית צ\'אט נשמרת מקומית וניתן למחוק אותה; אין איסוף אנליטיקות.</string>
     <string name="tos_disclaimer_title">5. כתב ויתור</string>
-    <string name="tos_disclaimer_text">LLM Hub מסופקת "כפי שהיא" ללא אחריות מכל סוג. אין הבטחה לדיוק, אמינות או זמינות, ותוצאות המודלים עשויות להיות בלתי צפויות.</string>
+    <string name="tos_disclaimer_text">Bearis מסופקת "כפי שהיא" ללא אחריות מכל סוג. אין הבטחה לדיוק, אמינות או זמינות, ותוצאות המודלים עשויות להיות בלתי צפויות.</string>
     <string name="tos_limitation_liability_title">6. הגבלת אחריות</string>
     <string name="tos_limitation_liability_text">המפתחים לא יהיו אחראים לנזקים עקיפים או תוצאתיים הנגרמים מהשימוש.</string>
     <string name="tos_model_usage_title">7. שימוש ורישוי של מודלים</string>
     <string name="tos_model_usage_text">המודלים כפופים לרישיונותיהם. המשתמשים אחראים לעמידה בתנאי הרישוי.</string>
     <string name="tos_open_source_title">8. קוד פתוח</string>
-    <string name="tos_open_source_text">LLM Hub היא בקוד פתוח תחת רישיון MIT. לספריות ולמודלים של צד ג\' עשויים להיות תנאים שונים.</string>
+    <string name="tos_open_source_text">Bearis היא בקוד פתוח תחת רישיון MIT. לספריות ולמודלים של צד ג\' עשויים להיות תנאים שונים.</string>
     <string name="tos_changes_title">9. שינוי תנאים</string>
     <string name="tos_changes_text">ייתכנו עדכונים מעת לעת; שימוש מתמשך מהווה הסכמה לתנאים החדשים.</string>
     <string name="tos_contact_title">10. פרטי קשר</string>
@@ -207,7 +207,7 @@
     <string name="model_text_only">טקסט בלבד</string>
 
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">צ\'אט חדש</string>
     <string name="drawer_recent_chats">צ\'אטים אחרונים</string>
     <string name="drawer_no_chats">אין צ\'אטים עדיין</string>
@@ -429,7 +429,7 @@
     <string name="import_model_warning">⚠️ חשוב: קרא את README של המודל ב-Hugging Face לפני הייבוא. הזן יכולות נכונות (ראייה, אודיו, GPU) וגודל חלון ההקשר כמצוין בתיעוד המודל. חשוב: מודלים GGUF התומכים בראייה דורשים Vision Projector (mmproj). ייבא את קובץ ה-projection כדי לאפשר קלט תמונה.</string>
 
     <!-- Home Screen -->
-    <string name="home_welcome">ברוך הבא ל-LLM Hub</string>
+    <string name="home_welcome">ברוך הבא ל-Bearis</string>
     <string name="home_subtitle">פתח את כוח ה-AI בכיסך — פרטי, מהיר ולא מקוון!</string>
 
     <!-- Feature Cards -->
@@ -802,7 +802,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">פתח את החווייה המלאה</string>
     <string name="premium_feature_no_ads">ללא פרסומות, לעולם</string>
     <string name="premium_feature_vibe_coder">VibeCoder – מחולל קוד AI</string>

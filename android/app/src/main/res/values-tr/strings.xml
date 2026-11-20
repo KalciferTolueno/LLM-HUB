@@ -1,5 +1,5 @@
-﻿<resources>
-    <string name="app_name">LLM Hub</string>
+<resources>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">Tamam</string>
@@ -16,7 +16,7 @@
     <string name="vision">Görsel</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">LLM Hub\'a Hoş Geldiniz!</string>
+    <string name="welcome_to_llm_hub">Bearis\'a Hoş Geldiniz!</string>
     <string name="no_models_downloaded">Henüz indirilmiş model yok</string>
     <!-- Displayed when there are no saved global memories for RAG -->
     <string name="no_memories">Henüz anı yok</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">Modeli Yeniden Yükle</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">LLM Hub Hakkında</string>
-    <string name="about_description">LLM Hub, Büyük Dil Modellerinin gücünü doğrudan mobil cihazınıza getiren açık kaynaklı bir Android uygulamasıdır. Gemma, Llama ve Phi gibi son teknoloji modellerle yapay zeka konuşmaları yaşayın - hepsi maksimum gizlilik ve çevrimdışı erişilebilirlik için telefonunuzda yerel olarak çalışıyor.</string>
+    <string name="about_llm_hub">Bearis Hakkında</string>
+    <string name="about_description">Bearis, Büyük Dil Modellerinin gücünü doğrudan mobil cihazınıza getiren açık kaynaklı bir Android uygulamasıdır. Gemma, Llama ve Phi gibi son teknoloji modellerle yapay zeka konuşmaları yaşayın - hepsi maksimum gizlilik ve çevrimdışı erişilebilirlik için telefonunuzda yerel olarak çalışıyor.</string>
     <string name="key_features">Temel Özellikler</string>
     <string name="feature_multiple_models">🤖 Çoklu LLM Modelleri: Gemma-3, Llama-3.2, Phi-4 ve Gemma-3n</string>
     <string name="feature_on_device">📱 Cihaz Üzerinde İşleme: Tam gizlilik, internet gerekmiyor</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">Geliştirici Bilgisi</string>
     <string name="about_developer_info">Bu proje, yapay zeka teknolojisini herkes için daha erişilebilir hale getirmeye tutkulu bir meraklı tarafından geliştirilmiştir. Geri bildiriminiz ve katkılarınız her zaman beklenir!</string>
     <string name="tech_stack">Teknoloji Yığını</string>
-    <string name="about_tech_stack">LLM Hub, modern Android geliştirme teknolojileri kullanılarak oluşturulmuştur: Kotlin, Jetpack Compose, Material Design 3 ve cihaz üzerinde verimli çıkarım için llama.cpp kütüphanesi.</string>
+    <string name="about_tech_stack">Bearis, modern Android geliştirme teknolojileri kullanılarak oluşturulmuştur: Kotlin, Jetpack Compose, Material Design 3 ve cihaz üzerinde verimli çıkarım için llama.cpp kütüphanesi.</string>
     <string name="tech_kotlin_compose">🏗️ Kotlin ve Jetpack Compose ile geliştirildi</string>
     <string name="tech_mediapipe_litert">🧠 MediaPipe ve LiteRT tarafından destekleniyor</string>
     <string name="tech_quantization">🚀 INT4/INT8 kuantalama ile optimize edildi</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Hizmet Şartları</string>
     <string name="tos_last_updated">Son güncelleme: 16 Temmuz 2025</string>
-    <string name="tos_welcome_text">LLM Hub\'a hoş geldiniz. Uygulamamızı kullanarak, bu Hizmet Şartlarına bağlı kalmayı kabul etmiş olursunuz. Lütfen bunları dikkatlice okuyun.</string>
-    <string name="tos_welcome">LLM Hub\'a hoş geldiniz. Uygulamamızı kullanarak, bu Hizmet Şartlarına bağlı kalmayı kabul etmiş olursunuz. Lütfen bunları dikkatlice okuyun.</string>
+    <string name="tos_welcome_text">Bearis\'a hoş geldiniz. Uygulamamızı kullanarak, bu Hizmet Şartlarına bağlı kalmayı kabul etmiş olursunuz. Lütfen bunları dikkatlice okuyun.</string>
+    <string name="tos_welcome">Bearis\'a hoş geldiniz. Uygulamamızı kullanarak, bu Hizmet Şartlarına bağlı kalmayı kabul etmiş olursunuz. Lütfen bunları dikkatlice okuyun.</string>
     <string name="tos_acceptance_title">1. Şartların Kabulü</string>
-    <string name="tos_acceptance_text">LLM Hub\'ı indirerek, yükleyerek veya kullanarak, bu Hizmet Şartlarını okuduğunuzu, anladığınızı ve bunlara bağlı kalmayı kabul ettiğinizi onaylarsınız. Bu şartları kabul etmiyorsanız, lütfen uygulamayı kullanmayın.</string>
+    <string name="tos_acceptance_text">Bearis\'ı indirerek, yükleyerek veya kullanarak, bu Hizmet Şartlarını okuduğunuzu, anladığınızı ve bunlara bağlı kalmayı kabul ettiğinizi onaylarsınız. Bu şartları kabul etmiyorsanız, lütfen uygulamayı kullanmayın.</string>
     <string name="tos_app_description_title">2. Uygulama Açıklaması</string>
-    <string name="tos_app_description_text">LLM Hub, cihaz üzerinde yapay zeka konuşmaları için Büyük Dil Modellerine (LLM\'ler) erişim sağlayan açık kaynaklı bir Android uygulamasıdır. Uygulama tüm verileri cihazınızda yerel olarak işler ve kişisel bilgileri harici sunuculara iletmez.</string>
+    <string name="tos_app_description_text">Bearis, cihaz üzerinde yapay zeka konuşmaları için Büyük Dil Modellerine (LLM\'ler) erişim sağlayan açık kaynaklı bir Android uygulamasıdır. Uygulama tüm verileri cihazınızda yerel olarak işler ve kişisel bilgileri harici sunuculara iletmez.</string>
     <string name="tos_user_responsibilities_title">3. Kullanıcı Sorumlulukları</string>
-    <string name="tos_user_responsibilities_text">LLM Hub\'ı sorumlu bir şekilde ve geçerli yasalara uygun olarak kullanmayı kabul edersiniz. Sorumlusunuz:\n\n• Uygulamayı yalnızca yasal amaçlar için kullanmaktan\n• Uygulamayı tersine mühendislik yapmaya veya değiştirmeye çalışmamaktan\n• Uygulamayı zararlı, yasa dışı veya saldırgan içerik oluşturmak için kullanmamaktan\n• Üçüncü tarafların fikri mülkiyet haklarına saygı göstermekten\n• Cihazınızın düzgün çalışması için minimum gereksinimleri karşıladığından emin olmaktan</string>
+    <string name="tos_user_responsibilities_text">Bearis\'ı sorumlu bir şekilde ve geçerli yasalara uygun olarak kullanmayı kabul edersiniz. Sorumlusunuz:\n\n• Uygulamayı yalnızca yasal amaçlar için kullanmaktan\n• Uygulamayı tersine mühendislik yapmaya veya değiştirmeye çalışmamaktan\n• Uygulamayı zararlı, yasa dışı veya saldırgan içerik oluşturmak için kullanmamaktan\n• Üçüncü tarafların fikri mülkiyet haklarına saygı göstermekten\n• Cihazınızın düzgün çalışması için minimum gereksinimleri karşıladığından emin olmaktan</string>
     <string name="tos_privacy_data_title">4. Gizlilik ve Veriler</string>
-    <string name="tos_privacy_data_text">LLM Hub gizlilik düşünülerek tasarlanmıştır:\n\n• Tüm konuşmalar ve veri işleme cihazınızda yerel olarak gerçekleşir\n• Kişisel veriler harici sunuculara iletilmez\n• Sohbet geçmişi yerel olarak saklanır ve istediğiniz zaman silinebilir\n• Model indirmeleri resmi depolardan (HuggingFace, Google) doğrudan gerçekleştirilir\n• Uygulama analitik veya kullanım verisi toplamaz</string>
+    <string name="tos_privacy_data_text">Bearis gizlilik düşünülerek tasarlanmıştır:\n\n• Tüm konuşmalar ve veri işleme cihazınızda yerel olarak gerçekleşir\n• Kişisel veriler harici sunuculara iletilmez\n• Sohbet geçmişi yerel olarak saklanır ve istediğiniz zaman silinebilir\n• Model indirmeleri resmi depolardan (HuggingFace, Google) doğrudan gerçekleştirilir\n• Uygulama analitik veya kullanım verisi toplamaz</string>
     <string name="tos_disclaimer_title">5. Garanti Reddi</string>
-    <string name="tos_disclaimer_text">LLM Hub herhangi bir garanti olmaksızın \"olduğu gibi\" sağlanmaktadır. Uygulamanın veya üretilen içeriğin doğruluğunu, güvenilirliğini veya kullanılabilirliğini garanti etmiyoruz. Yapay zeka modellerinin kullanımı öngörülemeyen sonuçlar üretebilir.</string>
+    <string name="tos_disclaimer_text">Bearis herhangi bir garanti olmaksızın \"olduğu gibi\" sağlanmaktadır. Uygulamanın veya üretilen içeriğin doğruluğunu, güvenilirliğini veya kullanılabilirliğini garanti etmiyoruz. Yapay zeka modellerinin kullanımı öngörülemeyen sonuçlar üretebilir.</string>
     <string name="tos_limitation_liability_title">6. Sorumluluk Sınırlaması</string>
-    <string name="tos_limitation_liability_text">LLM Hub\'ın kullanımından kaynaklanan herhangi bir dolaylı, tesadüfi, özel veya sonuç olarak ortaya çıkan zararlardan geliştiriciler hiçbir durumda sorumlu tutulamaz. Uygulamayı kullanımınız kendi riskiniz altındadır.</string>
+    <string name="tos_limitation_liability_text">Bearis\'ın kullanımından kaynaklanan herhangi bir dolaylı, tesadüfi, özel veya sonuç olarak ortaya çıkan zararlardan geliştiriciler hiçbir durumda sorumlu tutulamaz. Uygulamayı kullanımınız kendi riskiniz altındadır.</string>
     <string name="tos_model_usage_title">7. Model Kullanımı ve Lisanslama</string>
-    <string name="tos_model_usage_text">LLM Hub aracılığıyla kullanılabilen yapay zeka modelleri kendi lisanslarına ve kullanım şartlarına tabidir. Kullanıcılar, indirilen modelleri kullanırken modele özgü lisans gereksinimlerine uymaktan sorumludur.</string>
+    <string name="tos_model_usage_text">Bearis aracılığıyla kullanılabilen yapay zeka modelleri kendi lisanslarına ve kullanım şartlarına tabidir. Kullanıcılar, indirilen modelleri kullanırken modele özgü lisans gereksinimlerine uymaktan sorumludur.</string>
     <string name="tos_open_source_title">8. Açık Kaynak Lisansı</string>
-    <string name="tos_open_source_text">LLM Hub açık kaynaklı bir yazılımdır. Kaynak kodu, lisans şartlarına tabi olarak kullanıma, değişikliğe ve dağıtıma izin veren MIT Lisansı altında mevcuttur. Üçüncü taraf kütüphaneler ve modeller farklı lisans şartlarına sahip olabilir.</string>
+    <string name="tos_open_source_text">Bearis açık kaynaklı bir yazılımdır. Kaynak kodu, lisans şartlarına tabi olarak kullanıma, değişikliğe ve dağıtıma izin veren MIT Lisansı altında mevcuttur. Üçüncü taraf kütüphaneler ve modeller farklı lisans şartlarına sahip olabilir.</string>
     <string name="tos_changes_title">9. Şartlardaki Değişiklikler</string>
     <string name="tos_changes_text">Bu Hizmet Şartlarını zaman zaman güncelleyebiliriz. Kullanıcılar, uygulama güncellemeleri aracılığıyla önemli değişikliklerden haberdar edilecektir. Değişikliklerden sonra uygulamayı kullanmaya devam etmek, yeni şartların kabulü anlamına gelir.</string>
     <string name="tos_contact_title">10. İletişim Bilgileri</string>
@@ -205,7 +205,7 @@
     <string name="model_text_only">Yalnızca metin</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">Yeni Sohbet</string>
     <string name="drawer_recent_chats">Son Sohbetler</string>
     <string name="drawer_no_chats">Henüz sohbet yok</string>
@@ -425,7 +425,7 @@
     <string name="import_model_warning">⚠️ Önemli: İçe aktarmadan önce lütfen modelin README\'sini Hugging Face\'te okuyun. Doğru yetenekleri (görsel, ses, GPU) ve model belgelerinde belirtildiği şekilde bağlam penceresi boyutunu girin. Yanlış ayarlar modelin düzgün çalışmamasına neden olabilir. Önemli: Görsel destekli GGUF modelleri Vision Projector (mmproj) gerektirir. Görüntü girişi etkinleştirmek için projector dosyasını içe aktarın.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">LLM Hub\'a Hoş Geldiniz</string>
+    <string name="home_welcome">Bearis\'a Hoş Geldiniz</string>
     <string name="home_subtitle">Cebinizde yapay zekanın gücünün kilidini açın — özel, hızlı ve çevrimdışı!</string>
     
     <!-- Feature Cards -->
@@ -801,7 +801,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Tam deneyimin kilidini aç</string>
     <string name="premium_feature_no_ads">Hiç reklam yok</string>
     <string name="premium_feature_vibe_coder">VibeCoder – Yapay Zeka Kod Üreteci</string>

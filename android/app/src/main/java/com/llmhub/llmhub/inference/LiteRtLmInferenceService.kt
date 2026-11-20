@@ -26,6 +26,7 @@ import com.llmhub.llmhub.utils.LocaleHelper
 import com.llmhub.llmhub.websearch.DuckDuckGoSearchService
 import com.llmhub.llmhub.websearch.SearchIntentDetector
 import com.llmhub.llmhub.websearch.WebSearchService
+import com.llmhub.llmhub.websearch.formatWebSearchResultsForPrompt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -74,7 +75,7 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
     private var overrideTopK: Int? = null
     private var overrideTopP: Float? = null
     private var overrideTemperature: Float? = null
-    private var overrideEnableThinking: Boolean = true
+    private var overrideEnableThinking: Boolean = false
 
     private val engineMutex = Mutex()
     private val sessionResetTimes = mutableMapOf<String, Long>()
@@ -397,7 +398,8 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
         images: List<Bitmap>,
         audioData: ByteArray?,
         webSearchEnabled: Boolean,
-        imagePaths: List<String>
+        imagePaths: List<String>,
+        useAgentTools: Boolean
     ): Flow<String> {
         ensureEngineLoaded(model)
         val eng = engine ?: throw IllegalStateException("No engine loaded")
@@ -421,9 +423,8 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
                     val results = webSearchService.search(query, maxResults = 5)
                     if (results.isNotEmpty()) {
                         emit(localCtx.getString(R.string.web_search_found_results, results.size))
-                        val resultsText = results.joinToString("\n\n") {
-                            "SOURCE: ${it.source}\nTITLE: ${it.title}\nCONTENT: ${it.snippet}\n---"
-                        }
+                        emit(localCtx.getString(R.string.web_search_generating) + "\n\n")
+                        val resultsText = formatWebSearchResultsForPrompt(results, model)
                         enhancedPrompt = "CURRENT WEB SEARCH RESULTS:\n$resultsText\n\n" +
                             "Based on the above, answer: \"$currentUserMessage\"\n\n" +
                             "Answer directly and clearly:"
@@ -484,7 +485,7 @@ class LiteRtLmInferenceService(private val applicationContext: Context) : Infere
 
             val contents = Contents.of(*contentParts.toTypedArray<Content>())
 
-            val localAgentTools = agentTools
+            val localAgentTools = if (useAgentTools) agentTools else null
             val useThinking = isGemma4Model() && overrideEnableThinking
             @OptIn(ExperimentalApi::class)
             if (localAgentTools != null) {

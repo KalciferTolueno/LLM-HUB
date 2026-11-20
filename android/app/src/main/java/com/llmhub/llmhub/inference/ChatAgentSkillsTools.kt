@@ -14,7 +14,7 @@ import java.net.URLEncoder
 import java.security.MessageDigest
 
 /**
- * Agent skills toolset for Gemma-4 chat in LLM-Hub.
+ * Agent skills toolset for Gemma-4 chat in Bearis.
  *
  * Implements the same set of built-in skills as Google AI Edge Gallery:
  *  - query-wikipedia  : Wikipedia REST API lookup (replaces JS WebView skill)
@@ -24,7 +24,7 @@ import java.security.MessageDigest
  *  - open-map         : Android geo: intent (replaces Gallery "interactive-map" JS/WebView skill)
  *
  * JS/WebView-dependent skills (mood-tracker, qr-code, virtual-piano, text-spinner, etc.)
- * are not implemented here because LLM-Hub's chat UI has no inline WebView renderer.
+ * are not implemented here because Bearis's chat UI has no inline WebView renderer.
  */
 class ChatAgentSkillsTools(private val context: Context) : ToolSet {
 
@@ -33,7 +33,7 @@ class ChatAgentSkillsTools(private val context: Context) : ToolSet {
 
         /**
          * System instruction injected into ConversationConfig when Gemma-4 is loaded.
-         * Mirrors the Gallery's defaultSystemPrompt but adapted for LLM-Hub's tool names.
+         * Mirrors the Gallery's defaultSystemPrompt but adapted for Bearis's tool names.
          */
         val AGENT_SYSTEM_PROMPT: String = """
 You are a helpful AI assistant. You have access to the following tools:

@@ -1,0 +1,35 @@
+﻿{
+  "model": "placeholder",
+  "stream": false,
+  "temperature": 0.2,
+  "max_tokens": 400,
+  "reasoning_effort": "none",
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "create_new_file",
+        "description": "Crear o sobrescribir un archivo.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filepath": { "type": "string" },
+            "contents": { "type": "string" }
+          },
+          "required": ["filepath", "contents"]
+        }
+      }
+    }
+  ],
+  "messages": [
+    {
+      "role": "system",
+      "content": "Si el usuario pide un archivo, usa create_new_file con JSON válido en tool_calls si el API lo soporta; si no, responde con el JSON del archivo. Si solo saludan, responde en texto."
+    },
+    {
+      "role": "user",
+      "content": "Crea prueba-ps1.txt con una sola línea: ok-bearis"
+    }
+  ]
+}

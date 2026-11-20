@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Common -->
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     <string name="ok">OK</string>
     <string name="cancel">Скасувати</string>
     <string name="close">Закрити</string>
@@ -16,7 +16,7 @@
     <string name="vision">Зір</string>
 
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">Ласкаво просимо до LLM Hub!</string>
+    <string name="welcome_to_llm_hub">Ласкаво просимо до Bearis!</string>
     <string name="no_models_downloaded">Ще не завантажено жодної моделі</string>
     <string name="no_memories">Пам\'ятей поки немає</string>
     <string name="download_a_model">Завантажити модель</string>
@@ -47,8 +47,8 @@
     <string name="reload_model">Перезавантажити модель</string>
 
     <!-- About Screen -->
-    <string name="about_llm_hub">Про LLM Hub</string>
-    <string name="about_description">LLM Hub — це Android-застосунок з відкритим кодом, який приносить потужність великих мовних моделей безпосередньо на ваш пристрій. Спілкуйтеся з AI-моделями найвищого рівня, як-от Gemma, Llama та Phi — усе локально на телефоні для максимальної приватності та офлайн-доступності.</string>
+    <string name="about_llm_hub">Про Bearis</string>
+    <string name="about_description">Bearis — це Android-застосунок з відкритим кодом, який приносить потужність великих мовних моделей безпосередньо на ваш пристрій. Спілкуйтеся з AI-моделями найвищого рівня, як-от Gemma, Llama та Phi — усе локально на телефоні для максимальної приватності та офлайн-доступності.</string>
     <string name="key_features">Ключові можливості</string>
     <string name="feature_multiple_models">🤖 Кілька моделей LLM: Gemma-3, Llama-3.2, Phi-4 і Gemma-3n</string>
     <string name="feature_on_device">📱 Обробка на пристрої: повна приватність, без інтернету</string>
@@ -60,7 +60,7 @@
     <string name="developer_info">Інформація для розробників</string>
     <string name="about_developer_info">Проєкт розробляє ентузіаст, який прагне зробити технології AI доступнішими для всіх. Ваш зворотний зв\'язок і внески завжди вітаються!</string>
     <string name="tech_stack">Технологічний стек</string>
-    <string name="about_tech_stack">LLM Hub створено з використанням сучасних технологій Android-розробки: Kotlin, Jetpack Compose, Material Design 3 та бібліотеки llama.cpp для ефективного локального інференсу.</string>
+    <string name="about_tech_stack">Bearis створено з використанням сучасних технологій Android-розробки: Kotlin, Jetpack Compose, Material Design 3 та бібліотеки llama.cpp для ефективного локального інференсу.</string>
     <string name="tech_kotlin_compose">🏗️ Побудовано з Kotlin і Jetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 Працює на MediaPipe і LiteRT</string>
     <string name="tech_quantization">🚀 Оптимізовано квантизацією INT4/INT8</string>
@@ -83,24 +83,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Умови надання послуг</string>
     <string name="tos_last_updated">Останнє оновлення: 16 липня 2025</string>
-    <string name="tos_welcome_text">Ласкаво просимо до LLM Hub. Користуючись застосунком, ви погоджуєтеся з цими умовами. Уважно прочитайте їх.</string>
-    <string name="tos_welcome">Ласкаво просимо до LLM Hub. Користуючись застосунком, ви погоджуєтеся з цими умовами. Уважно прочитайте їх.</string>
+    <string name="tos_welcome_text">Ласкаво просимо до Bearis. Користуючись застосунком, ви погоджуєтеся з цими умовами. Уважно прочитайте їх.</string>
+    <string name="tos_welcome">Ласкаво просимо до Bearis. Користуючись застосунком, ви погоджуєтеся з цими умовами. Уважно прочитайте їх.</string>
     <string name="tos_acceptance_title">1. Прийняття умов</string>
-    <string name="tos_acceptance_text">Завантажуючи, встановлюючи чи використовуючи LLM Hub, ви підтверджуєте, що прочитали, зрозуміли і погоджуєтеся з умовами. Якщо ні — не використовуйте застосунок.</string>
+    <string name="tos_acceptance_text">Завантажуючи, встановлюючи чи використовуючи Bearis, ви підтверджуєте, що прочитали, зрозуміли і погоджуєтеся з умовами. Якщо ні — не використовуйте застосунок.</string>
     <string name="tos_app_description_title">2. Опис застосунку</string>
-    <string name="tos_app_description_text">LLM Hub надає доступ до великих мовних моделей (LLM) для локальних AI-чатів. Обробка відбувається локально, персональні дані не надсилаються на сервери.</string>
+    <string name="tos_app_description_text">Bearis надає доступ до великих мовних моделей (LLM) для локальних AI-чатів. Обробка відбувається локально, персональні дані не надсилаються на сервери.</string>
     <string name="tos_user_responsibilities_title">3. Обов\'язки користувача</string>
     <string name="tos_user_responsibilities_text">Використовуйте застосунок відповідально та згідно із законом; поважайте права інтелектуальної власності третіх осіб.</string>
     <string name="tos_privacy_data_title">4. Конфіденційність і дані</string>
     <string name="tos_privacy_data_text">Усі розмови й обробка даних відбуваються локально. Історія чатів зберігається локально й може бути видалена. Аналітика не збирається.</string>
     <string name="tos_disclaimer_title">5. Відмова від гарантій</string>
-    <string name="tos_disclaimer_text">LLM Hub надається «як є» без будь-яких гарантій. Точність, надійність і доступність не гарантуються; результати моделей можуть бути непередбачуваними.</string>
+    <string name="tos_disclaimer_text">Bearis надається «як є» без будь-яких гарантій. Точність, надійність і доступність не гарантуються; результати моделей можуть бути непередбачуваними.</string>
     <string name="tos_limitation_liability_title">6. Обмеження відповідальності</string>
     <string name="tos_limitation_liability_text">Розробники не несуть відповідальності за непрямі чи супутні збитки, що виникають унаслідок використання.</string>
     <string name="tos_model_usage_title">7. Використання та ліцензування моделей</string>
     <string name="tos_model_usage_text">Моделі підпорядковуються своїм ліцензіям. Користувачі мають дотримуватися відповідних умов ліцензування.</string>
     <string name="tos_open_source_title">8. Ліцензія відкритого коду</string>
-    <string name="tos_open_source_text">LLM Hub — відкритий код під ліцензією MIT. Бібліотеки та моделі третіх сторін можуть мати інші умови.</string>
+    <string name="tos_open_source_text">Bearis — відкритий код під ліцензією MIT. Бібліотеки та моделі третіх сторін можуть мати інші умови.</string>
     <string name="tos_changes_title">9. Зміни умов</string>
     <string name="tos_changes_text">Час від часу умови можуть оновлюватися; подальше використання означає згоду з новими умовами.</string>
     <string name="tos_contact_title">10. Контактна інформація</string>
@@ -207,7 +207,7 @@
     <string name="model_text_only">Лише текст</string>
 
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">Новий чат</string>
     <string name="drawer_recent_chats">Нещодавні чати</string>
     <string name="drawer_no_chats">Чатів ще немає</string>
@@ -429,7 +429,7 @@
     <string name="import_model_warning">⚠️ Важливо: перед імпортом прочитайте README моделі на Hugging Face. Вкажіть правильні можливості (зір, аудіо, GPU) і розмір контексту згідно з документацією моделі. Важливо: GGUF-моделі з підтримкою зору вимагають Vision Projector (mmproj). Імпортуйте файл проєктора, щоб увімкнути введення зображень.</string>
 
     <!-- Home Screen -->
-    <string name="home_welcome">Ласкаво просимо до LLM Hub</string>
+    <string name="home_welcome">Ласкаво просимо до Bearis</string>
     <string name="home_subtitle">Відкрийте силу AI у своїй кишені — приватно, швидко й офлайн!</string>
 
     <!-- Feature Cards -->
@@ -802,7 +802,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Відкрийте повний доступ</string>
     <string name="premium_feature_no_ads">Ніякої реклами</string>
     <string name="premium_feature_vibe_coder">VibeCoder — генератор коду на ШІ</string>

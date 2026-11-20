@@ -1,210 +1,80 @@
-# LLM Hub 🤖
+# Bearis
 
-**LLM Hub** is an open-source Android app for on-device LLM chat and image generation. It's optimized for mobile usage (CPU/GPU/NPU acceleration) and supports multiple model formats so you can run powerful models locally and privately.
+**Bearis** es una aplicación **Android** para ejecutar modelos de lenguaje y multimodales **en el propio teléfono**: chat, descarga o importación de modelos, y un **servidor HTTP en la red local** con API **compatible con OpenAI** (`/v1/chat/completions`, `/v1/models`, streaming SSE) pensado para conectar el móvil con el PC y usar asistentes como **Continue** o scripts propios sin enviar el prompt a la nube.
 
-> **🍎 iOS version is coming!** I'm actively working on it and would love to bring LLM Hub to iPhone and iPad. The only thing standing in the way is hardware — I need to save up ~$1,000 for a Mac and an Apple Developer account.
->
-> If you've enjoyed the app and want to help make iOS happen, even a small amount goes a long way 💙
->
-> [![Sponsor timmyy123](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?logo=github-sponsors&logoColor=white&style=flat)](https://github.com/sponsors/timmyy123)
->
-> **Early sponsor perk:** The iOS app will be a paid App Store release, but anyone who sponsors before launch gets a free redemption code on me. Just include your GitHub username or email in your sponsor note and I'll make sure you're taken care of when it ships!
+La inferencia corre en el dispositivo; el tráfico con el ordenador es solo por **Wi‑Fi / LAN** cuando activas la API local (puerto habitual **8080**, según ajustes en la app).
 
-## Download
+---
 
-<a href="https://play.google.com/store/apps/details?id=com.llmhub.llmhub">
-  <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" width="280" />
-</a>
+## Funciones de la app (estado actual)
 
-## 📸 Screenshots
+- **Inicio y modelos** — descarga, importación y carga de modelos soportados por el motor integrado; ajustes por modelo (incl. razonamiento / API LAN donde aplique).
+- **Chat** — conversación con historial, archivos o imágenes cuando el modelo y el runtime lo permiten.
+- **API local (LAN)** — `LlmApiServer` en segundo plano: expone el modelo cargado a la red; panel en la app para ver URL, estado y opciones.
+- **Herramientas en la app** — entre otras: asistente de escritura, Vibe Coder, generación de imágenes, flujos tipo creador/canvas y monitor del sistema (disponibilidad concreta según build y modelo).
+- **Privacidad** — el procesamiento del modelo es local; no necesitas cuentas en Bearis para usar el chat y la API en red local.
 
-<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;">
-   <!-- <figure style="margin:0;flex:0 1 300px;max-width:300px;text-align:center">
-      <img src="android/assets/screenshots/Screenshot_20251007_041833_LLM%20Hub.jpg" alt="AI Models" style="width:300px;height:auto;border-radius:8px;display:block;" />
-   </figure> -->
-   <figure style="margin:0;flex:0 1 300px;max-width:300px;text-align:center">
-      <img src="android/assets/screenshots/Screenshot_20260214_201455.png" alt="AI Features" style="width:300px;height:auto;border-radius:8px;display:block;" />
-   </figure>
-   <figure style="margin:0;flex:0 1 300px;max-width:300px;text-align:center">
-      <img src="android/assets/screenshots/Screenshot_20251007_042114_LLM%20Hub.jpg" alt="Chat Interface" style="width:300px;height:auto;border-radius:8px;display:block;" />
-   </figure>
-   <figure style="margin:0;flex:0 1 300px;max-width:300px;text-align:center">
-      <img src="android/assets/screenshots/Screenshot_20251007_042146_LLM%20Hub.jpg" alt="Chat Interface 2" style="width:300px;height:auto;border-radius:8px;display:block;" />
-   </figure>
-</div>
+Detalle de formatos, límites y nombres exactos de modelos: `android/app/.../data/ModelData.kt` y la propia app.
 
-## 🚀 Features
+---
 
-### 🛠️ AI Tools Suite
-| Tool | Description |
-|------|-------------|
-| **💬 Chat** | Multi-turn conversations with RAG memory, web search, TTS auto-readout, and multimodal input |
-| **🤖 creAItor** | **[NEW]** Design custom AI personas with specialized system prompts (PCTF) in seconds |
-| **💻 Vibe Coder** | **[NEW]** Explain your app idea and watch it be built in real-time with live HTML/JS preview |
-| **✍️ Writing Aid** | Summarize, expand, rewrite, improve grammar, or generate code from descriptions |
-| **🎨 Image Generator** | Create images from text prompts using Stable Diffusion 1.5 with swipeable gallery |
-| **🌍 Translator** | Translate text, images (OCR), and audio across 50+ languages - offline |
-| **🎙️ Transcriber** | Convert speech to text with on-device processing |
-| **🛡️ Scam Detector** | Analyze messages and images for phishing with risk assessment |
+## API local e IDEs
 
-### ✨ Vibes & Creators
-- **Vibes**: A full on-device coding environment. The LLM writes HTML/JS/CSS based on your requirements, and you can preview/run the app instantly in a secure sandbox.
-- **creAItor**: Powerful persona generation to create anything from characters with fun personalities to system architects. Just describe a creAItor ("respond like a pirate" or "respond with a markdown spec for a code agent to generate a full-stack system"), and the on-device LLM generates a complex system prompt (PCTF format) that you can use in chat.
+- Base típica del cliente: `http://<IP-del-móvil>:<puerto>/v1` (la app muestra la URL y el puerto).
+- **Continue** u otros clientes OpenAI-compatibles configuran esa URL; ellos gestionan herramientas, MCP y reglas en el PC; Bearis actúa como **backend del modelo**.
 
-###  Kid Mode
-Activate this in Settings under Kid Mode. Set a PIN, and the mode will remain in effect until you unlock it with the same PIN.
-- **Safe Exploration**: Families can introduce children to private local AI with confidence.
-- **Model-Level Guardrails**: Automatically activates strict safety protocols at the model inference layer across **all** tools (Chat, Writing Aid, Image Gen, etc.).
-- **Peace of Mind**: Ensures all generated content is age-appropriate without compromising the privacy benefits of on-device processing.
+Opcional: extensión de prueba en `vscode/bearis-chat/` (no hace falta para Continue).
 
-### 🔐 Privacy First
-- **100% on-device processing** - no internet required for inference
-- **Zero data collection** - conversations never leave your device
-- **No accounts, no tracking** - completely private
-- **Open-source** - fully transparent
+---
 
-### ⚡ Advanced Capabilities
-- GPU/NPU acceleration for fast performance
-- Text-to-Speech with auto-readout
-- RAG with global memory for enhanced responses
-- Import custom models (.task, .litertlm, qnn,.mnn, .gguf)
-- Direct downloads from HuggingFace
-- 16 language interfaces
+## Cómo instalar (desde código)
 
-Quick Start
-1. Download from Google Play or build from source
-2. Open Settings → Download Models → Download or Import a model
-3. Select a model and start chatting or generating images
+Instalación recomendada: **compilar el proyecto** en este repositorio.
 
-Supported Model Families (summary)
-- Gemma (LiteRT Task)
-- Llama (Task + GGUF variants)
-- Phi (LiteRT LM)
-- LiquidAI LFM (LFM 2.5 1.2B + LFM VL 1.6B vision-enabled)
-- Ministral / Mistral family (GGUF / ONNX)
-- IBM Granite (GGUF)
-
-Model Formats
-- Task / LiteRT (.task): MediaPipe/LiteRT optimized models (GPU/NPU capable)
-- LiteRT LM (.litertlm): LiteRT language models
-- GGUF (.gguf): Quantized models — CPU inference powered by Nexa SDK; some vision-capable GGUF models require an additional `mmproj` vision project file
-- ONNX (.onnx): Cross-platform model runtime
-
-GGUF Compatibility Notes
-- Not all Android devices can load GGUF models in this app.
-- GGUF loading/runtime depends on Nexa SDK native libraries and device/ABI support; on unsupported devices, GGUF model loading can fail even if the model file is valid.
-- In this app, the GGUF NPU option is intentionally shown only for Snapdragon 8 Gen 4-class devices.
-
-Importing models
-- Settings → Download Models → Import Model → choose `.task`, `.litertlm`, `.qnn`, `.gguf`, or `.mnn`
-- The full model list and download links live in `app/src/.../data/ModelData.kt` (do not exhaustively list variants in the README)
-
-Technology
-- Kotlin + Jetpack Compose (Material 3)
-- LLM Runtime: MediaPipe, LiteRT, Nexa SDK
-- Image Gen: MNN / Qualcomm QNN
-- Quantization: INT4/INT8
-
-Acknowledgments
-- **Nexa SDK** — GGUF model inference support (credit shown in-app About) ⚡
-- **Google, Meta, Microsoft, IBM, LiquidAI, Mistral, HuggingFace** — model and tooling contributions
-
-Development Setup
-
-### Android local development (Android Studio + Gradle)
 ```bash
-git clone https://github.com/timmyy123/LLM-Hub.git
-cd LLM-Hub/android
+git clone https://github.com/KalciferTolueno/LLM-HUB.git
+cd LLM-HUB/android
 ./gradlew assembleDebug
 ./gradlew installDebug
 ```
 
-### Android-only local configuration
+En Windows puedes usar `gradlew.bat`. Abre el proyecto en **Android Studio** si prefieres interfaz gráfica.
 
-#### Setting up Hugging Face Token for Development
-To use private or gated models, add your HuggingFace token to `android/local.properties` (do NOT commit this file):
+Pasos en el teléfono: descarga o importa un modelo, **cárgalo**, activa la **API local** si quieres usarla desde el PC.
+
+---
+
+## Configuración opcional de desarrollo
+
+**Token de Hugging Face** (modelos con acceso restringido), en `android/local.properties` — **no lo subas al repositorio**:
+
 ```properties
 HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
-Save and sync Gradle in Android Studio; the app will read `BuildConfig.HF_TOKEN` at build time.
 
-#### Dev Premium Flag
-To skip ads and unlock all premium features locally without a real IAP purchase, add this to `android/local.properties`:
-```properties
-DEBUG_PREMIUM=true
-```
-Set it back to `false` before making a production build.
+Sincroniza Gradle; si el build lo incluye, estará disponible vía `BuildConfig` donde corresponda.
 
-#### Model License Acceptance
-Some models on HuggingFace (especially from Google and Meta) require explicit license acceptance before downloading. When building the app locally:
+---
 
-1. Ensure you have a valid HuggingFace read token in `local.properties` (see above)
-2. **For each model you want to download:**
-   - Visit the model's HuggingFace page (e.g., https://huggingface.co/google/gemma-3n-E2B-it-litert-lm)
-   - Click the "Access repository" or license acceptance button
-   - Grant consent to the model's license terms
-   - Try downloading the model in the app again
+## Stack (referencia rápida)
 
-**Note:** This is only required for local development builds. The Play Store version uses different authentication and does not require manual license acceptance for each model.
+- **UI:** Kotlin, Jetpack Compose, Material 3.
+- **Inferencia:** integración con los motores y rutas definidas en el proyecto (`UnifiedInferenceService`, cargadores, `gradle/libs.versions.toml`).
 
-### iOS local development (macOS + Xcode)
+---
 
-#### Prerequisites
-- macOS with Xcode installed (use a version that matches your iOS device version)
-- An Apple ID signed into Xcode (free Personal Team works for local device testing)
-- iPhone with Developer Mode enabled if you run on real hardware
+## Licencia
 
-#### Build and run on iPhone
-1. Clone the repo and open the iOS project:
-```bash
-git clone https://github.com/timmyy123/LLM-Hub.git
-cd LLM-Hub
-open ios/LLMHub/LLMHub.xcodeproj
-```
-2. In Xcode, select target **LLMHub** → **Signing & Capabilities**:
-   - Set your **Team**
-   - Set a unique **Bundle Identifier** (for example: `com.yourname.llmhub`)
-   - Keep **Automatically manage signing** enabled
-3. Select your iPhone as the run destination and press **Run**.
+Consulta el archivo **`LICENSE`** en la raíz del repositorio.
 
-#### If you use Xcode beta
-If your phone is on a newer iOS build and requires Xcode beta support, switch CLI tools:
-```bash
-sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer
-xcodebuild -version
-```
+---
 
-#### Useful iOS dev troubleshooting
-- If signing fails, re-check Team + Bundle Identifier in target settings.
-- If build cache acts stale, clean DerivedData:
-```bash
-rm -rf ~/Library/Developer/Xcode/DerivedData/LLMHub-*
-```
-- Build logs: **Report Navigator** (`Cmd+9`)
-- Runtime logs: **Debug Console** (`Cmd+Shift+Y`)
+## Reconocimiento (origen del código)
 
-Contributing
-- Fork → branch → PR. See CONTRIBUTING.md (or open an issue/discussion if unsure).
+Bearis **partió como fork** del proyecto **[LLM-Hub](https://github.com/timmyy123/LLM-Hub)** ([@timmyy123](https://github.com/timmyy123)). Este repositorio (**[KalciferTolueno/LLM-HUB](https://github.com/KalciferTolueno/LLM-HUB)**) es el desarrollo actual de **Bearis**: **no está enlazado para sincronizarse automáticamente** con el proyecto original; las funciones y la API pueden diferir. Si reutilizas el código, respeta la licencia del proyecto original y la atribución que exija.
 
-License
-- Source code is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
-- You are free to use, study, and build on this project for non-commercial purposes.
-- **Commercial use — including distributing the app, charging for it, or monetizing it with ads or IAP — is not permitted without explicit written permission from the author.**
-- Contact timmyboy0623@gmail.com for commercial licensing enquiries.
+---
 
-Support
-- Email: timmyboy0623@gmail.com
-- Issues & Discussions: GitHub
+## Repositorio
 
-Notes
-- This README is intentionally concise — consult `ModelData.kt` for exact model variants, sizes, and format details.
-
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=timmyy123/LLM-Hub&type=date&legend=top-left)](https://www.star-history.com/#timmyy123/LLM-Hub&type=date&legend=top-left)
-
-
-
-
-
+**GitHub:** [github.com/KalciferTolueno/LLM-HUB](https://github.com/KalciferTolueno/LLM-HUB) · nombre del producto en pantalla: **Bearis**

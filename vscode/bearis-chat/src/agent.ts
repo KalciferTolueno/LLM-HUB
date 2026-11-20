@@ -44,7 +44,9 @@ replacement lines
 
 Rules:
 - Use only paths inside the workspace (no .. segments).
-- If the user asks to create, save, or generate project files (e.g. “crea el archivo”, “hazme la web”), you MUST emit one BEARIS_WRITE block per file with the real path (e.g. index.html, styles.css). Markdown fenced code (e.g. \`\`\`html) is chat-only and is NOT saved to disk by the extension.
+- Never spam or repeat the same filename or placeholder (e.g. “archivo.html” many times). Use each real path once inside BEARIS_WRITE or in prose.
+- Prefer native OpenAI function/tool calls for file writes when available (create_new_file/write_file with JSON args). If tool-calls are unavailable, use BEARIS_WRITE / BEARIS_PATCH as fallback.
+- If the user asks to create, save, or generate project files (e.g. “crea el archivo”, “hazme la web”), create one real file per output path (e.g. index.html, styles.css) instead of generating wrapper scripts.
 - To edit a file you do not have in context: use BEARIS_LIST to find it, then BEARIS_READ, then reply with BEARIS_PATCH (small edits) or BEARIS_WRITE (full file). If the user has the file open, you may get its content in "## Active file" without READ.
 - Prefer tool-only turns first (BEARIS_GREP / BEARIS_SEARCH / BEARIS_LIST / BEARIS_READ), then BEARIS_PATCH or BEARIS_WRITE after you see [Bearis: tool results]. Do not put tools and PATCH/WRITE in the same reply.
 - Create only files the user asked for.
@@ -95,9 +97,36 @@ new lines
 
 Rules:
 - No .. segments in paths.
+- Never repeat the same filename or placeholder in a loop; use concrete paths once (e.g. index.html).
+- Prefer native OpenAI function/tool calls for writes when available; use BEARIS_WRITE / BEARIS_PATCH only as fallback.
 - Prefer BEARIS_PATCH for small edits to existing files, BEARIS_WRITE for new files or full rewrites; Markdown fences may still be saved when the extension offers it.
 - Use GREP/SEARCH/LIST/READ first if you need locations or contents; after [Bearis: tool results], reply with PATCH or WRITE. Avoid tools and PATCH/WRITE in the same reply.
 - Complete file contents in each WRITE block (not truncated).`;
+}
+
+/** OpenAI-style tools only: no BEARIS_* blocks; VS Code extension applies `tool_calls` from the LAN API. */
+export function buildStrictOpenAiAgentSystemPrompt(workspaceName: string): string {
+  return `You are a coding assistant in VS Code. Workspace folder: "${workspaceName}".
+
+Use the provided function tools only to create or overwrite whole files. Paths are relative to the workspace root; never use ".." segments. Put the complete file body in the tool arguments.
+
+The user message may include "## Active file" with the current editor buffer (truncated). Prefer tools for files the user asked to create or replace; use chat for short snippets or explanation only.
+
+Rules:
+- Call create_new_file / write_file with JSON arguments when the user wants files on disk.
+- Prefer one file per tool call when writing several files.
+- After you see a user message starting with "[Tool execution]", briefly confirm what was written or how to fix errors; do not repeat the same failing tool call in a loop.
+- Do not emit BEARIS_READ, BEARIS_LIST, BEARIS_WRITE, BEARIS_PATCH, or other custom markup — this session uses OpenAI-style tools only.`;
+}
+
+export function buildStrictOpenAiAgentSystemPromptProvisional(): string {
+  return `You are a coding assistant in VS Code.
+
+The user may pick a folder on disk and confirm before files are written. Use only the provided function tools to create or overwrite files; paths are relative to that folder (no "..").
+
+After a user message starting with "[Tool execution]", summarize results briefly.
+
+Do not use BEARIS_* markup blocks; use OpenAI-style tool calls only.`;
 }
 
 const WRITE_OPEN = /<<<BEARIS_WRITE\s+path=["']([^"']+)["']\s*>>>/g;

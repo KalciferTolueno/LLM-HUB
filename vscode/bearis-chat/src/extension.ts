@@ -1,10 +1,17 @@
 import * as vscode from "vscode";
-import { streamChatCompletion, type ChatMessage } from "./api";
+import {
+  BEARIS_DEFAULT_WRITE_TOOLS,
+  streamChatCompletion,
+  type ChatMessage,
+  type StreamToolCall,
+} from "./api";
 import {
   applyBearisWrites,
   buildActiveFileAppendix,
   buildAgentSystemPrompt,
   buildAgentSystemPromptProvisional,
+  buildStrictOpenAiAgentSystemPrompt,
+  buildStrictOpenAiAgentSystemPromptProvisional,
   executeBearisLists,
   executeBearisReads,
   parseBearisGrepBlocks,
@@ -36,6 +43,10 @@ import { executeBearisGreps } from "./grepTool";
 import { loadBearisProjectRules } from "./projectRules";
 import { applyBearisPatches } from "./patchApply";
 import { BearisDiffPreview } from "./bearisDiffPreview";
+import {
+  hasRunawayRepetition,
+  truncateIfRepetitive,
+} from "./streamRepetition";
 
 const VIEW_TYPE = "bearis.chatPanel";
 
@@ -102,6 +113,17 @@ function webviewHtml(nonce: string): string {
     .msg .role { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; margin-bottom: 4px; }
     .msg.user .bubble { background: var(--vscode-input-background); padding: 8px 10px; border-radius: 8px; }
     .msg.assistant .bubble { padding: 2px 0; }
+    .toolrow {
+      font-size: 0.85rem;
+      color: var(--dim);
+      margin: 0 0 8px 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .toolrow input { cursor: pointer; }
     .row { display: flex; gap: 8px; align-items: flex-end; }
     #input {
       flex: 1;
@@ -138,8 +160,9 @@ function webviewHtml(nonce: string): string {
 </head>
 <body>
   <h1>Bearis</h1>
-  <div class="hint">Phone: Bearis + local API. Normal Markdown code fences (html, css, …) can be saved as files when there is no BEARIS_WRITE (<code>bearis.autoApplyMarkdownFences</code>). Or use <code>BEARIS_READ</code> / <code>BEARIS_WRITE</code>. Writes may ask confirmation. Set <code>bearis.apiBaseUrl</code> if needed.</div>
+    <div class="hint">Phone: Bearis + local API. Default is Continue-like: <code>bearis.agentMode</code> off → requests are chat-only (no <code>tools</code> in JSON). Turn agent mode on for file edits; with <code>bearis.writeToolsPolicy</code> = fileIntent, write tools are sent only when the message looks like code/file work, or check <b>File tools</b> for this send. <code>bearis.strictOpenAiAgent</code> (on) uses OpenAI <code>tool_calls</code>; off = legacy BEARIS_* blocks.</div>
   <div id="log"></div>
+  <label class="toolrow"><input type="checkbox" id="fileTools" /><span>File tools (this message; requires agent mode on)</span></label>
   <div class="row">
     <textarea id="input" placeholder="Message… (Enter to send, Shift+Enter newline)"></textarea>
     <button id="send">Send</button>
@@ -151,6 +174,7 @@ function webviewHtml(nonce: string): string {
       const log = document.getElementById("log");
       const input = document.getElementById("input");
       const sendBtn = document.getElementById("send");
+      const fileToolsEl = document.getElementById("fileTools");
       const errEl = document.getElementById("err");
 
       function clearErr() { errEl.textContent = ""; }
@@ -194,7 +218,11 @@ function webviewHtml(nonce: string): string {
         appendMessage("user", text);
         streamingBubble = appendMessage("assistant", "");
         setBusy(true);
-        vscode.postMessage({ type: "send", text: text });
+        vscode.postMessage({
+          type: "send",
+          text: text,
+          useFileTools: fileToolsEl && fileToolsEl.checked,
+        });
       }
 
       window.addEventListener("message", (event) => {
@@ -264,8 +292,216 @@ function buildSystemMessages(
   return [{ role: "system", content }];
 }
 
+function buildStrictSystemMessages(
+  agentOn: boolean,
+  root: AgentRootInfo | undefined,
+  workspaceRulesAppend: string
+): ChatMessage[] {
+  if (!agentOn) {
+    return [{ role: "system", content: "You are a helpful assistant." }];
+  }
+  let content: string;
+  if (root) {
+    content = buildStrictOpenAiAgentSystemPrompt(root.label);
+  } else {
+    content = buildStrictOpenAiAgentSystemPromptProvisional();
+  }
+  if (workspaceRulesAppend) {
+    content += workspaceRulesAppend;
+  }
+  return [{ role: "system", content }];
+}
+
+function formatToolExecutionUserMessage(written: string[], errors: string[]): string {
+  const lines = ["[Tool execution]"];
+  if (written.length) {
+    lines.push(`Wrote: ${written.join(", ")}`);
+  }
+  if (errors.length) {
+    lines.push(`Errors: ${errors.join("; ")}`);
+  }
+  if (written.length === 0 && errors.length === 0) {
+    lines.push("(no file changes)");
+  }
+  return lines.join("\n");
+}
+
+/** When false, skip write tools and often the active-file appendix so greetings stay conversational. */
+function messageSuggestsFileOrCodeWork(text: string): boolean {
+  const t = text.trim();
+  if (!t) return false;
+  if (/```/.test(t)) return true;
+  if (/\b(bearis_(read|write|list|patch|search|grep)|<<<\s*BEARIS_)/i.test(t)) return true;
+  if (
+    /\b[\w./-]+\.(?:py|ts|tsx|js|jsx|mjs|cjs|kt|kts|java|go|rs|cpp|cc|cxx|c|h|hpp|cs|fs|vb|rb|php|swift|scala|html|htm|css|scss|sass|less|json|ya?ml|toml|xml|md|mdx|sql|sh|bash|zsh|ps1|bat|cmd|gradle|plist)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (/\b(package\.json|requirements\.txt|dockerfile|makefile|cargo\.toml|go\.mod|pom\.xml)\b/i.test(t)) {
+    return true;
+  }
+  const lower = t.toLowerCase();
+  if (
+    /\b(create|creates|created|write|writes|implement|implements|adding|add|fix|fixes|fixed|patch|patches|refactor|save|saves|generate|generates|scaffold|edit|edits|replace|deletes|delete|remove|removes|change|changes|update|updates)\b/.test(
+      lower
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\b(crea|crear|cread|escrib|implementa|implementar|añade|anade|agrega|arregla|arreglar|guarda|guardar|genera|generar|modifica|modificar|cambia|cambiar|borra|borrar|elimina|eliminar|quita|quitar|reemplaz|actualiza|actualizar)\b/.test(
+      lower
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\b(file|files|folder|folders|directory|directories|archivo|archivos|carpeta|carpetas|directorio|repo|repository|codebase|proyecto|project)\b/.test(
+      lower
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\b(function|functions|class|classes|method|methods|bug|bugs|error|errors|exception|traceback|compile|compiler|build|lint|test|tests|unittest)\b/.test(
+      lower
+    )
+  ) {
+    return true;
+  }
+  if (/\b(funci[oó]n|funciones|clase|clases|m[eé]todo|m[eé]todos)\b/.test(lower)) {
+    return true;
+  }
+  return false;
+}
+
+function dedupeWritesByPath(writes: ParsedWrite[]): {
+  writes: ParsedWrite[];
+  duplicated: string[];
+} {
+  const byPath = new Map<string, ParsedWrite>();
+  const duplicated = new Set<string>();
+  for (const w of writes) {
+    const key = w.relativePath.trim();
+    if (byPath.has(key)) {
+      duplicated.add(key);
+    }
+    byPath.set(key, w);
+  }
+  return { writes: Array.from(byPath.values()), duplicated: Array.from(duplicated) };
+}
+
+/**
+ * Gemma / LiteRT style seen when the phone API streams without OpenAI tool_calls JSON, e.g.:
+ * <|tool_call|>call:TOOL_NAME:create_new_file BEGIN_ARG: filepath index.html END_ARG BEGIN_ARG: contents
+ * (optional UI line "Apply") then raw file body.
+ */
+function parseGemmaBeginArgCreateFileToolCalls(text: string): ParsedWrite[] {
+  const out: ParsedWrite[] = [];
+  const re =
+    /<\|tool_call\>\s*call:\s*[^:]+?:create_new_file\s+BEGIN_ARG:\s*filepath\s+(\S+)\s+END_ARG\s+BEGIN_ARG:\s*contents\s*(?:\r?\n)*(?:Apply\s*(?:\r?\n)+)?([\s\S]+)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const relativePath = m[1].trim().replace(/\\/g, "/");
+    const content = (m[2] ?? "").replace(/\r\n/g, "\n").trimEnd();
+    if (!relativePath || relativePath.includes("..")) continue;
+    out.push({ relativePath, content });
+  }
+  return out;
+}
+
+function parseLegacyCreateFileToolCalls(text: string): {
+  writes: ParsedWrite[];
+  malformed: boolean;
+} {
+  const writes: ParsedWrite[] = [];
+  const re =
+    /<\|tool_call\>\s*call:create_new_file\{filepath:<\|"\|>([^<]+)<\|"\|>,contents:<\|"\|>([\s\S]*?)<\|"\|>\}/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const relativePath = m[1].trim().replace(/\\/g, "/");
+    const content = (m[2] ?? "").replace(/\r\n/g, "\n");
+    if (!relativePath || relativePath.includes("..")) continue;
+    writes.push({ relativePath, content });
+  }
+  for (const w of parseGemmaBeginArgCreateFileToolCalls(text)) {
+    writes.push(w);
+  }
+  const mentionsLegacy =
+    text.includes("call:create_new_file") ||
+    /<\|tool_call\>[\s\S]*?:create_new_file/i.test(text);
+  const malformed = mentionsLegacy && writes.length === 0;
+  return { writes, malformed };
+}
+
+function parseOpenAiToolCallWrites(toolCalls: StreamToolCall[]): {
+  writes: ParsedWrite[];
+  malformed: boolean;
+} {
+  const writes: ParsedWrite[] = [];
+  let malformed = false;
+  for (const tc of toolCalls) {
+    const name = tc.name.trim().toLowerCase();
+    if (!["create_new_file", "create_file", "write_file", "save_file"].includes(name)) {
+      continue;
+    }
+    try {
+      const raw = JSON.parse(tc.arguments || "{}") as Record<string, unknown>;
+      const candidatePath =
+        (typeof raw.filepath === "string" && raw.filepath) ||
+        (typeof raw.path === "string" && raw.path) ||
+        (typeof raw.file === "string" && raw.file) ||
+        "";
+      const candidateContent =
+        (typeof raw.contents === "string" && raw.contents) ||
+        (typeof raw.content === "string" && raw.content) ||
+        (typeof raw.text === "string" && raw.text) ||
+        "";
+      const relativePath = candidatePath.trim().replace(/\\/g, "/");
+      if (!relativePath || relativePath.includes("..")) {
+        malformed = true;
+        continue;
+      }
+      writes.push({
+        relativePath,
+        content: candidateContent.replace(/\r\n/g, "\n"),
+      });
+    } catch {
+      malformed = true;
+    }
+  }
+  return { writes, malformed };
+}
+
+function hasLegacySamplingOverrides(): boolean {
+  const cfg = vscode.workspace.getConfiguration("bearis");
+  const keys = [
+    "agentTemperature",
+    "agentTopP",
+    "agentMaxTokens",
+    "chatTemperature",
+    "chatTopP",
+    "chatMaxTokens",
+  ] as const;
+  return keys.some((k) => {
+    const inspected = cfg.inspect<number>(k);
+    return (
+      inspected?.globalValue !== undefined ||
+      inspected?.workspaceValue !== undefined ||
+      inspected?.workspaceFolderValue !== undefined
+    );
+  });
+}
+
 export function activate(context: vscode.ExtensionContext) {
   bearisDiffPreview.register(context);
+  if (hasLegacySamplingOverrides()) {
+    void vscode.window.showInformationMessage(
+      "Bearis sampling is now managed on your phone (Chat -> Model settings / Local API defaults). Extension sampling settings were removed.",
+    );
+  }
   context.subscriptions.push(
     vscode.commands.registerCommand("bearis.setAgentFolder", async () => {
       const picked = await pickAndStoreAgentRoot(context);
@@ -350,21 +586,34 @@ export function activate(context: vscode.ExtensionContext) {
       const history: ChatMessage[] = [];
 
       panel.webview.onDidReceiveMessage(
-        async (msg: { type: string; text?: string }) => {
+        async (msg: { type: string; text?: string; useFileTools?: boolean }) => {
           if (msg.type !== "send" || !msg.text) return;
 
           const userText = msg.text.trim();
           const cfg = vscode.workspace.getConfiguration("bearis");
-          const agentOn = cfg.get<boolean>("agentMode", true);
+          const agentOn = cfg.get<boolean>("agentMode", false);
           const rootForPrompt = getAgentRoot(context);
           const includeFile = cfg.get<boolean>("includeActiveFile", true);
           const maxChars = cfg.get<number>("maxActiveFileChars", 12000);
           const cap =
             maxChars <= 0 ? 300_000 : Math.min(Math.max(maxChars, 1), 500_000);
 
+          const fileTaskLikely = messageSuggestsFileOrCodeWork(userText);
+          const writeToolsPolicy = cfg.get<string>("writeToolsPolicy", "fileIntent");
+          const forceWriteTools = msg.useFileTools === true;
+          const offerWriteToolsThisTurn =
+            agentOn &&
+            (writeToolsPolicy === "everyMessage" ||
+              fileTaskLikely ||
+              forceWriteTools);
+          const includeActiveThisTurn =
+            includeFile &&
+            rootForPrompt &&
+            (offerWriteToolsThisTurn || userText.length >= 160);
+
           let userPayload = userText;
-          if (rootForPrompt && includeFile) {
-            userPayload = userText + buildActiveFileAppendix(rootForPrompt.uri, cap);
+          if (includeActiveThisTurn) {
+            userPayload = userText + buildActiveFileAppendix(rootForPrompt!.uri, cap);
           }
 
           history.push({ role: "user", content: userPayload });
@@ -384,6 +633,211 @@ export function activate(context: vscode.ExtensionContext) {
               if (rulesRaw) {
                 workspaceRulesAppend = `\n\n---\n## Project rules (bearis.md / .bearisrules)\n${rulesRaw}`;
               }
+            }
+
+            const strictOpenAiAgent = cfg.get<boolean>("strictOpenAiAgent", true);
+            if (strictOpenAiAgent) {
+              const maxStepsStrict = Math.min(
+                20,
+                Math.max(1, cfg.get<number>("maxAgentSteps", 5))
+              );
+
+              const runOneStream = async (messages: ChatMessage[], withWriteTools: boolean) => {
+                let roundText = "";
+                let roundToolCalls: StreamToolCall[] = [];
+                const abortRound = new AbortController();
+                let abortedForRepetition = false;
+                try {
+                  await streamChatCompletion(
+                    base,
+                    messages,
+                    (delta) => {
+                      roundText += delta;
+                      if (hasRunawayRepetition(roundText)) {
+                        abortedForRepetition = true;
+                        abortRound.abort();
+                        return;
+                      }
+                      panel.webview.postMessage({ type: "delta", text: delta });
+                    },
+                    {
+                      signal: abortRound.signal,
+                      onToolCalls: (calls) => {
+                        roundToolCalls = calls;
+                      },
+                      ...(withWriteTools
+                        ? { tools: BEARIS_DEFAULT_WRITE_TOOLS, tool_choice: "auto" as const }
+                        : {}),
+                    }
+                  );
+                } catch (e) {
+                  const aborted =
+                    (e instanceof Error && e.name === "AbortError") ||
+                    (typeof DOMException !== "undefined" &&
+                      e instanceof DOMException &&
+                      e.name === "AbortError");
+                  if (!aborted || !abortedForRepetition) {
+                    throw e;
+                  }
+                }
+                roundText = truncateIfRepetitive(roundText);
+                if (abortedForRepetition) {
+                  panel.webview.postMessage({
+                    type: "delta",
+                    text: "\n\n*[Bearis: detenido — el modelo repetía el mismo texto. Prueba otro modelo, baja la temperatura o acorta el prompt.]*\n",
+                  });
+                }
+                return { roundText, roundToolCalls };
+              };
+
+              if (!agentOn) {
+                const messages: ChatMessage[] = [
+                  { role: "system", content: "You are a helpful assistant." },
+                  ...history,
+                ];
+                const { roundText } = await runOneStream(messages, false);
+                history.push({
+                  role: "assistant",
+                  content: stripToolMarkersForHistory(roundText),
+                });
+              } else if (!offerWriteToolsThisTurn) {
+                const messages: ChatMessage[] = [
+                  {
+                    role: "system",
+                    content:
+                      "You are a helpful assistant in VS Code. Reply conversationally. Do not call tools or propose creating or editing files unless the user clearly asked for code, scripts, or project changes.",
+                  },
+                  ...history,
+                ];
+                const { roundText } = await runOneStream(messages, false);
+                history.push({
+                  role: "assistant",
+                  content: stripToolMarkersForHistory(roundText),
+                });
+              } else {
+                for (let step = 0; step < maxStepsStrict; step++) {
+                  const messages: ChatMessage[] = [
+                    ...buildStrictSystemMessages(agentOn, rootForPrompt, workspaceRulesAppend),
+                    ...history,
+                  ];
+                  const { roundText, roundToolCalls } = await runOneStream(messages, true);
+
+                  if (roundToolCalls.length === 0) {
+                    history.push({
+                      role: "assistant",
+                      content: stripToolMarkersForHistory(roundText),
+                    });
+                    break;
+                  }
+
+                  history.push({
+                    role: "assistant",
+                    content: roundText.trimEnd(),
+                  });
+
+                  const parsedOpenAi = parseOpenAiToolCallWrites(roundToolCalls);
+                  if (parsedOpenAi.writes.length === 0) {
+                    const errMsg = parsedOpenAi.malformed
+                      ? "The model returned file tool calls with invalid or incomplete JSON arguments."
+                      : "The model returned tool_calls that were not create_new_file / write_file (or paths were rejected).";
+                    panel.webview.postMessage({
+                      type: "agent",
+                      written: [],
+                      patched: [],
+                      errors: [errMsg],
+                    });
+                    history.push({
+                      role: "user",
+                      content: `[Tool execution]\n${errMsg}`,
+                    });
+                    if (step === maxStepsStrict - 1) {
+                      panel.webview.postMessage({
+                        type: "delta",
+                        text: `\n\n*[Bearis: stopped at bearis.maxAgentSteps (${maxStepsStrict}).]*\n`,
+                      });
+                    }
+                    continue;
+                  }
+
+                  const dedupedWrites = dedupeWritesByPath(parsedOpenAi.writes);
+                  let writes = dedupedWrites.writes;
+                  if (dedupedWrites.duplicated.length > 0) {
+                    panel.webview.postMessage({
+                      type: "agent",
+                      written: [],
+                      patched: [],
+                      errors: [
+                        `Ignored duplicate write tool calls for: ${dedupedWrites.duplicated.join(", ")}.`,
+                      ],
+                    });
+                  }
+
+                  const rootForWrite =
+                    (await ensureAgentRootForWrites(context)) ?? undefined;
+                  if (!rootForWrite) {
+                    const errMsg =
+                      "No folder selected for writes. Use “Bearis: Set Agent Folder…” or open a workspace folder.";
+                    panel.webview.postMessage({
+                      type: "agent",
+                      written: [],
+                      patched: [],
+                      errors: [errMsg],
+                    });
+                    history.push({
+                      role: "user",
+                      content: formatToolExecutionUserMessage([], [errMsg]),
+                    });
+                    break;
+                  }
+
+                  const confirmed = await confirmFileChanges(writes, [], rootForWrite, {
+                    inferredFromMarkdown: false,
+                  });
+                  if (!confirmed.ok) {
+                    const errMsg =
+                      confirmed.reason === "validation"
+                        ? "Could not show diff preview (validation failed)."
+                        : "Changes were not applied (you cancelled or declined).";
+                    panel.webview.postMessage({
+                      type: "agent",
+                      written: [],
+                      patched: [],
+                      errors: [errMsg],
+                    });
+                    history.push({
+                      role: "user",
+                      content: formatToolExecutionUserMessage([], [errMsg]),
+                    });
+                    break;
+                  }
+
+                  const writeResult = await applyBearisWrites(rootForWrite.uri, writes);
+                  panel.webview.postMessage({
+                    type: "agent",
+                    written: writeResult.written,
+                    patched: [],
+                    errors: writeResult.errors,
+                  });
+                  history.push({
+                    role: "user",
+                    content: formatToolExecutionUserMessage(
+                      writeResult.written,
+                      writeResult.errors
+                    ),
+                  });
+
+                  if (step === maxStepsStrict - 1) {
+                    panel.webview.postMessage({
+                      type: "delta",
+                      text: `\n\n*[Bearis: stopped at bearis.maxAgentSteps (${maxStepsStrict}).]*\n`,
+                    });
+                    break;
+                  }
+                }
+              }
+
+              panel.webview.postMessage({ type: "done" });
+              return;
             }
 
             const maxSteps = Math.min(
@@ -431,7 +885,60 @@ export function activate(context: vscode.ExtensionContext) {
               maxPatternLength: Math.min(2000, Math.max(32, cfg.get<number>("grepMaxPatternLength", 512))),
             };
 
+            if (agentOn && !offerWriteToolsThisTurn) {
+              const messages: ChatMessage[] = [
+                {
+                  role: "system",
+                  content:
+                    "You are a helpful assistant in VS Code. Reply conversationally. Do not use BEARIS_READ, BEARIS_LIST, BEARIS_SEARCH, BEARIS_GREP, BEARIS_WRITE, or BEARIS_PATCH unless the user clearly asked for project or file changes.",
+                },
+                ...history,
+              ];
+              let roundText = "";
+              const abortRound = new AbortController();
+              let abortedForRepetition = false;
+              try {
+                await streamChatCompletion(
+                  base,
+                  messages,
+                  (delta) => {
+                    roundText += delta;
+                    if (hasRunawayRepetition(roundText)) {
+                      abortedForRepetition = true;
+                      abortRound.abort();
+                      return;
+                    }
+                    panel.webview.postMessage({ type: "delta", text: delta });
+                  },
+                  { signal: abortRound.signal }
+                );
+              } catch (e) {
+                const aborted =
+                  (e instanceof Error && e.name === "AbortError") ||
+                  (typeof DOMException !== "undefined" &&
+                    e instanceof DOMException &&
+                    e.name === "AbortError");
+                if (!aborted || !abortedForRepetition) {
+                  throw e;
+                }
+              }
+              roundText = truncateIfRepetitive(roundText);
+              if (abortedForRepetition) {
+                panel.webview.postMessage({
+                  type: "delta",
+                  text: "\n\n*[Bearis: detenido — el modelo repetía el mismo texto. Prueba otro modelo, baja la temperatura o acorta el prompt.]*\n",
+                });
+              }
+              history.push({
+                role: "assistant",
+                content: stripToolMarkersForHistory(roundText),
+              });
+              panel.webview.postMessage({ type: "done" });
+              return;
+            }
+
             let lastRoundText = "";
+            let lastRoundToolCalls: StreamToolCall[] = [];
 
             for (let step = 0; step < maxSteps; step++) {
               const messages: ChatMessage[] = [
@@ -444,10 +951,46 @@ export function activate(context: vscode.ExtensionContext) {
               ];
 
               let roundText = "";
-              await streamChatCompletion(base, messages, (delta) => {
-                roundText += delta;
-                panel.webview.postMessage({ type: "delta", text: delta });
-              });
+              let roundToolCalls: StreamToolCall[] = [];
+              const abortRound = new AbortController();
+              let abortedForRepetition = false;
+              try {
+                await streamChatCompletion(
+                  base,
+                  messages,
+                  (delta) => {
+                    roundText += delta;
+                    if (hasRunawayRepetition(roundText)) {
+                      abortedForRepetition = true;
+                      abortRound.abort();
+                      return;
+                    }
+                    panel.webview.postMessage({ type: "delta", text: delta });
+                  },
+                  {
+                    signal: abortRound.signal,
+                    onToolCalls: (calls) => {
+                      roundToolCalls = calls;
+                    },
+                  }
+                );
+              } catch (e) {
+                const aborted =
+                  (e instanceof Error && e.name === "AbortError") ||
+                  (typeof DOMException !== "undefined" &&
+                    e instanceof DOMException &&
+                    e.name === "AbortError");
+                if (!aborted || !abortedForRepetition) {
+                  throw e;
+                }
+              }
+              roundText = truncateIfRepetitive(roundText);
+              if (abortedForRepetition) {
+                panel.webview.postMessage({
+                  type: "delta",
+                  text: "\n\n*[Bearis: detenido — el modelo repetía el mismo texto. Prueba otro modelo, baja la temperatura o acorta el prompt.]*\n",
+                });
+              }
 
               if (!agentOn) {
                 history.push({
@@ -455,6 +998,7 @@ export function activate(context: vscode.ExtensionContext) {
                   content: stripToolMarkersForHistory(roundText),
                 });
                 lastRoundText = roundText;
+                lastRoundToolCalls = roundToolCalls;
                 break;
               }
 
@@ -614,12 +1158,22 @@ export function activate(context: vscode.ExtensionContext) {
                 content: stripBearisWriteBlocks(stripBearisPatchBlocks(roundText)).trimEnd(),
               });
               lastRoundText = roundText;
+              lastRoundToolCalls = roundToolCalls;
               break;
             }
 
             let writes = parseBearisWriteBlocks(lastRoundText);
             const patches = parseBearisPatchBlocks(lastRoundText);
             let inferredFromMarkdown = false;
+            let malformedLegacyToolCall = false;
+            let malformedOpenAiToolCall = false;
+            if (writes.length === 0 && agentOn && lastRoundToolCalls.length > 0) {
+              const parsedOpenAi = parseOpenAiToolCallWrites(lastRoundToolCalls);
+              if (parsedOpenAi.writes.length > 0) {
+                writes = parsedOpenAi.writes;
+              }
+              malformedOpenAiToolCall = parsedOpenAi.malformed;
+            }
             if (
               writes.length === 0 &&
               agentOn &&
@@ -630,6 +1184,25 @@ export function activate(context: vscode.ExtensionContext) {
                 writes = inferred;
                 inferredFromMarkdown = true;
               }
+            }
+            if (writes.length === 0 && agentOn) {
+              const legacy = parseLegacyCreateFileToolCalls(lastRoundText);
+              if (legacy.writes.length > 0) {
+                writes = legacy.writes;
+              }
+              malformedLegacyToolCall = legacy.malformed;
+            }
+            const dedupedWrites = dedupeWritesByPath(writes);
+            writes = dedupedWrites.writes;
+            if (dedupedWrites.duplicated.length > 0) {
+              panel.webview.postMessage({
+                type: "agent",
+                written: [],
+                patched: [],
+                errors: [
+                  `Ignored duplicate BEARIS_WRITE blocks for: ${dedupedWrites.duplicated.join(", ")}.`,
+                ],
+              });
             }
 
             const writePathSet = new Set(writes.map((w) => w.relativePath.trim()));
@@ -716,6 +1289,15 @@ export function activate(context: vscode.ExtensionContext) {
                   }
                 }
               }
+            } else if (malformedLegacyToolCall || malformedOpenAiToolCall) {
+              panel.webview.postMessage({
+                type: "agent",
+                written: [],
+                patched: [],
+                errors: [
+                  "The model emitted an incomplete file tool call. No file was written. Ask it to retry creating files directly.",
+                ],
+              });
             }
 
             panel.webview.postMessage({ type: "done" });

@@ -1,0 +1,27 @@
+﻿{
+  "model": "BEARIS",
+  "stream": false,
+  "reasoning_effort": "none",
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "create_new_file",
+        "description": "Create file",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filepath": { "type": "string" },
+            "contents": { "type": "string" }
+          },
+          "required": ["filepath", "contents"]
+        }
+      }
+    }
+  ],
+  "messages": [
+    { "role": "system", "content": "Usa tools solo si el usuario pide acción sobre archivos. Si saluda, responde texto normal." },
+    { "role": "user", "content": "hola" }
+  ]
+}

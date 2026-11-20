@@ -1,0 +1,6 @@
+data: {"id":"chatcmpl-250","object":"chat.completion.chunk","created":1776965657,"model":"qwen3.5:4b-q4_K_M","system_fingerprint":"fp_ollama","choices":[{"index":0,"delta":{"role":"assistant","content":"","tool_calls":[{"id":"call_b5uo03x7","index":0,"type":"function","function":{"name":"create_new_file","arguments":"{\"filepath\":\"prueba-ps1.txt\",\"contents\":\"ok-bearis\"}"}}]},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-250","object":"chat.completion.chunk","created":1776965657,"model":"qwen3.5:4b-q4_K_M","system_fingerprint":"fp_ollama","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":"tool_calls"}]}
+
+data: [DONE]
+

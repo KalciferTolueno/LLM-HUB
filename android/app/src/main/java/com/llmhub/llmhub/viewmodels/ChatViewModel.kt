@@ -444,6 +444,77 @@ class ChatViewModel(
         }
     }
 
+    private fun catalogDefaultBackend(model: LLMModel): LlmInference.Backend {
+        val isGemma4LiteRt =
+            model.modelFormat == "litertlm" &&
+                model.name.contains("Gemma-4", ignoreCase = true)
+        return if (!model.supportsGpu || isGemma4LiteRt) {
+            LlmInference.Backend.CPU
+        } else {
+            LlmInference.Backend.GPU
+        }
+    }
+
+    private suspend fun resolvedDefaultOrFirstAvailable(): LLMModel? {
+        val def = try {
+            themePreferences.localApiDefaultModelName.first()
+        } catch (_: Exception) {
+            null
+        }
+        val fromPrefs =
+            if (def.isNullOrBlank()) null
+            else _availableModels.value.find { it.name == def && it.isDownloaded }
+        return fromPrefs ?: _availableModels.value.firstOrNull()
+    }
+
+    /**
+     * If inference has no model loaded, load [modelHint] or the Primary-engine default from settings
+     * so chat is ready without waiting for the first message. Does not start the local HTTP API.
+     */
+    private suspend fun preloadChatModelIfIdle(modelHint: LLMModel?, chatIdToTag: String?) {
+        if (inferenceService.getCurrentlyLoadedModel() != null) {
+            syncCurrentlyLoadedModel()
+            return
+        }
+        val model = modelHint
+            ?: run {
+                val defaultName = try {
+                    themePreferences.localApiDefaultModelName.first()
+                } catch (_: Exception) {
+                    null
+                }
+                if (defaultName.isNullOrBlank()) null
+                else _availableModels.value.find { it.name == defaultName && it.isDownloaded }
+            } ?: return
+
+        val backend = catalogDefaultBackend(model)
+        _selectedBackend.value = backend
+        try {
+            _isLoadingModel.value = true
+            withContext(Dispatchers.IO) {
+                inferenceService.loadModel(
+                    model,
+                    backend,
+                    isVisionDisabled,
+                    isAudioDisabled,
+                    _selectedNpuDeviceId.value
+                )
+            }
+            currentModel = model
+            _selectedModel.value = model
+            syncCurrentlyLoadedModel()
+            chatIdToTag?.let { cid ->
+                repository.updateChatModel(cid, model.name)
+                _currentChat.value = repository.getChatById(cid)
+            }
+            Log.d("ChatViewModel", "Preloaded model ${model.name} for chat (idle inference)")
+        } catch (e: Exception) {
+            Log.w("ChatViewModel", "preloadChatModelIfIdle failed for ${model.name}: ${e.message}")
+        } finally {
+            _isLoadingModel.value = false
+        }
+    }
+
     fun initializeChat(chatId: String, context: Context, creatorId: String? = null) {
         // Sync the currently loaded model from inference service
         syncCurrentlyLoadedModel()
@@ -521,15 +592,15 @@ class ChatViewModel(
                     Log.w("ChatViewModel", "Failed to replicate global chunks into new chat $newChatId: ${e.message}")
                 }
                 
-                // Preserve the current model for new chats but don't auto-load it
                 currentModel = previousModel
                 
-                // If we have a model, update the chat to use it but don't load it
                 if (previousModel != null) {
                     repository.updateChatModel(newChatId, previousModel.name)
                     _currentChat.value = repository.getChatById(newChatId)
-                    Log.d("ChatViewModel", "Set model ${previousModel.name} for new chat but didn't auto-load it")
+                    Log.d("ChatViewModel", "Set model ${previousModel.name} for new chat")
                 }
+
+                preloadChatModelIfIdle(previousModel, newChatId)
 
                 // Begin collecting messages for the newly created chat
                 messageCollectionJob = launch {
@@ -615,6 +686,8 @@ class ChatViewModel(
                     Log.d("ChatViewModel", "No valid model available for chat")
                     currentModel = null
                 }
+
+                preloadChatModelIfIdle(currentModel, chatId)
                 
                 // Always ensure we have a fresh session for the chat when switching
                 if (currentChatId != null && currentChatId != chatId) {
@@ -2979,12 +3052,12 @@ inferenceService.loadModel(currentModel!!, _selectedBackend.value, _selectedNpuD
                         Log.d("ChatViewModel", "Using currently loaded model from service: ${currentModel.name}")
                         currentModel
                     } else {
-                        Log.d("ChatViewModel", "No valid loaded model, using first available")
-                        _availableModels.value.firstOrNull()
+                        Log.d("ChatViewModel", "No valid loaded model, using default or first available")
+                        resolvedDefaultOrFirstAvailable()
                     }
                 } catch (e: Exception) {
-                    Log.d("ChatViewModel", "Error getting loaded model, using first available: ${e.message}")
-                    _availableModels.value.firstOrNull()
+                    Log.d("ChatViewModel", "Error getting loaded model, using default or first available: ${e.message}")
+                    resolvedDefaultOrFirstAvailable()
                 }
             }
         }
@@ -3031,12 +3104,11 @@ inferenceService.loadModel(currentModel!!, _selectedBackend.value, _selectedNpuD
             repository.updateChatModel(newChatId, modelToUse.name)
             _currentChat.value = repository.getChatById(newChatId)
             
-            // Sync the currently loaded model state - this should be quick
             syncCurrentlyLoadedModel()
-            
-            // Don't auto-load the model for new chats - let user decide when to load it
-            Log.d("ChatViewModel", "Set model ${modelToUse.name} for new chat but didn't auto-load it")
+            Log.d("ChatViewModel", "Set model ${modelToUse.name} for new chat")
         }
+
+        preloadChatModelIfIdle(this.currentModel, newChatId)
         
         // Start collecting messages for the new chat
         messageCollectionJob?.cancel()

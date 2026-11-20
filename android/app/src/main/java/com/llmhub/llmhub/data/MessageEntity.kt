@@ -30,5 +30,7 @@ data class MessageEntity(
     val attachmentFileName: String? = null, // Original file name
     val attachmentFileSize: Long? = null, // Original file size
     val tokenCount: Int? = null,
-    val tokensPerSecond: Double? = null
-) 
+    val tokensPerSecond: Double? = null,
+    /** Wall-clock time to generate this assistant reply (local API / streaming), milliseconds. */
+    val generationDurationMs: Long? = null
+)

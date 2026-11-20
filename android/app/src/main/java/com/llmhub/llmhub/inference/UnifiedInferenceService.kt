@@ -2,16 +2,28 @@ package com.llmhub.llmhub.inference
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
+import com.llmhub.llmhub.LlmHubApplication
 import com.llmhub.llmhub.data.LLMModel
+import com.llmhub.llmhub.notification.ModelRunningNotifier
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Unified Inference Service that routes requests to the appropriate backend Service
  * (MediaPipe or ONNX) based on the model format.
  */
 class UnifiedInferenceService(private val context: Context) : InferenceService {
+
+    /**
+     * One in-flight generation at a time across all backends. The local HTTP API and in-app chat
+     * share the same [InferenceService] instance; concurrent native inference crashes the process.
+     */
+    private val generationMutex = Mutex()
 
     private val mediaPipeService = MediaPipeInferenceService(context)
     private val liteRtLmService = LiteRtLmInferenceService(context)
@@ -20,6 +32,15 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
     
     private var currentService: InferenceService = mediaPipeService
     private var currentModel: LLMModel? = null
+
+    /** LAN API shares [generationMutex]; cancel HTTP work before unload/swap or session clear. */
+    private fun interruptLocalApiRequests(reason: String) {
+        try {
+            (context.applicationContext as? LlmHubApplication)?.localApiServer?.cancelInFlightRequests(reason)
+        } catch (e: Throwable) {
+            Log.w("UnifiedInferenceService", "interruptLocalApiRequests", e)
+        }
+    }
 
     override suspend fun loadModel(model: LLMModel, preferredBackend: LlmInference.Backend?, deviceId: String?): Boolean {
         // Determine which service to use initially
@@ -41,9 +62,12 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
             if (loaded?.name == model.name && (preferredBackend == null || preferredBackend == currentBackend)) {
                 currentModel = model
                 updateAgentTools(model)
+                ModelRunningNotifier.show(context, model.name)
                 return true
             }
         }
+
+        interruptLocalApiRequests("model load/replace")
 
         // If switching services, unload the old one
         if (currentService != targetService && currentModel != null) {
@@ -57,16 +81,20 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
             val success = currentService.loadModel(model, preferredBackend, deviceId)
             if (!success) {
                 currentModel = null
+                ModelRunningNotifier.dismiss(context)
                 throw AllBackendsFailedException("Backend ${currentService.javaClass.simpleName} failed to load model '${model.name}'")
             }
             updateAgentTools(model)
+            ModelRunningNotifier.show(context, model.name)
             return true
         } catch (e: AllBackendsFailedException) {
             currentModel = null
+            ModelRunningNotifier.dismiss(context)
             throw e
         } catch (e: Exception) {
             android.util.Log.e("UnifiedInferenceService", "Service ${currentService.javaClass.simpleName} failed to load model '${model.name}'", e)
             currentModel = null
+            ModelRunningNotifier.dismiss(context)
             throw AllBackendsFailedException("Failed to load model '${model.name}': ${e.message}")
         }
     }
@@ -96,9 +124,12 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
             if (loaded?.name == model.name && (preferredBackend == null || preferredBackend == currentBackend)) {
                 currentModel = model
                 updateAgentTools(model)
+                ModelRunningNotifier.show(context, model.name)
                 return true
             }
         }
+
+        interruptLocalApiRequests("model load/replace")
 
         // If switching services, unload the old one
         if (currentService != targetService && currentModel != null) {
@@ -112,31 +143,43 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
             val success = currentService.loadModel(model, preferredBackend, disableVision, disableAudio, deviceId)
             if (!success) {
                 currentModel = null
+                ModelRunningNotifier.dismiss(context)
                 throw AllBackendsFailedException("Backend ${currentService.javaClass.simpleName} failed to load model '${model.name}'")
             }
             updateAgentTools(model)
+            ModelRunningNotifier.show(context, model.name)
             return true
         } catch (e: AllBackendsFailedException) {
             currentModel = null
+            ModelRunningNotifier.dismiss(context)
             throw e
         } catch (e: Exception) {
             android.util.Log.e("UnifiedInferenceService", "Service ${currentService.javaClass.simpleName} failed to load model '${model.name}'", e)
             currentModel = null
+            ModelRunningNotifier.dismiss(context)
             throw AllBackendsFailedException("Failed to load model '${model.name}': ${e.message}")
         }
     }
 
     override suspend fun unloadModel() {
+        interruptLocalApiRequests("model unloaded")
         currentService.unloadModel()
         currentModel = null
+        ModelRunningNotifier.dismiss(context)
     }
 
     override suspend fun generateResponse(prompt: String, model: LLMModel): String {
-        return currentService.generateResponse(prompt, model)
+        return generationMutex.withLock {
+            currentService.generateResponse(prompt, model)
+        }
     }
 
     override suspend fun generateResponseStream(prompt: String, model: LLMModel): Flow<String> {
-        return currentService.generateResponseStream(prompt, model)
+        return flow {
+            generationMutex.withLock {
+                currentService.generateResponseStream(prompt, model).collect { emit(it) }
+            }
+        }
     }
 
     override suspend fun generateResponseStreamWithSession(
@@ -146,9 +189,25 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
         images: List<Bitmap>,
         audioData: ByteArray?,
         webSearchEnabled: Boolean,
-        imagePaths: List<String>
+        imagePaths: List<String>,
+        useAgentTools: Boolean
     ): Flow<String> {
-        return currentService.generateResponseStreamWithSession(prompt, model, chatId, images, audioData, webSearchEnabled, imagePaths)
+        return flow {
+            generationMutex.withLock {
+                currentService
+                    .generateResponseStreamWithSession(
+                        prompt,
+                        model,
+                        chatId,
+                        images,
+                        audioData,
+                        webSearchEnabled,
+                        imagePaths,
+                        useAgentTools
+                    )
+                    .collect { emit(it) }
+            }
+        }
     }
 
     override suspend fun resetChatSession(chatId: String) {
@@ -156,6 +215,7 @@ class UnifiedInferenceService(private val context: Context) : InferenceService {
     }
 
     override suspend fun onCleared() {
+        interruptLocalApiRequests("inference onCleared")
         mediaPipeService.onCleared()
         liteRtLmService.onCleared()
         onnxService.onCleared()

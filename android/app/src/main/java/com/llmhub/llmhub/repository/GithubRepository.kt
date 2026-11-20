@@ -23,7 +23,7 @@ object GithubRepository {
                 val request = Request.Builder()
                     .url(REPO_URL)
                     .header("Accept", "application/vnd.github.v3+json")
-                    .header("User-Agent", "LLM-Hub-Android-App")
+                    .header("User-Agent", "Bearis-Android-App")
                     .build()
                 
                 val response = client.newCall(request).execute()

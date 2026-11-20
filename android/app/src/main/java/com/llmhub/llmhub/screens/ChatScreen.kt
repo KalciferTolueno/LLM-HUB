@@ -1,6 +1,7 @@
 package com.llmhub.llmhub.screens
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -16,7 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -44,6 +45,7 @@ import com.llmhub.llmhub.ui.components.SectionHeader
 import com.llmhub.llmhub.viewmodels.ChatViewModel
 import com.llmhub.llmhub.viewmodels.ChatViewModelFactory
 import com.llmhub.llmhub.LlmHubApplication
+import com.llmhub.llmhub.ui.LocalLanApiRunning
 import kotlinx.coroutines.launch
 import android.util.Log
 
@@ -81,7 +83,6 @@ fun ChatScreen(
     onNavigateToSettings: () -> Unit,
     onNavigateToModels: () -> Unit,
     onNavigateToChat: (String) -> Unit,
-    onNavigateToCreatorChat: (String) -> Unit,
     onNavigateBack: () -> Unit,
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 ) {
@@ -89,6 +90,7 @@ fun ChatScreen(
         key = "chat_$chatId",
         factory = viewModelFactory
     )
+    val lanApiRunning = LocalLanApiRunning.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -188,12 +190,6 @@ fun ChatScreen(
                     }
                     onNavigateToModels()
                 },
-                onNavigateToCreatorChat = { creatorId ->
-                    coroutineScope.launch {
-                        drawerState.close()
-                    }
-                    onNavigateToCreatorChat(creatorId)
-                },
                 onNavigateBack = {
                     coroutineScope.launch {
                         drawerState.close()
@@ -212,6 +208,11 @@ fun ChatScreen(
     ) {
         Scaffold(
             containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
+            // NeuralHubShell draws its own bottom nav + navigationBarsPadding; default Scaffold
+            // bottom window inset adds a gap between MessageInput and that bar.
+            contentWindowInsets = WindowInsets.safeDrawing.only(
+                WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+            ),
             topBar = {
                 TopAppBar(
                     title = {
@@ -311,6 +312,22 @@ fun ChatScreen(
                     }
                     // REMOVED imePadding() from here
             ) {
+                if (lanApiRunning) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.chat_lan_api_banner),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
+                }
                 // Messages list
                 LazyColumn(
                     modifier = Modifier
@@ -477,7 +494,7 @@ fun ChatScreen(
                     }
                 }
 
-                viewModel.setAgentToolsEnabled(enableAgentTools)
+                viewModel.setAgentToolsEnabled(enableAgentTools && !lanApiRunning)
                 doLoad()
             },
             onUnloadModel = {
@@ -485,6 +502,17 @@ fun ChatScreen(
             },
             onDismiss = {
                 showSettingsSheet = false
+            },
+            onEnableThinkingChanged = { enabled ->
+                viewModel.setGenerationParameters(
+                    maxTokens = null,
+                    topK = null,
+                    topP = null,
+                    temperature = null,
+                    nGpuLayers = null,
+                    enableThinking = enabled,
+                    contextWindow = null
+                )
             }
         )
     }
@@ -515,13 +543,13 @@ private fun WelcomeMessage(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.clip(MaterialTheme.shapes.medium)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                    Image(
+                        painter = painterResource(R.drawable.ic_brand_logo),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(54.dp)
-                            .scale(2.0f),
-                        tint = Color.Unspecified
+                            .fillMaxSize()
+                            .padding(6.dp),
+                        contentScale = ContentScale.Fit
                     )
                 }
             }
@@ -664,13 +692,13 @@ private fun ModelLoadingIndicator(modelName: String) {
                             .clip(MaterialTheme.shapes.medium),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(R.mipmap.ic_launcher_foreground),
+                        Image(
+                            painter = painterResource(R.drawable.ic_brand_logo),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(52.dp)
-                                .scale(1.6f),
-                            tint = Color.Unspecified
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            contentScale = ContentScale.Fit
                         )
                     }
                 }

@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">OK</string>
@@ -17,7 +17,7 @@
     <string name="vision">Vision</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">Bienvenue dans LLM Hub !</string>
+    <string name="welcome_to_llm_hub">Bienvenue dans Bearis !</string>
     <string name="no_models_downloaded">Aucun modèle téléchargé encore</string>
     <!-- Affiché lorsqu'il n'y a aucune mémoire globale enregistrée pour RAG -->
     <string name="no_memories">Aucune mémoire pour le moment</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">Recharger le modèle</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">À propos de LLM Hub</string>
-    <string name="about_description">LLM Hub est une application Android open-source qui apporte la puissance des Large Language Models directement sur votre appareil mobile.</string>
+    <string name="about_llm_hub">À propos de Bearis</string>
+    <string name="about_description">Bearis est une application Android open-source qui apporte la puissance des Large Language Models directement sur votre appareil mobile.</string>
     <string name="key_features">Fonctionnalités Clés</string>
     <string name="feature_multiple_models"> Modèles LLM Multiples : Gemma-3, Llama-3.2, Phi-4, et Gemma-3n</string>
     <string name="feature_on_device"> Traitement sur Appareil : Confidentialité complète, aucun internet requis</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">Informations Développeur</string>
     <string name="about_developer_info">Ce projet est développé par un passionné désireux de rendre la technologie IA plus accessible à tous.</string>
     <string name="tech_stack">Pile Technologique</string>
-    <string name="about_tech_stack">LLM Hub est construit en utilisant des technologies modernes de développement Android.</string>
+    <string name="about_tech_stack">Bearis est construit en utilisant des technologies modernes de développement Android.</string>
     <string name="tech_kotlin_compose"> Construit avec Kotlin &amp; Jetpack Compose</string>
     <string name="tech_mediapipe_litert"> Alimenté par MediaPipe &amp; LiteRT</string>
     <string name="tech_quantization"> Optimisé avec la quantification INT4/INT8</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Conditions d\'Utilisation</string>
     <string name="tos_last_updated">Dernière mise à jour : 16 juillet 2025</string>
-    <string name="tos_welcome_text">Bienvenue dans LLM Hub. En utilisant notre application, vous acceptez d\'être lié par ces Conditions d\'Utilisation.</string>
-    <string name="tos_welcome">Bienvenue dans LLM Hub. En utilisant notre application, vous acceptez d\'être lié par ces Conditions d\'Utilisation.</string>
+    <string name="tos_welcome_text">Bienvenue dans Bearis. En utilisant notre application, vous acceptez d\'être lié par ces Conditions d\'Utilisation.</string>
+    <string name="tos_welcome">Bienvenue dans Bearis. En utilisant notre application, vous acceptez d\'être lié par ces Conditions d\'Utilisation.</string>
     <string name="tos_acceptance_title">1. Acceptation des Conditions</string>
-    <string name="tos_acceptance_text">En téléchargeant, installant ou utilisant LLM Hub, vous reconnaissez avoir lu, compris et accepté d\'être lié par ces Conditions d\'Utilisation.</string>
+    <string name="tos_acceptance_text">En téléchargeant, installant ou utilisant Bearis, vous reconnaissez avoir lu, compris et accepté d\'être lié par ces Conditions d\'Utilisation.</string>
     <string name="tos_app_description_title">2. Description de l\'Application</string>
-    <string name="tos_app_description_text">LLM Hub est une application Android open-source qui fournit l\'accès aux Grands Modèles de Langage (LLMs) pour des conversations IA sur l\'appareil.</string>
+    <string name="tos_app_description_text">Bearis est une application Android open-source qui fournit l\'accès aux Grands Modèles de Langage (LLMs) pour des conversations IA sur l\'appareil.</string>
     <string name="tos_user_responsibilities_title">3. Responsabilités de l\'Utilisateur</string>
-    <string name="tos_user_responsibilities_text">Vous acceptez d\'utiliser LLM Hub de manière responsable et en conformité avec les lois applicables.</string>
+    <string name="tos_user_responsibilities_text">Vous acceptez d\'utiliser Bearis de manière responsable et en conformité avec les lois applicables.</string>
     <string name="tos_privacy_data_title">4. Confidentialité et Données</string>
-    <string name="tos_privacy_data_text">LLM Hub est conçu avec la confidentialité à l\'esprit.</string>
+    <string name="tos_privacy_data_text">Bearis est conçu avec la confidentialité à l\'esprit.</string>
     <string name="tos_disclaimer_title">5. Déni de Garanties</string>
-    <string name="tos_disclaimer_text">LLM Hub est fourni &quot;tel quel&quot; sans garanties d\'aucune sorte.</string>
+    <string name="tos_disclaimer_text">Bearis est fourni &quot;tel quel&quot; sans garanties d\'aucune sorte.</string>
     <string name="tos_limitation_liability_title">6. Limitation de Responsabilité</string>
     <string name="tos_limitation_liability_text">En aucun cas les développeurs ne seront responsables de dommages indirects, incidents, spéciaux ou consécutifs.</string>
     <string name="tos_model_usage_title">7. Utilisation des Modèles et Licences</string>
-    <string name="tos_model_usage_text">Les modèles IA disponibles via LLM Hub sont soumis à leurs licences et conditions d\'utilisation respectives.</string>
+    <string name="tos_model_usage_text">Les modèles IA disponibles via Bearis sont soumis à leurs licences et conditions d\'utilisation respectives.</string>
     <string name="tos_open_source_title">8. Licence Open Source</string>
-    <string name="tos_open_source_text">LLM Hub est un logiciel open-source.</string>
+    <string name="tos_open_source_text">Bearis est un logiciel open-source.</string>
     <string name="tos_changes_title">9. Modifications des Conditions</string>
     <string name="tos_changes_text">Nous pouvons mettre à jour ces Conditions d\'Utilisation de temps en temps.</string>
     <string name="tos_contact_title">10. Informations de Contact</string>
@@ -194,7 +194,7 @@
     <string name="model_text_only">Texte uniquement</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">Nouveau Chat</string>
     <string name="drawer_recent_chats">Chats Récents</string>
     <string name="drawer_no_chats">Aucun chat pour le moment</string>
@@ -427,7 +427,7 @@
     <string name="import_model_warning">⚠️ Important : Veuillez lire le README du modèle sur Hugging Face avant d\'importer. Entrez les bonnes capacités (vision, audio, GPU) et la taille de fenêtre de contexte comme spécifié dans la documentation du modèle. Des paramètres incorrects peuvent empêcher le modèle de fonctionner correctement. Important : Les modèles GGUF prenant en charge la vision nécessitent un Vision Projector (mmproj). Importez le fichier du projecteur pour activer l\'entrée d\'image.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">Bienvenue sur LLM Hub</string>
+    <string name="home_welcome">Bienvenue sur Bearis</string>
     <string name="home_subtitle">Libérez la puissance de l\'IA dans votre poche — privé, rapide et hors ligne !</string>
     
     <!-- Feature Cards -->
@@ -790,7 +790,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Déverrouillez l’expérience complète</string>
     <string name="premium_feature_no_ads">Aucune publicité, jamais</string>
     <string name="premium_feature_vibe_coder">VibeCoder – Générateur de code IA</string>

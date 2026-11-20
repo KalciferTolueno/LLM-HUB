@@ -1,5 +1,5 @@
 ﻿<resources>
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">OK</string>
@@ -16,7 +16,7 @@
     <string name="vision">Vision</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">Welcome to LLM Hub!</string>
+    <string name="welcome_to_llm_hub">Welcome to Bearis!</string>
     <string name="no_models_downloaded">No models downloaded yet</string>
     <!-- Displayed when there are no saved global memories for RAG -->
     <string name="no_memories">No memories yet</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">Reload Model</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">About LLM Hub</string>
-    <string name="about_description">LLM Hub is an open-source Android application that brings the power of Large Language Models directly to your mobile device. Experience AI conversations with state-of-the-art models like Gemma, Llama, and Phi - all running locally on your phone for maximum privacy and offline accessibility.</string>
+    <string name="about_llm_hub">About Bearis</string>
+    <string name="about_description">Bearis is an open-source Android application that brings the power of Large Language Models directly to your mobile device. Experience AI conversations with state-of-the-art models like Gemma, Llama, and Phi - all running locally on your phone for maximum privacy and offline accessibility.</string>
     <string name="key_features">Key Features</string>
     <string name="feature_multiple_models">🤖 Multiple LLM Models: Gemma-3, Llama-3.2, Phi-4, and Gemma-3n</string>
     <string name="feature_on_device">📱 On-Device Processing: Complete privacy, no internet required</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">Developer Info</string>
     <string name="about_developer_info">This project is developed by an enthusiast passionate about making AI technology more accessible to everyone. Your feedback and contributions are always welcome!</string>
     <string name="tech_stack">Tech Stack</string>
-    <string name="about_tech_stack">LLM Hub is built using modern Android development technologies: Kotlin, Jetpack Compose, Material Design 3, and the llama.cpp library for efficient on-device inference.</string>
+    <string name="about_tech_stack">Bearis is built using modern Android development technologies: Kotlin, Jetpack Compose, Material Design 3, and the llama.cpp library for efficient on-device inference.</string>
     <string name="tech_kotlin_compose">🏗️ Built with Kotlin &amp; Jetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 Powered by MediaPipe &amp; LiteRT</string>
     <string name="tech_quantization">🚀 Optimized with INT4/INT8 quantization</string>
@@ -84,24 +84,24 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Terms of Service</string>
     <string name="tos_last_updated">Last updated: July 16, 2025</string>
-    <string name="tos_welcome_text">Welcome to LLM Hub. By using our application, you agree to be bound by these Terms of Service. Please read them carefully.</string>
-    <string name="tos_welcome">Welcome to LLM Hub. By using our application, you agree to be bound by these Terms of Service. Please read them carefully.</string>
+    <string name="tos_welcome_text">Welcome to Bearis. By using our application, you agree to be bound by these Terms of Service. Please read them carefully.</string>
+    <string name="tos_welcome">Welcome to Bearis. By using our application, you agree to be bound by these Terms of Service. Please read them carefully.</string>
     <string name="tos_acceptance_title">1. Acceptance of Terms</string>
-    <string name="tos_acceptance_text">By downloading, installing, or using LLM Hub, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the application.</string>
+    <string name="tos_acceptance_text">By downloading, installing, or using Bearis, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the application.</string>
     <string name="tos_app_description_title">2. Application Description</string>
-    <string name="tos_app_description_text">LLM Hub is an open-source Android application that provides access to Large Language Models (LLMs) for on-device AI conversations. The app processes all data locally on your device and does not transmit personal information to external servers.</string>
+    <string name="tos_app_description_text">Bearis is an open-source Android application that provides access to Large Language Models (LLMs) for on-device AI conversations. The app processes all data locally on your device and does not transmit personal information to external servers.</string>
     <string name="tos_user_responsibilities_title">3. User Responsibilities</string>
-    <string name="tos_user_responsibilities_text">You agree to use LLM Hub responsibly and in accordance with applicable laws. You are responsible for:\n\n• Using the application for lawful purposes only\n• Not attempting to reverse engineer or modify the application\n• Not using the application to generate harmful, illegal, or offensive content\n• Respecting the intellectual property rights of third parties\n• Ensuring your device meets the minimum requirements for proper operation</string>
+    <string name="tos_user_responsibilities_text">You agree to use Bearis responsibly and in accordance with applicable laws. You are responsible for:\n\n• Using the application for lawful purposes only\n• Not attempting to reverse engineer or modify the application\n• Not using the application to generate harmful, illegal, or offensive content\n• Respecting the intellectual property rights of third parties\n• Ensuring your device meets the minimum requirements for proper operation</string>
     <string name="tos_privacy_data_title">4. Privacy and Data</string>
-    <string name="tos_privacy_data_text">LLM Hub is designed with privacy in mind:\n\n• All conversations and data processing occur locally on your device\n• No personal data is transmitted to external servers\n• Chat history is stored locally and can be deleted at any time\n• Model downloads are performed directly from official repositories (HuggingFace, Google)\n• The application does not collect analytics or usage data</string>
+    <string name="tos_privacy_data_text">Bearis is designed with privacy in mind:\n\n• All conversations and data processing occur locally on your device\n• No personal data is transmitted to external servers\n• Chat history is stored locally and can be deleted at any time\n• Model downloads are performed directly from official repositories (HuggingFace, Google)\n• The application does not collect analytics or usage data</string>
     <string name="tos_disclaimer_title">5. Disclaimer of Warranties</string>
-    <string name="tos_disclaimer_text">LLM Hub is provided "as is" without warranties of any kind. We do not guarantee the accuracy, reliability, or availability of the application or its generated content. Use of AI models may produce unpredictable results.</string>
+    <string name="tos_disclaimer_text">Bearis is provided "as is" without warranties of any kind. We do not guarantee the accuracy, reliability, or availability of the application or its generated content. Use of AI models may produce unpredictable results.</string>
     <string name="tos_limitation_liability_title">6. Limitation of Liability</string>
-    <string name="tos_limitation_liability_text">In no event shall the developers be liable for any indirect, incidental, special, or consequential damages arising from the use of LLM Hub. Your use of the application is at your own risk.</string>
+    <string name="tos_limitation_liability_text">In no event shall the developers be liable for any indirect, incidental, special, or consequential damages arising from the use of Bearis. Your use of the application is at your own risk.</string>
     <string name="tos_model_usage_title">7. Model Usage and Licensing</string>
-    <string name="tos_model_usage_text">The AI models available through LLM Hub are subject to their respective licenses and terms of use. Users are responsible for complying with model-specific licensing requirements when using downloaded models.</string>
+    <string name="tos_model_usage_text">The AI models available through Bearis are subject to their respective licenses and terms of use. Users are responsible for complying with model-specific licensing requirements when using downloaded models.</string>
     <string name="tos_open_source_title">8. Open Source License</string>
-    <string name="tos_open_source_text">LLM Hub is open-source software. The source code is available under the MIT License, which permits use, modification, and distribution subject to the license terms. Third-party libraries and models may have different license terms.</string>
+    <string name="tos_open_source_text">Bearis is open-source software. The source code is available under the MIT License, which permits use, modification, and distribution subject to the license terms. Third-party libraries and models may have different license terms.</string>
     <string name="tos_changes_title">9. Changes to Terms</string>
     <string name="tos_changes_text">We may update these Terms of Service from time to time. Users will be notified of significant changes through app updates. Continued use of the application after changes constitutes acceptance of the new terms.</string>
     <string name="tos_contact_title">10. Contact Information</string>
@@ -210,7 +210,7 @@
     <string name="not_loaded">Not Loaded</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">New Chat</string>
     <string name="drawer_recent_chats">Recent Chats</string>
     <string name="drawer_no_chats">No chats yet</string>
@@ -246,6 +246,16 @@
     <string name="choose_text_multimodal_models">Choose from text-only or multimodal models</string>
     <string name="text_models">Text Models</string>
     <string name="text_models_description">Models optimized for text generation and conversation</string>
+    <string name="models_catalog_subtitle">Filter by instruction-tuned (IT) models for chat, or base (pretrained) weights. Embeddings and image models appear under Other.</string>
+    <string name="model_catalog_family_heading">Model family</string>
+    <string name="model_catalog_all_families">All families</string>
+    <string name="model_filter_all">All</string>
+    <string name="model_filter_it">IT</string>
+    <string name="model_filter_base">Base</string>
+    <string name="model_filter_other">Other</string>
+    <string name="model_badge_it">IT</string>
+    <string name="model_badge_base">Base</string>
+    <string name="models_filter_empty">No models match this filter. Try All or a different category.</string>
     <string name="vision_models">Multimodal Models</string>
     <string name="vision_models_description">Models that can understand text, images, and audio</string>
     <string name="embedding_models">Embedding Models</string>
@@ -405,6 +415,9 @@
     <string name="gpu_with_audio_disabled">GPU (Audio Disabled)</string>
     <string name="agent_tools_label">Tools</string>
     <string name="agent_tools_description">Enables AI agent skills: Wikipedia search, hash calculator, send email, send SMS, and open maps.</string>
+    <string name="agent_tools_locked_while_lan_api">Unavailable while the LAN API is running (network clients use completions without on-device agent tools).</string>
+    <string name="chat_lan_api_banner">LAN API is on — phone agent tools are off. Stop the API to use Gemma tools in chat again.</string>
+    <string name="nav_chat_disabled_lan_api">Stop the LAN API to open Chat from here.</string>
     <string name="gemma3n_e4b_gpu_audio_warning">For devices with 7-8GB RAM, GPU acceleration requires disabling audio features. Audio input will not be available, but image attachments are supported.</string>
     <string name="audio_disabled_for_gpu">Audio disabled for GPU acceleration</string>
     <string name="audio_disabled_no_audio">Audio features are disabled for this model configuration. Audio input is not available, but image attachments are supported.</string>
@@ -446,7 +459,7 @@
     <string name="import_model_warning">⚠️ Important: Please read the model\'s README on Hugging Face before importing. Enter the correct capabilities (vision, audio, GPU) and context window size as specified in the model documentation. Incorrect settings may cause the model to not work properly. Important: Vision GGUF models require a Vision Projector (mmproj). Import the projector file to enable image input.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">Welcome to LLM Hub</string>
+    <string name="home_welcome">Welcome to Bearis</string>
     <string name="home_subtitle">Unlock the power of AI in your pocket — private, fast, and offline!</string>
     
     <!-- Feature Cards -->
@@ -469,7 +482,7 @@
     <string name="drawer_my_creators">my creAItors</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Unlock the full experience</string>
     <string name="premium_feature_no_ads">No ads, ever</string>
     <string name="premium_feature_vibe_coder">VibeCoder – AI code builder</string>
@@ -826,6 +839,7 @@
     <!-- Web Search Messages -->
     <string name="web_searching">🔍 Searching the web...</string>
     <string name="web_search_found_results">✅ Found %1$d results. Analyzing...</string>
+    <string name="web_search_generating">✨ Generating answer…</string>
     <string name="web_search_no_results">❌ No current search results found. Providing response based on training data...</string>
     <string name="web_search_failed">❌ Web search failed: %1$s. Providing response based on training data...</string>
     
@@ -841,9 +855,60 @@
     <string name="export">Export</string>
     <string name="home_section_tools">Tools</string>
     <string name="home_section_utilities">Utilities</string>
+    <string name="home_node_badge">Bearis</string>
+    <string name="home_neural_title">Neural Core</string>
+    <string name="home_engine_section_label">PRIMARY ENGINE</string>
+    <string name="home_status_ready">Ready</string>
+    <string name="home_api_live">API live · %1$s:8080</string>
+    <string name="home_lan_api_reasoning">LAN reasoning</string>
     <string name="feature_vibevoice">VibeVoice</string>
     <string name="feature_vibevoice_desc">Voice chat with AI locally</string>
     <string name="chat_now">Chat Now</string>
+
+    <!-- Local LAN API -->
+    <string name="telemetry_cpu">CPU</string>
+    <string name="telemetry_gpu">GPU</string>
+    <string name="telemetry_ram">RAM</string>
+    <string name="telemetry_gpu_na">—</string>
+
+    <string name="local_api_title">Local network API</string>
+    <string name="local_api_server_running">Server running</string>
+    <string name="local_api_server_stopped">Server stopped</string>
+    <string name="local_api_start">Start server</string>
+    <string name="local_api_stop">Stop server</string>
+    <string name="local_api_endpoint">OpenAI-compatible: POST http://%1$s:8080/v1/chat/completions</string>
+    <string name="local_api_web_chat">Web chat (same Wi‑Fi): http://%1$s:8080/</string>
+    <string name="local_api_models_heading">LLM models on this device</string>
+    <string name="local_api_no_llm_models">Download a text or multimodal model first (Models screen).</string>
+    <string name="local_api_load_model">Load for chat &amp; API</string>
+    <string name="local_api_loaded">Loaded</string>
+    <string name="local_api_load_failed">Could not load model: %1$s</string>
+    <string name="local_api_load_success">Model ready: %1$s</string>
+    <string name="local_api_loading">Loading…</string>
+    <string name="local_api_hint_wifi">Same Wi‑Fi as this phone. Another device can call the URL below. Some routers isolate clients (AP isolation).</string>
+    <string name="local_api_gpu_not_supported">GPU is not available for this model. Only CPU can be used.</string>
+    <string name="local_api_notification_channel">Local network API</string>
+    <string name="local_api_notification_channel_desc">Keeps the HTTP API available while the app is in the background</string>
+    <string name="local_api_notification_title">Local API running</string>
+    <string name="local_api_notification_text">http://%1$s:8080 · tap the app to stop</string>
+    <string name="local_api_notification_text_no_ip">Port 8080 · tap the app to stop</string>
+    <string name="local_api_default_model_label">Default model (quick start)</string>
+    <string name="local_api_default_model_none">None</string>
+    <string name="local_api_default_model_hint">Used when you tap Start on the home Primary engine card. Also loads automatically when you open Chat if no model is in memory.</string>
+    <string name="local_api_card_service_title">HTTP service</string>
+    <string name="local_api_card_endpoints_title">Addresses</string>
+    <string name="local_api_card_models_title">Downloaded models</string>
+    <string name="model_running_notification_channel">LLM loaded</string>
+    <string name="model_running_notification_channel_desc">Shown while a language model is loaded in memory</string>
+    <string name="model_running_notification_title">Model running</string>
+    <string name="model_running_notification_text">%1$s · loaded</string>
+    <string name="home_primary_engine_start">Start</string>
+    <string name="home_primary_engine_stop">Stop</string>
+    <string name="home_primary_engine_no_default">Set a default model under Local network API first.</string>
+    <string name="home_primary_engine_default_missing">Default model is missing or not downloaded: %1$s</string>
+    <string name="home_primary_engine_inference_unavailable">Inference is not available.</string>
+    <string name="home_primary_engine_load_failed">Could not load the model.</string>
+    <string name="feature_settings_gpu_not_supported_hint">This model does not support GPU; only CPU is used.</string>
 </resources>
 
 

@@ -1,7 +1,6 @@
 package com.llmhub.llmhub.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.llmhub.llmhub.data.ChatEntity
@@ -17,20 +16,12 @@ class ChatDrawerViewModel(application: Application) : AndroidViewModel(applicati
     private val repository: ChatRepository
 
     val allChats: StateFlow<List<ChatEntity>>
-    val allCreators: StateFlow<List<com.llmhub.llmhub.data.CreatorEntity>>
 
     init {
         val database = LlmHubDatabase.getDatabase(application)
         repository = ChatRepository(database.chatDao(), database.messageDao(), database.creatorDao())
 
         allChats = repository.getActiveChats()
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                emptyList()
-            )
-            
-        allCreators = repository.getAllCreators()
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
@@ -46,37 +37,7 @@ class ChatDrawerViewModel(application: Application) : AndroidViewModel(applicati
         repository.updateChatTitle(chatId, newTitle.trim())
     }
 
-    fun renameCreator(creatorId: String, newName: String) = viewModelScope.launch {
-        val creator = repository.getCreatorById(creatorId)
-        if (creator != null) {
-            repository.insertCreator(creator.copy(name = newName.trim()))
-        }
-    }
-
-    fun updateCreator(creator: com.llmhub.llmhub.data.CreatorEntity) = viewModelScope.launch {
-        try {
-            repository.insertCreator(
-                creator.copy(
-                    name = creator.name.trim(),
-                    description = creator.description.trim(),
-                    pctfPrompt = creator.pctfPrompt.trim(),
-                    icon = creator.icon.trim().ifBlank { "🤖" }
-                )
-            )
-        } catch (e: Exception) {
-            Log.e("ChatDrawerViewModel", "Failed to update creator ${creator.id}: ${e.message}", e)
-        }
-    }
-
     fun deleteAllChats() = viewModelScope.launch {
         repository.deleteAllChats()
     }
-    
-    fun deleteCreator(creator: com.llmhub.llmhub.data.CreatorEntity) = viewModelScope.launch {
-        try {
-            repository.deleteCreator(creator)
-        } catch (e: Exception) {
-            Log.e("ChatDrawerViewModel", "Failed to delete creator ${creator.id}: ${e.message}", e)
-        }
-    }
-} 
+}

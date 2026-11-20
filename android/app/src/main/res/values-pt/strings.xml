@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LLM Hub</string>
+    <string name="app_name">Bearis</string>
     
     <!-- Common -->
     <string name="ok">OK</string>
@@ -17,7 +17,7 @@
     <string name="vision">Visão</string>
     
     <!-- Chat -->
-    <string name="welcome_to_llm_hub">Bem-vindo ao LLM Hub!</string>
+    <string name="welcome_to_llm_hub">Bem-vindo ao Bearis!</string>
     <string name="no_models_downloaded">Nenhum modelo baixado ainda</string>
     <!-- Exibido quando não há memórias globais salvas para RAG -->
     <string name="no_memories">Ainda sem memórias</string>
@@ -48,8 +48,8 @@
     <string name="reload_model">Recarregar Modelo</string>
     
     <!-- About Screen -->
-    <string name="about_llm_hub">Sobre o LLM Hub</string>
-    <string name="about_description">LLM Hub é uma aplicação Android de código aberto que traz o poder dos Modelos de Linguagem Grande diretamente para o seu dispositivo móvel. Experimente conversas de IA com modelos de última geração como Gemma, Llama e Phi - todos executando localmente no seu telefone para máxima privacidade e acessibilidade offline.</string>
+    <string name="about_llm_hub">Sobre o Bearis</string>
+    <string name="about_description">Bearis é uma aplicação Android de código aberto que traz o poder dos Modelos de Linguagem Grande diretamente para o seu dispositivo móvel. Experimente conversas de IA com modelos de última geração como Gemma, Llama e Phi - todos executando localmente no seu telefone para máxima privacidade e acessibilidade offline.</string>
     <string name="key_features">Recursos Principais</string>
     <string name="feature_multiple_models">🤖 Múltiplos Modelos LLM: Gemma-3, Llama-3.2, Phi-4, e Gemma-3n</string>
     <string name="feature_on_device">📱 Processamento no Dispositivo: Privacidade completa, não requer internet</string>
@@ -61,7 +61,7 @@
     <string name="developer_info">Informações do Desenvolvedor</string>
     <string name="about_developer_info">Este projeto é desenvolvido por um entusiasta apaixonado por tornar a tecnologia de IA mais acessível para todos. Seus comentários e contribuições são sempre bem-vindos!</string>
     <string name="tech_stack">Stack Tecnológico</string>
-    <string name="about_tech_stack">LLM Hub é construído usando tecnologias modernas de desenvolvimento Android: Kotlin, Jetpack Compose, Material Design 3, e a biblioteca llama.cpp para inferência eficiente no dispositivo.</string>
+    <string name="about_tech_stack">Bearis é construído usando tecnologias modernas de desenvolvimento Android: Kotlin, Jetpack Compose, Material Design 3, e a biblioteca llama.cpp para inferência eficiente no dispositivo.</string>
     <string name="tech_kotlin_compose">🏗️ Construído com Kotlin e Jetpack Compose</string>
     <string name="tech_mediapipe_litert">🧠 Impulsionado por MediaPipe e LiteRT</string>
     <string name="tech_quantization">🚀 Otimizado com quantização INT4/INT8</string>
@@ -164,7 +164,7 @@
     <string name="model_text_only">Apenas texto</string>
     
     <!-- Chat Drawer -->
-    <string name="drawer_title">LLM Hub</string>
+    <string name="drawer_title">Bearis</string>
     <string name="drawer_new_chat">Novo Chat</string>
     <string name="drawer_recent_chats">Chats Recentes</string>
     <string name="drawer_no_chats">Ainda não há chats</string>
@@ -191,11 +191,11 @@
     <!-- Terms of Service -->
     <string name="terms_of_service">Termos de Serviço</string>
     <string name="tos_last_updated">Última atualização: 16 de julho de 2025</string>
-    <string name="tos_welcome_text">Bem-vindo ao LLM Hub. Ao usar nossa aplicação, você concorda em estar sujeito a estes Termos de Serviço. Por favor, leia-os cuidadosamente.</string>
+    <string name="tos_welcome_text">Bem-vindo ao Bearis. Ao usar nossa aplicação, você concorda em estar sujeito a estes Termos de Serviço. Por favor, leia-os cuidadosamente.</string>
     <string name="tos_acceptance_title">1. Aceitação dos Termos</string>
-    <string name="tos_acceptance_text">Ao baixar, instalar ou usar o LLM Hub, você reconhece que leu, entendeu e concorda em estar sujeito a estes Termos de Serviço. Se você não concorda com estes termos, por favor não use a aplicação.</string>
+    <string name="tos_acceptance_text">Ao baixar, instalar ou usar o Bearis, você reconhece que leu, entendeu e concorda em estar sujeito a estes Termos de Serviço. Se você não concorda com estes termos, por favor não use a aplicação.</string>
     <string name="tos_app_description_title">2. Descrição da Aplicação</string>
-    <string name="tos_app_description_text">LLM Hub é uma aplicação Android de código aberto que fornece acesso a Modelos de Linguagem Grandes (LLMs) para conversas de IA no dispositivo. A aplicação processa todos os dados localmente em seu dispositivo e não transmite informações pessoais para servidores externos.</string>
+    <string name="tos_app_description_text">Bearis é uma aplicação Android de código aberto que fornece acesso a Modelos de Linguagem Grandes (LLMs) para conversas de IA no dispositivo. A aplicação processa todos os dados localmente em seu dispositivo e não transmite informações pessoais para servidores externos.</string>
     
     <!-- Model Download Screen -->
     <string name="ai_models">Modelos de IA</string>
@@ -392,7 +392,7 @@
     <string name="import_model_warning">⚠️ Importante: Por favor leia o README do modelo no Hugging Face antes de importar. Digite as capacidades corretas (visão, áudio, GPU) e o tamanho da janela de contexto conforme especificado na documentação do modelo. Configurações incorretas podem fazer com que o modelo não funcione corretamente. Importante: Modelos GGUF com visão exigem um Vision Projector (mmproj). Importe o arquivo do projetor para habilitar a entrada de imagem.</string>
     
     <!-- Home Screen -->
-    <string name="home_welcome">Bem-vindo ao LLM Hub</string>
+    <string name="home_welcome">Bem-vindo ao Bearis</string>
     <string name="home_subtitle">Desbloqueie o poder da IA no seu bolso — privado, rápido e offline!</string>
     
     <!-- Feature Cards -->
@@ -755,7 +755,7 @@
     <string name="gpu_layers_hint">Layers offloaded to GPU/NPU. 0 = CPU only, 999 = all layers</string>
 
     <!-- Premium / IAP -->
-    <string name="premium_title">LLM Hub Premium</string>
+    <string name="premium_title">Bearis Premium</string>
     <string name="premium_subtitle">Desbloqueie a experiência completa</string>
     <string name="premium_feature_no_ads">Sem anúncios, nunca</string>
     <string name="premium_feature_vibe_coder">VibeCoder – Gerador de código IA</string>

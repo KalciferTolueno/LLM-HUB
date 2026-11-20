@@ -1,16 +1,18 @@
 package com.llmhub.llmhub.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -19,6 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.llmhub.llmhub.R
+import com.llmhub.llmhub.components.NeuralHubColors
+import com.llmhub.llmhub.components.NeuralHubSectionHeading
+import com.llmhub.llmhub.components.NeuralHubUiDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,9 +33,11 @@ fun AboutScreen(
     val uriHandler = LocalUriHandler.current
     
     Scaffold(
+        containerColor = NeuralHubUiDefaults.scaffoldContainerColor,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.about)) },
+                colors = NeuralHubUiDefaults.topAppBarColors(),
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack,
@@ -39,7 +46,7 @@ fun AboutScreen(
                         Icon(
                             Icons.Default.ArrowBack, 
                             contentDescription = stringResource(R.string.content_description_back),
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = Color.White
                         )
                     }
                 }
@@ -62,20 +69,21 @@ fun AboutScreen(
                         Surface(
                             modifier = Modifier.size(64.dp),
                             shape = MaterialTheme.shapes.medium,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            tonalElevation = 8.dp
+                            color = NeuralHubColors.Glass,
+                            tonalElevation = 0.dp,
+                            border = BorderStroke(1.dp, NeuralHubColors.GlassBorder)
                         ) {
                             Box(
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier.clip(MaterialTheme.shapes.medium)
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                                Image(
+                                    painter = painterResource(R.drawable.ic_brand_logo),
                                     contentDescription = "App Logo",
                                     modifier = Modifier
-                                        .size(54.dp)
-                                        .scale(2.0f),
-                                    tint = Color.Unspecified
+                                        .fillMaxSize()
+                                        .padding(6.dp),
+                                    contentScale = ContentScale.Fit
                                 )
                             }
                         }
@@ -83,40 +91,42 @@ fun AboutScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     Text(
-                        text = "LLM Hub",
+                        text = stringResource(R.string.app_name),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = Color.White
                     )
                     
                     Text(
                         text = stringResource(R.string.version_number),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = NeuralHubColors.TextDim
                     )
                 }
             }
             
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
+                        NeuralHubSectionHeading(
                             text = stringResource(R.string.about_llm_hub),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                         
                         Text(
                             text = stringResource(R.string.about_description),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Justify,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = Color.White.copy(alpha = 0.92f)
                         )
                     }
                 }
@@ -124,17 +134,19 @@ fun AboutScreen(
             
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
+                        NeuralHubSectionHeading(
                             text = stringResource(R.string.key_features),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                         
                         val features = listOf(
@@ -151,7 +163,7 @@ fun AboutScreen(
                             Text(
                                 text = feature,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = NeuralHubColors.TextDim,
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
@@ -161,17 +173,19 @@ fun AboutScreen(
             
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
+                        NeuralHubSectionHeading(
                             text = stringResource(R.string.tech_stack),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                         
                         val technologies = listOf(
@@ -186,7 +200,7 @@ fun AboutScreen(
                             Text(
                                 text = tech,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = NeuralHubColors.TextDim,
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
@@ -196,17 +210,19 @@ fun AboutScreen(
             
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
+                        NeuralHubSectionHeading(
                             text = stringResource(R.string.contact_support),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                         
                         Column(
@@ -220,7 +236,7 @@ fun AboutScreen(
                                     imageVector = Icons.Default.Email,
                                     contentDescription = "Email",
                                     modifier = Modifier.size(20.dp),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = NeuralHubColors.AccentCyan
                                 )
                                 
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -229,7 +245,7 @@ fun AboutScreen(
                                     text = stringResource(R.string.contact_email),
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = Color.White
                                 )
                             }
                             
@@ -242,7 +258,7 @@ fun AboutScreen(
                                 Text(
                                     text = "timmyboy0623@gmail.com",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = NeuralHubColors.AccentCyan
                                 )
                             }
                             
@@ -256,7 +272,7 @@ fun AboutScreen(
                                     imageVector = Icons.Default.Code,
                                     contentDescription = "Source Code",
                                     modifier = Modifier.size(20.dp),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = NeuralHubColors.AccentCyan
                                 )
                                 
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -265,7 +281,7 @@ fun AboutScreen(
                                     text = stringResource(R.string.source_code),
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = Color.White
                                 )
                             }
                             
@@ -278,7 +294,7 @@ fun AboutScreen(
                                 Text(
                                     text = stringResource(R.string.github_repository),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = NeuralHubColors.AccentCyan
                                 )
                             }
                         }
@@ -288,24 +304,26 @@ fun AboutScreen(
             
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = NeuralHubUiDefaults.glassCardColors(),
+                    border = NeuralHubUiDefaults.glassCardBorderStroke(),
+                    elevation = NeuralHubUiDefaults.glassCardElevation()
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
+                        NeuralHubSectionHeading(
                             text = stringResource(R.string.acknowledgments),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                         
                         Text(
                             text = stringResource(R.string.acknowledgments_text),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Justify,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = Color.White.copy(alpha = 0.92f)
                         )
                         
                         Spacer(modifier = Modifier.height(8.dp))
@@ -314,7 +332,7 @@ fun AboutScreen(
                             text = stringResource(R.string.sd_models_credit),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Justify,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = NeuralHubColors.TextDim
                         )
                         
                         Spacer(modifier = Modifier.height(8.dp))
@@ -323,7 +341,7 @@ fun AboutScreen(
                             text = stringResource(R.string.nexa_sdk_credit),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Justify,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = NeuralHubColors.TextDim
                         )
                     }
                 }

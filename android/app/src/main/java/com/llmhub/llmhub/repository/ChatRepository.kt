@@ -2,6 +2,7 @@ package com.llmhub.llmhub.repository
 
 import com.llmhub.llmhub.data.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 data class ChatWithLastMessage(
     val chat: ChatEntity,
@@ -21,6 +22,10 @@ class ChatRepository(
     /** Chats that have at least one message. Use for the drawer. */
     fun getActiveChats(): Flow<List<ChatEntity>> {
         return chatDao.getNonEmptyChats()
+    }
+
+    suspend fun getNonEmptyChatsOnce(): List<ChatEntity> {
+        return chatDao.getNonEmptyChats().first()
     }
 
     fun getAllCreators(): Flow<List<CreatorEntity>> {
@@ -98,7 +103,9 @@ class ChatRepository(
         attachmentPath: String? = null, 
         attachmentType: String? = null,
         attachmentFileName: String? = null,
-        attachmentFileSize: Long? = null
+        attachmentFileSize: Long? = null,
+        /** Only used for assistant messages (e.g. local API generation time). */
+        generationDurationMs: Long? = null
     ): String {
         // Normalize content by trimming trailing whitespace/newlines to avoid large empty selection areas
         val safeContent = content.trimEnd()
@@ -110,7 +117,8 @@ class ChatRepository(
             attachmentPath = attachmentPath,
             attachmentType = attachmentType,
             attachmentFileName = attachmentFileName,
-            attachmentFileSize = attachmentFileSize
+            attachmentFileSize = attachmentFileSize,
+            generationDurationMs = if (!isFromUser) generationDurationMs else null
         )
         messageDao.insertMessage(message)
         
@@ -140,6 +148,17 @@ class ChatRepository(
     
     suspend fun deleteMessagesAfter(chatId: String, afterTimestamp: Long) {
         messageDao.deleteMessagesAfter(chatId, afterTimestamp)
+    }
+
+    /** Web/API local: edit a user message and remove all messages after it (same as app edit-resend). */
+    suspend fun editUserMessageAndTruncate(chatId: String, messageId: String, newContent: String) {
+        val msg = messageDao.getMessageById(messageId) ?: return
+        if (msg.chatId != chatId || !msg.isFromUser) {
+            throw IllegalArgumentException("Can only edit user messages in this chat")
+        }
+        val safe = newContent.trimEnd()
+        messageDao.updateMessage(msg.copy(content = safe))
+        messageDao.deleteMessagesAfter(chatId, msg.timestamp)
     }
     
     suspend fun deleteMessageById(messageId: String) {

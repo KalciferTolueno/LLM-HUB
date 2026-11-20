@@ -7,4 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Matches NeuralHub shell; used as cold-start window background to avoid white flash -->
+    <color name="neural_window_bg">#FF050507</color>
 </resources>

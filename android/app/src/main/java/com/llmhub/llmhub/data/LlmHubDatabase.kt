@@ -9,7 +9,7 @@ import android.content.Context
 
 @Database(
     entities = [ChatEntity::class, MessageEntity::class, MemoryDocument::class, com.llmhub.llmhub.data.MemoryChunkEmbedding::class, CreatorEntity::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class LlmHubDatabase : RoomDatabase() {
@@ -59,7 +59,15 @@ abstract class LlmHubDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE chats ADD COLUMN creatorId TEXT")
             }
         }
-        
+
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE messages ADD COLUMN generationDurationMs INTEGER"
+                )
+            }
+        }
+
         fun getDatabase(context: Context): LlmHubDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -67,7 +75,7 @@ abstract class LlmHubDatabase : RoomDatabase() {
                     LlmHubDatabase::class.java,
                     "llmhub_database"
                 )
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                 .fallbackToDestructiveMigration() // Optional: useful for dev, but we have migrations now
                 .build()
                 INSTANCE = instance

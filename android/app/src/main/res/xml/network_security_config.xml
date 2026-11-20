@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <!-- Allow cleartext (HTTP) only to localhost for the native backend server -->
+    <!-- Allow cleartext (HTTP) for localhost and local network -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">localhost</domain>
         <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">10.0.0.0</domain>
+        <domain includeSubdomains="false">192.168.0.0</domain>
+        <domain includeSubdomains="false">172.16.0.0</domain>
     </domain-config>
-    
+
     <!-- Default: Block cleartext for all other domains -->
     <base-config cleartextTrafficPermitted="false">
         <trust-anchors>

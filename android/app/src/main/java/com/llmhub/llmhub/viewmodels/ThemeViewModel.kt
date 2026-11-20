@@ -2,19 +2,202 @@ package com.llmhub.llmhub.viewmodels
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.llmhub.llmhub.LlmHubApplication
 import com.llmhub.llmhub.data.ThemeMode
 import com.llmhub.llmhub.data.ThemePreferences
+import com.llmhub.llmhub.R
+import com.llmhub.llmhub.data.LLMModel
+import com.llmhub.llmhub.data.ModelPreferences
+import com.llmhub.llmhub.inference.UnifiedInferenceService
+import com.llmhub.llmhub.service.LocalApiForegroundService
 import com.llmhub.llmhub.utils.LocaleHelper
+import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 
-class ThemeViewModel(private val context: Context) : ViewModel() {
+class ThemeViewModel(private val context: Context, private val inferenceService: com.llmhub.llmhub.inference.InferenceService? = null) : ViewModel() {
     private val themePreferences = ThemePreferences(context)
-    
+    private val modelPrefsForTools = ModelPreferences(context.applicationContext)
+
+    private val app: LlmHubApplication
+        get() = context.applicationContext as LlmHubApplication
+
+    /** Shared with [LocalApiForegroundService] via [LlmHubApplication.localApiServer]. */
+    val apiServer: com.llmhub.llmhub.inference.LlmApiServer?
+        get() = if (inferenceService != null) app.localApiServer else null
+
+    /** Last value used for LAN ↔ agent-tools policy (see [commitApiRunningState]). */
+    private var committedApiServerRunning: Boolean = false
+
+    private fun commitApiRunningState(now: Boolean) {
+        _isApiServerRunning.value = now
+        val was = committedApiServerRunning
+        if (was != now) {
+            val inf = inferenceService as? UnifiedInferenceService
+            if (inf != null) {
+                if (now) {
+                    inf.setAgentToolsEnabled(false)
+                } else {
+                    val m = inf.getCurrentlyLoadedModel()
+                    if (m != null) {
+                        val cfg = runBlocking(Dispatchers.IO) {
+                            modelPrefsForTools.getModelConfig(m.name)
+                        }
+                        inf.setAgentToolsEnabled(cfg?.agentToolsEnabled ?: true)
+                    }
+                }
+            }
+        }
+        committedApiServerRunning = now
+    }
+
+    fun syncLocalApiServerState() {
+        commitApiRunningState(apiServer?.isRunning() == true)
+    }
+    private val _isApiServerRunning = MutableStateFlow(false)
+    val isApiServerRunning: StateFlow<Boolean> = _isApiServerRunning.asStateFlow()
+
+    private val _apiServerBusy = MutableStateFlow(false)
+    val apiServerBusy: StateFlow<Boolean> = _apiServerBusy.asStateFlow()
+
+    private val _apiServerError = MutableStateFlow<String?>(null)
+    val apiServerError: StateFlow<String?> = _apiServerError.asStateFlow()
+
+    fun clearApiServerError() {
+        _apiServerError.value = null
+    }
+
+    fun toggleApiServer() {
+        val server = apiServer
+        if (server == null) {
+            Log.e("ThemeViewModel", "InferenceService not available, cannot start API server")
+            _apiServerError.value = "Inference service unavailable"
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _apiServerBusy.value = true
+                if (server.isRunning()) {
+                    stopLocalApiServerSuspended()
+                    Log.d("ThemeViewModel", "API server stopped")
+                } else {
+                    startLocalApiServerSuspended()
+                    if (server.isRunning()) {
+                        Log.d("ThemeViewModel", "API server started on ${server.getLocalIpAddress()}:8080")
+                    }
+                }
+            } catch (e: Throwable) {
+                Log.e("ThemeViewModel", "API server toggle failed", e)
+                withContext(Dispatchers.Main) {
+                    commitApiRunningState(server.isRunning())
+                    _apiServerError.value = e.message ?: e.javaClass.simpleName
+                }
+            } finally {
+                _apiServerBusy.value = false
+            }
+        }
+    }
+
+    /** Starts the HTTP server if it is not already running (e.g. after loading the default model from home). */
+    fun startLocalApiServer() {
+        val server = apiServer ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _apiServerBusy.value = true
+                startLocalApiServerSuspended()
+            } catch (e: Throwable) {
+                Log.e("ThemeViewModel", "startLocalApiServer failed", e)
+                withContext(Dispatchers.Main) {
+                    commitApiRunningState(server.isRunning())
+                    _apiServerError.value = e.message ?: e.javaClass.simpleName
+                }
+            } finally {
+                _apiServerBusy.value = false
+            }
+        }
+    }
+
+    /** Stops the HTTP server if it is running. */
+    fun stopLocalApiServer() {
+        val server = apiServer ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _apiServerBusy.value = true
+                stopLocalApiServerSuspended()
+            } catch (e: Throwable) {
+                Log.e("ThemeViewModel", "stopLocalApiServer failed", e)
+                withContext(Dispatchers.Main) {
+                    commitApiRunningState(server.isRunning())
+                    _apiServerError.value = e.message ?: e.javaClass.simpleName
+                }
+            } finally {
+                _apiServerBusy.value = false
+            }
+        }
+    }
+
+    private suspend fun startLocalApiServerSuspended() {
+        val server = apiServer ?: return
+        if (server.isRunning()) {
+            withContext(Dispatchers.Main) {
+                commitApiRunningState(true)
+                _apiServerError.value = null
+            }
+            return
+        }
+        val appContext = context.applicationContext
+        withContext(Dispatchers.Main) {
+            ContextCompat.startForegroundService(
+                appContext,
+                Intent(appContext, LocalApiForegroundService::class.java)
+            )
+        }
+        delay(120)
+        val ok = server.isRunning()
+        withContext(Dispatchers.Main) {
+            commitApiRunningState(ok)
+            _apiServerError.value = if (ok) null else "Could not start API server"
+        }
+    }
+
+    private suspend fun stopLocalApiServerSuspended() {
+        val server = apiServer ?: return
+        if (!server.isRunning()) {
+            withContext(Dispatchers.Main) {
+                commitApiRunningState(false)
+                _apiServerError.value = null
+            }
+            return
+        }
+        val appContext = context.applicationContext
+        appContext.stopService(Intent(appContext, LocalApiForegroundService::class.java))
+        delay(200)
+        if (server.isRunning()) {
+            try {
+                server.stop()
+            } catch (e: Throwable) {
+                Log.w("ThemeViewModel", "Server stop fallback", e)
+            }
+        }
+        withContext(Dispatchers.Main) {
+            commitApiRunningState(server.isRunning())
+            _apiServerError.value = null
+        }
+    }
+
+    fun getApiServerIp(): String? = apiServer?.getLocalIpAddress()
+
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
     
@@ -35,6 +218,12 @@ class ThemeViewModel(private val context: Context) : ViewModel() {
 
     private val _autoReadoutEnabled = MutableStateFlow(false)
     val autoReadoutEnabled: StateFlow<Boolean> = _autoReadoutEnabled.asStateFlow()
+
+    private val _localApiDefaultModelName = MutableStateFlow<String?>(null)
+    val localApiDefaultModelName: StateFlow<String?> = _localApiDefaultModelName.asStateFlow()
+
+    private val _localApiReasoningEnabled = MutableStateFlow(false)
+    val localApiReasoningEnabled: StateFlow<Boolean> = _localApiReasoningEnabled.asStateFlow()
     
     init {
         // Load the saved theme preference
@@ -83,6 +272,113 @@ class ThemeViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             themePreferences.autoReadoutEnabled.collect { enabled ->
                 _autoReadoutEnabled.value = enabled
+            }
+        }
+
+        viewModelScope.launch {
+            themePreferences.localApiDefaultModelName.collect { name ->
+                _localApiDefaultModelName.value = name
+            }
+        }
+
+        viewModelScope.launch {
+            themePreferences.localApiReasoningEnabled.collect { on ->
+                _localApiReasoningEnabled.value = on
+            }
+        }
+
+        syncLocalApiServerState()
+    }
+
+    fun setLocalApiReasoningEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setLocalApiReasoningEnabled(enabled)
+            _localApiReasoningEnabled.value = enabled
+        }
+    }
+
+    fun setLocalApiDefaultModelName(name: String?) {
+        viewModelScope.launch {
+            themePreferences.setLocalApiDefaultModelName(name)
+            _localApiDefaultModelName.value = name
+        }
+    }
+
+    /**
+     * Loads the model chosen as default on the Local network API screen (CPU/GPU follows catalog rules).
+     * @return null on success, or a user-visible error string
+     */
+    fun loadLocalApiDefaultModel(
+        downloadedModels: List<LLMModel>,
+        onResult: (errorMessage: String?) -> Unit
+    ) {
+        val inf = inferenceService
+        if (inf == null) {
+            onResult(context.getString(R.string.home_primary_engine_inference_unavailable))
+            return
+        }
+        val name = _localApiDefaultModelName.value
+        if (name.isNullOrBlank()) {
+            onResult(context.getString(R.string.home_primary_engine_no_default))
+            return
+        }
+        val model = downloadedModels.find { it.name == name && it.isDownloaded }
+        if (model == null) {
+            onResult(context.getString(R.string.home_primary_engine_default_missing, name))
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val isGemma4LiteRt =
+                    model.modelFormat == "litertlm" &&
+                        model.name.contains("Gemma-4", ignoreCase = true)
+                val backend =
+                    if (!model.supportsGpu || isGemma4LiteRt) {
+                        LlmInference.Backend.CPU
+                    } else {
+                        LlmInference.Backend.GPU
+                    }
+                val ok = inf.loadModel(model, backend, null)
+                if (ok) {
+                    try {
+                        _apiServerBusy.value = true
+                        startLocalApiServerSuspended()
+                    } finally {
+                        _apiServerBusy.value = false
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    onResult(
+                        if (ok) null
+                        else context.getString(R.string.home_primary_engine_load_failed)
+                    )
+                }
+            } catch (e: Throwable) {
+                Log.e("ThemeViewModel", "loadLocalApiDefaultModel", e)
+                withContext(Dispatchers.Main) {
+                    onResult(e.message ?: context.getString(R.string.home_primary_engine_load_failed))
+                }
+            }
+        }
+    }
+
+    fun unloadInferenceModel(onFinished: () -> Unit = {}) {
+        val inf = inferenceService ?: run {
+            onFinished()
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _apiServerBusy.value = true
+                stopLocalApiServerSuspended()
+                inf.unloadModel()
+            } catch (e: Throwable) {
+                Log.w("ThemeViewModel", "unloadInferenceModel", e)
+            } finally {
+                _apiServerBusy.value = false
+                withContext(Dispatchers.Main) {
+                    onFinished()
+                }
             }
         }
     }

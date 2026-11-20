@@ -27,11 +27,6 @@ class ChatViewModelFactory(
             return ChatViewModel(inferenceService, repository, context, savedStateHandle) as T
         }
 
-        if (modelClass.isAssignableFrom(CreatorViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return CreatorViewModel(repository, inferenceService, context) as T
-        }
-
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
